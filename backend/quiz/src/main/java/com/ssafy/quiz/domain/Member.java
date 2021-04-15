@@ -33,5 +33,4 @@ public class Member {
     private String nick;
     @Column(name = "member_email")
     private String email;
-
 }
