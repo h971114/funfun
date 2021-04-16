@@ -1,0 +1,56 @@
+package com.ssafy.quiz.domain;
+
+import lombok.*;
+
+import javax.persistence.*;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+@Builder
+@AllArgsConstructor
+public class Quiz {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "quiz_no")
+    private int quiz_no;
+
+    @ManyToOne
+    @JoinColumn(name = "quiz_member_no")
+    private Member member;
+
+    @Column(name = "quiz_type")
+    private int type;
+    @Column(name = "quiz_content")
+    private String content;
+    @Column(name = "quiz_exam1")
+    private String exam1;
+    @Column(name = "quiz_exam2")
+    private String exam2;
+    @Column(name = "quiz_exam3")
+    private String exam3;
+    @Column(name = "quiz_exam4")
+    private String exam4;
+    @Column(name = "quiz_exam5")
+    private String exam5;
+    @Column(name = "quiz_exam6")
+    private String exam6;
+    @Column(name = "quiz_exam7")
+    private String exam7;
+    @Column(name = "quiz_exam8")
+    private String exam8;
+    @Column(name = "quiz_exam9")
+    private String exam9;
+    @Column(name = "quiz_exam10")
+    private String exam10;
+    @Column(name = "quiz_o")
+    private String quiz_o;
+    @Column(name = "quiz_x")
+    private String quiz_x;
+    @Column(name = "quiz_short_word")
+    private String short_word;
+    @Column(name = "quiz_answer")
+    private String answer;
+}
