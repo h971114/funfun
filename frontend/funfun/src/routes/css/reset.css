@@ -69,6 +69,12 @@ table {
     display:inline-block;
 }
 
+a, a:hover, a:active {
+	color: #000;
+	text-decoration: none;
+}
+
+
 body, th, td, input, select, textarea, button {
     font-size: 16px;
     line-height: 1.5;
@@ -78,5 +84,9 @@ body, th, td, input, select, textarea, button {
 
 .wid1200{
     width: 1200px;
+    margin: 0 auto;
+}
+.wid800{
+    width: 800px;
     margin: 0 auto;
 }

@@ -45,7 +45,7 @@
     text-decoration: none;
     color: black;
 
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
     border-radius:10px;
 
     overflow: hidden!important;
@@ -60,7 +60,7 @@
 }
 
 .goGame:hover{
-    border: 1px solid #071982;
+    /* border: 1px solid #071982; */
     color: #80ffd3!important;
 }
 .goGame::before {
