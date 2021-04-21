@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 class Join extends Component {
 
     constructor() {
+        super();
         this.state = {
             checkID: false,
             checkPW: false,
