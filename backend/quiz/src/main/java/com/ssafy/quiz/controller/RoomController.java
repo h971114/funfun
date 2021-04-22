@@ -36,9 +36,9 @@ public class RoomController {
     RoomRepository roomRepository;
     @Autowired
     MemberRepository memberRepository;
-    //방코드생성
-    @PostMapping("/make/{id}")
-    public ResponseEntity<String> makeRoomcode(@PathVariable(value = "id") String memberid, HttpServletRequest req) throws NoSuchAlgorithmException {
+    //방코드생성 - 임시저장
+    @PostMapping("/make/{id}/temp")
+    public ResponseEntity<String> makeRoomcode1(@PathVariable(value = "id") String memberid, HttpServletRequest req) throws NoSuchAlgorithmException {
     	Map<String, String> resultMap = new HashMap<>();
         Member tmpMember = memberRepository.findByMemberId(memberid);
         int member_no = tmpMember.getMember_no();
@@ -48,6 +48,27 @@ public class RoomController {
         	int n = roomRepository.findByRoomCode(code);
         	if(n==0) break;
         }
+        if()
+        logger.info(code);
+        roomRepository.save(Room.builder()
+                .code(code)
+                .member_no(member_no)
+                .build());
+        return  new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
+    }
+    //방코드생성 - 저장완료되면 방코드 7자리 (6자리 랜덤 + 숫자 1)
+    @PostMapping("/make/{id}/save")
+    public ResponseEntity<String> makeRoomcode2(@PathVariable(value = "id") String memberid, HttpServletRequest req) throws NoSuchAlgorithmException {
+    	Map<String, String> resultMap = new HashMap<>();
+        Member tmpMember = memberRepository.findByMemberId(memberid);
+        int member_no = tmpMember.getMember_no();
+        String code = "";
+        while(true) {
+        	code = getRandomStr(6);
+        	int n = roomRepository.findByRoomCode(code);
+        	if(n==0) break;
+        }
+        code+="1";
         logger.info(code);
         roomRepository.save(Room.builder()
                 .code(code)
