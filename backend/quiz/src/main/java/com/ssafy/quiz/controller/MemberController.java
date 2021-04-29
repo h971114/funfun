@@ -7,22 +7,20 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ssafy.quiz.service.JwtService;
-import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.quiz.domain.Member;
 import com.ssafy.quiz.repository.MemberRepository;
 
-import lombok.AllArgsConstructor;
 import lombok.var;
 
 @RestController
@@ -64,8 +62,6 @@ public class MemberController {
     //회원수정
     @PutMapping("")
     public ResponseEntity<String> updateMember(@RequestBody Member memberbody, HttpServletRequest req) throws NoSuchAlgorithmException {
-        System.out.println(req);
-        String conclusion = SUCCESS;
         HttpStatus status = HttpStatus.ACCEPTED;
         var option = memberRepository.findById(memberbody.getMember_no());
         Member member = option.get();
@@ -73,15 +69,7 @@ public class MemberController {
         member.setEmail(memberbody.getEmail());
         member.setNick(memberbody.getNick());
         memberRepository.save(member);
-//       if(memberRepository.update(Member.builder()
-//    		   .id(memberbody.getId())
-//    		   .pw(sha256(memberbody.getPw()))
-//    		   .nick(memberbody.getNick())
-//    		   .email(memberbody.getEmail())
-//    		   .build()).getId() != null)
-//    		conclusion = SUCCESS;
-//    	else conclusion = FAIL;
-        return new ResponseEntity<>(conclusion, status);
+        return new ResponseEntity<>(SUCCESS, status);
     }
 
     // 로그인
@@ -96,10 +84,44 @@ public class MemberController {
             resultMap.put("id", tmpMember.getId());
             resultMap.put("nick", tmpMember.getNick());
             resultMap.put("token", jwtService.create("member", tmpMember, "id"));
+            logger.info("로그인 성공");
+        } else {
+            resultMap.put("conclusion", FAIL);
+            logger.info("로그인 실패");
         }
-        else resultMap.put("conclusion", FAIL);
 
         return new ResponseEntity<>(resultMap, HttpStatus.ACCEPTED);
+    }
+
+    // 로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, Object>> logoutMember(HttpServletRequest req) {
+        Map<String, Object> resultMap = new HashMap<>();
+        logger.info("로그아웃 성공");
+        return new ResponseEntity<>(resultMap, HttpStatus.ACCEPTED);
+    }
+
+    // id 찾기
+    @GetMapping("/find-id")
+    public ResponseEntity<String> findId(@RequestParam("email") String email, HttpServletRequest req) {
+        String id = null;
+        Member member = memberRepository.findByMemberId(email);
+        if (member != null) {
+            id = member.getId();
+        }
+        return new ResponseEntity<>(id, HttpStatus.ACCEPTED);
+    }
+
+    // 비밀번호 찾기
+    @GetMapping("/find-pw")
+    public ResponseEntity<String> findId(@RequestParam("id") String id,
+                                         @RequestParam("email") String email, HttpServletRequest req) {
+        String ret = FAIL;
+        Member member = memberRepository.findByMemberId(id);
+        if (member != null && member.getEmail().equals(email)) {
+            ret = SUCCESS;
+        }
+        return new ResponseEntity<>(ret, HttpStatus.ACCEPTED);
     }
 
     // token 검증

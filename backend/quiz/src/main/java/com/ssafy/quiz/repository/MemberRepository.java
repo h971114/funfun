@@ -12,6 +12,9 @@ public interface MemberRepository extends JpaRepository<Member, Integer>{
     @Query(value = "select m.* from member as m where m.member_id = :member_id", nativeQuery = true)
     Member findByMemberId(String member_id);
 
+    @Query(value = "select m.* from member as m where m.member_email = :member_email", nativeQuery = true)
+    Member findByEmail(String member_email);
+
     @Query(value = "select m.* from member as m where m.member_id = :member_id and m.member_pw = :member_pw", nativeQuery = true)
     boolean login(String member_id, String member_pw);
 }
