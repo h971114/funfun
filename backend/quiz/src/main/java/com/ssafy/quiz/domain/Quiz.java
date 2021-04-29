@@ -35,16 +35,6 @@ public class Quiz {
     private String exam4;
     @Column(name = "quiz_exam5")
     private String exam5;
-    @Column(name = "quiz_exam6")
-    private String exam6;
-    @Column(name = "quiz_exam7")
-    private String exam7;
-    @Column(name = "quiz_exam8")
-    private String exam8;
-    @Column(name = "quiz_exam9")
-    private String exam9;
-    @Column(name = "quiz_exam10")
-    private String exam10;
     @Column(name = "quiz_o")
     private String quiz_o;
     @Column(name = "quiz_x")
@@ -53,4 +43,6 @@ public class Quiz {
     private String short_word;
     @Column(name = "quiz_answer")
     private String answer;
+    @Column(name = "quiz_order")
+    private int order;
 }
