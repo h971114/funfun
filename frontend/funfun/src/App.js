@@ -10,6 +10,8 @@ import Home from "./routes/Home";
 
 import Login from "./routes/User/Login";
 import Join from "./routes/User/Join";
+import FindID from "./routes/User/FindID";
+import FindPW from "./routes/User/FindPW";
 
 
 import "./routes/css/reset.css";
@@ -27,6 +29,8 @@ function App() {
           <Route path="/" exact={true} component={Home}/>
           <Route path="/login" exact={true} component={Login}/>
           <Route path="/join" exact={true} component={Join}/>
+          <Route path="/findid" exact={true} component={FindID}/>
+          <Route path="/findpw" exact={true} component={FindPW}/>
         </Switch>
       </div>
     </Router>
