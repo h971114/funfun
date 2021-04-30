@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ssafy.quiz.service.JwtService;
@@ -20,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.quiz.domain.Member;
 import com.ssafy.quiz.repository.MemberRepository;
-
-import lombok.var;
 
 @RestController
 @RequestMapping("/member")
@@ -41,14 +38,21 @@ public class MemberController {
     public ResponseEntity<String> joinMember(@RequestBody Member memberbody, HttpServletRequest req) throws NoSuchAlgorithmException {
         String conclusion = "";
         HttpStatus status = HttpStatus.ACCEPTED;
-        if (memberRepository.save(Member.builder()
+        memberRepository.save(Member.builder()
                 .id(memberbody.getId())
                 .pw(sha256(memberbody.getPw()))
                 .nick(memberbody.getNick())
                 .email(memberbody.getEmail())
-                .build()).getId() != null)
-            conclusion = SUCCESS;
-        else conclusion = FAIL;
+                .build());
+//        if (memberRepository.save(Member.builder()
+//                .id(memberbody.getId())
+//                .pw(sha256(memberbody.getPw()))
+//                .nick(memberbody.getNick())
+//                .email(memberbody.getEmail())
+//                .build()).getId() != null)
+//            conclusion = SUCCESS;
+//        else conclusion = FAIL;
+        conclusion = SUCCESS;
         return new ResponseEntity<String>(conclusion, status);
     }
 
@@ -56,15 +60,16 @@ public class MemberController {
     @DeleteMapping("/{memberno}")
     public void deleteMember(@PathVariable(value = "memberno") int memberno,
                              HttpServletRequest req) {
-        memberRepository.deleteById(memberno);
+        memberRepository.delete(memberno);
     }
 
     //회원수정
     @PutMapping("")
     public ResponseEntity<String> updateMember(@RequestBody Member memberbody, HttpServletRequest req) throws NoSuchAlgorithmException {
         HttpStatus status = HttpStatus.ACCEPTED;
-        var option = memberRepository.findById(memberbody.getMember_no());
-        Member member = option.get();
+//        var option = memberRepository.find(memberbody.getMember_no());
+//        Member member = option.get();
+        Member member = memberRepository.find(memberbody.getMember_no());
         member.setPw(sha256(memberbody.getPw()));
         member.setEmail(memberbody.getEmail());
         member.setNick(memberbody.getNick());
@@ -77,7 +82,7 @@ public class MemberController {
     public ResponseEntity<Map<String, String>> loginMember(@RequestBody Member member, HttpServletRequest req) throws NoSuchAlgorithmException {
         Map<String, String> resultMap = new HashMap<>();
         member.setPw(sha256(member.getPw()));
-        Member tmpMember = memberRepository.findByMemberId(member.getId());
+        Member tmpMember = memberRepository.findById(member.getId());
 
         if (tmpMember.getPw().equals(member.getPw())) {
             resultMap.put("conclusion", SUCCESS);
@@ -105,10 +110,12 @@ public class MemberController {
     @GetMapping("/find-id")
     public ResponseEntity<String> findId(@RequestParam("email") String email, HttpServletRequest req) {
         String id = null;
-        Member member = memberRepository.findByMemberId(email);
+        logger.info("test");
+        Member member = memberRepository.findByEmail(email);
         if (member != null) {
             id = member.getId();
         }
+        logger.info(id);
         return new ResponseEntity<>(id, HttpStatus.ACCEPTED);
     }
 
@@ -117,7 +124,7 @@ public class MemberController {
     public ResponseEntity<String> findId(@RequestParam("id") String id,
                                          @RequestParam("email") String email, HttpServletRequest req) {
         String ret = FAIL;
-        Member member = memberRepository.findByMemberId(id);
+        Member member = memberRepository.findById(id);
         if (member != null && member.getEmail().equals(email)) {
             ret = SUCCESS;
         }
