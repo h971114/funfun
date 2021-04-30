@@ -40,7 +40,7 @@ public class RoomController {
     @PostMapping("/make/{id}/temp")
     public ResponseEntity<String> makeRoomcode1(@PathVariable(value = "id") String memberid, HttpServletRequest req) throws NoSuchAlgorithmException {
     	Map<String, String> resultMap = new HashMap<>();
-        Member tmpMember = memberRepository.findByMemberId(memberid);
+        Member tmpMember = memberRepository.findById(memberid);
         int member_no = tmpMember.getMember_no();
         String code = "";
         while(true) {
@@ -48,7 +48,6 @@ public class RoomController {
         	int n = roomRepository.findByRoomCode(code);
         	if(n==0) break;
         }
-        if()
         logger.info(code);
         roomRepository.save(Room.builder()
                 .code(code)
@@ -60,7 +59,7 @@ public class RoomController {
     @PostMapping("/make/{id}/save")
     public ResponseEntity<String> makeRoomcode2(@PathVariable(value = "id") String memberid, HttpServletRequest req) throws NoSuchAlgorithmException {
     	Map<String, String> resultMap = new HashMap<>();
-        Member tmpMember = memberRepository.findByMemberId(memberid);
+        Member tmpMember = memberRepository.findById(memberid);
         int member_no = tmpMember.getMember_no();
         String code = "";
         while(true) {

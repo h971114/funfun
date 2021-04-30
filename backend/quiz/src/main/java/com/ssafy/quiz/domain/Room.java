@@ -26,5 +26,4 @@ public class Room {
     private String code;
     @Column(name = "room_member_no")
     private int member_no;
-
 }

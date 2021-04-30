@@ -1,20 +1,38 @@
 package com.ssafy.quiz.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
+import lombok.RequiredArgsConstructor;
 import com.ssafy.quiz.domain.Member;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Integer>{
+@RequiredArgsConstructor
+public class MemberRepository{
 
-    @Query(value = "select m.* from member as m where m.member_id = :member_id", nativeQuery = true)
-    Member findByMemberId(String member_id);
+    private final EntityManager em;
 
-    @Query(value = "select m.* from member as m where m.member_email = :member_email", nativeQuery = true)
-    Member findByEmail(String member_email);
+    public void save(Member member){
+        em.persist(member);
+    }
 
-    @Query(value = "select m.* from member as m where m.member_id = :member_id and m.member_pw = :member_pw", nativeQuery = true)
-    boolean login(String member_id, String member_pw);
+    public void delete(int member_no){
+        em.createQuery("delete from Member m where m.member_no = : member_no", Member.class)
+                .setParameter("member_no", member_no);
+    }
+    public Member find(int member_no){
+        return em.find(Member.class, member_no);
+    }
+
+    public Member findById(String member_id){
+        return em.createQuery("select m from Member m where m.id = :member_id", Member.class)
+                .setParameter("member_id", member_id)
+                .getSingleResult();
+    }
+
+    public Member findByEmail(String member_email){
+        return em.createQuery("select m from Member m where m.email = :member_email", Member.class)
+                .setParameter("member_email", member_email)
+                .getSingleResult();
+    }
 }
