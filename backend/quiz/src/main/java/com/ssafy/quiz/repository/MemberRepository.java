@@ -3,11 +3,13 @@ package com.ssafy.quiz.repository;
 import lombok.RequiredArgsConstructor;
 import com.ssafy.quiz.domain.Member;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
 @Repository
 @RequiredArgsConstructor
+@Transactional
 public class MemberRepository{
 
     private final EntityManager em;
@@ -20,6 +22,7 @@ public class MemberRepository{
         em.createQuery("delete from Member m where m.member_no = : member_no", Member.class)
                 .setParameter("member_no", member_no);
     }
+
     public Member find(int member_no){
         return em.find(Member.class, member_no);
     }

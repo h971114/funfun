@@ -1,6 +1,5 @@
 package com.ssafy.quiz.controller;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -10,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ssafy.quiz.service.JwtService;
+import com.ssafy.quiz.service.MemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.quiz.domain.Member;
-import com.ssafy.quiz.repository.MemberRepository;
 
 @RestController
 @RequestMapping("/member")
@@ -28,67 +27,43 @@ public class MemberController {
     private final String SUCCESS = "SUCCESS";
     private final String FAIL = "FAIL";
 
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    JwtService jwtService;
+    @Autowired MemberService memberService;
+    @Autowired JwtService jwtService;
 
     // 회원가입
     @PostMapping("/join")
-    public ResponseEntity<String> joinMember(@RequestBody Member memberbody, HttpServletRequest req) throws NoSuchAlgorithmException {
-        String conclusion = "";
-        HttpStatus status = HttpStatus.ACCEPTED;
-        memberRepository.save(Member.builder()
-                .id(memberbody.getId())
-                .pw(sha256(memberbody.getPw()))
-                .nick(memberbody.getNick())
-                .email(memberbody.getEmail())
-                .build());
-//        if (memberRepository.save(Member.builder()
-//                .id(memberbody.getId())
-//                .pw(sha256(memberbody.getPw()))
-//                .nick(memberbody.getNick())
-//                .email(memberbody.getEmail())
-//                .build()).getId() != null)
-//            conclusion = SUCCESS;
-//        else conclusion = FAIL;
-        conclusion = SUCCESS;
-        return new ResponseEntity<String>(conclusion, status);
+    public ResponseEntity<String> joinMember(@RequestBody Member member, HttpServletRequest req) throws NoSuchAlgorithmException {
+        logger.info("회원 가입");
+        memberService.save(member);
+        return new ResponseEntity<String>(SUCCESS, HttpStatus.ACCEPTED);
     }
 
     //회원탈퇴
     @DeleteMapping("/{memberno}")
-    public void deleteMember(@PathVariable(value = "memberno") int memberno,
-                             HttpServletRequest req) {
-        memberRepository.delete(memberno);
+    public ResponseEntity<String> deleteMember(@PathVariable(value = "memberno") int member_no, HttpServletRequest req) {
+        logger.info("회원 탈퇴");
+        memberService.delete(member_no);
+        return new ResponseEntity<String>(SUCCESS, HttpStatus.ACCEPTED);
     }
 
     //회원수정
     @PutMapping("")
-    public ResponseEntity<String> updateMember(@RequestBody Member memberbody, HttpServletRequest req) throws NoSuchAlgorithmException {
-        HttpStatus status = HttpStatus.ACCEPTED;
-//        var option = memberRepository.find(memberbody.getMember_no());
-//        Member member = option.get();
-        Member member = memberRepository.find(memberbody.getMember_no());
-        member.setPw(sha256(memberbody.getPw()));
-        member.setEmail(memberbody.getEmail());
-        member.setNick(memberbody.getNick());
-        memberRepository.save(member);
-        return new ResponseEntity<>(SUCCESS, status);
+    public ResponseEntity<String> updateMember(@RequestBody Member member, HttpServletRequest req) throws NoSuchAlgorithmException {
+        logger.info("회원 수정");
+        memberService.updateMember(member);
+        return new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
     }
 
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginMember(@RequestBody Member member, HttpServletRequest req) throws NoSuchAlgorithmException {
         Map<String, String> resultMap = new HashMap<>();
-        member.setPw(sha256(member.getPw()));
-        Member tmpMember = memberRepository.findById(member.getId());
 
-        if (tmpMember.getPw().equals(member.getPw())) {
+        if (memberService.login(member)) {
             resultMap.put("conclusion", SUCCESS);
-            resultMap.put("id", tmpMember.getId());
-            resultMap.put("nick", tmpMember.getNick());
-            resultMap.put("token", jwtService.create("member", tmpMember, "id"));
+            resultMap.put("id", member.getId());
+            resultMap.put("nick", member.getNick());
+            resultMap.put("token", jwtService.create("member", member, "id"));
             logger.info("로그인 성공");
         } else {
             resultMap.put("conclusion", FAIL);
@@ -109,26 +84,20 @@ public class MemberController {
     // id 찾기
     @GetMapping("/find-id")
     public ResponseEntity<String> findId(@RequestParam("email") String email, HttpServletRequest req) {
-        String id = null;
-        logger.info("test");
-        Member member = memberRepository.findByEmail(email);
-        if (member != null) {
-            id = member.getId();
-        }
-        logger.info(id);
-        return new ResponseEntity<>(id, HttpStatus.ACCEPTED);
+        logger.info("아이디 찾기");
+        return new ResponseEntity<>(memberService.findId(email), HttpStatus.ACCEPTED);
     }
 
     // 비밀번호 찾기
     @GetMapping("/find-pw")
     public ResponseEntity<String> findId(@RequestParam("id") String id,
                                          @RequestParam("email") String email, HttpServletRequest req) {
-        String ret = FAIL;
-        Member member = memberRepository.findById(id);
-        if (member != null && member.getEmail().equals(email)) {
-            ret = SUCCESS;
-        }
-        return new ResponseEntity<>(ret, HttpStatus.ACCEPTED);
+        logger.info("비밀번호 찾기");
+        String result = FAIL;
+        if (memberService.findPw(id, email))
+            result = SUCCESS;
+
+        return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
     }
 
     // token 검증
@@ -147,16 +116,5 @@ public class MemberController {
             logger.info("유효하지 않은 토큰입니다.");
         }
         return new ResponseEntity<>(resultMap, HttpStatus.ACCEPTED);
-    }
-
-    //sha256 해쉬
-    public static String sha256(String msg) throws NoSuchAlgorithmException {
-
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(msg.getBytes());
-        StringBuilder sb = new StringBuilder();
-        for (final byte b : md.digest())
-            sb.append(String.format("%02x ", b & 0xff));
-        return sb.toString();
     }
 }
