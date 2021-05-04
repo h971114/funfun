@@ -1,0 +1,214 @@
+
+.loginWrap{
+    margin-top: 200px;
+    height: 550px;
+    border: 1px solid #000;
+    border-radius: 10px;
+}
+
+.loginWrap .title{
+    display: inline-block;
+    height: 540px;
+    width: 240px;
+
+    border-right: 1px solid #000;
+    border-radius: 10px 0px 0px 10px;
+
+    padding-left: 10px;
+    padding-top: 10px;
+
+    font-weight: 900;
+    font-size: 30px;
+
+    overflow: hidden!important;
+}
+
+.loginWrap .title .loginImg{
+    width: 50px;
+}
+
+.loginWrap .title .loginBar{
+    width: 150px;
+    height: 10px;
+}
+
+.loginWrap .input{
+    display: inline-block;
+    height: 430px;
+    width: 470px;
+
+    margin-left:10px;
+
+    padding: 120px 25px 0px 25px;
+    
+    overflow: hidden!important;
+}
+
+.loginWrap .input label{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.loginWrap .input input{
+    width: 455px;
+    height: 35px;
+
+    padding-left: 15px;
+
+    border: none;
+    border-radius: 15px;
+
+    background-color: #f2f2f2;
+    margin-top: 10px;
+}
+
+.loginWrap .input input::placeholder{
+    color: #dcdcdc;
+}
+
+.loginWrap .input #userID{
+    margin-bottom: 20px;
+}
+.loginWrap .input #userPW{
+    margin-bottom: 40px;
+}
+
+.loginWrap .input input[type='button']{
+    width: 100%;
+    height: 45px;
+
+    background: linear-gradient(to right, #5ca7fb, #6373ff);
+
+    border: none;
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.loginWrap .input ul{
+    margin-top: 30px;
+    text-align: center;
+    color: #8d8d8d;
+}
+
+.loginWrap .input ul li{
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.loginWrap .input ul li:last-child{
+    margin-right: 0px;
+}
+
+
+.joinWrap{
+    margin-top: 130px;
+    height: 700px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    position: static;
+}
+
+.joinWrap .title{
+    display: inline-block;
+    height: 690px;
+    width: 30%;
+
+    border-right: 1px solid #000;
+    border-radius: 10px 0px 0px 10px;
+
+    padding-left: 10px;
+    padding-top: 10px;
+
+    font-weight: 900;
+    font-size: 30px;
+
+    overflow: hidden!important;
+}
+
+.joinWrap .title .loginImg{
+    width: 50px;
+}
+
+.joinWrap .title .loginBar{
+    width: 150px;
+    height: 10px;
+}
+
+.joinWrap .input{
+    display: inline-block;
+    /* height: 650px; */
+    width: 480px;
+    position: relative;
+
+    margin-left:10px;
+    margin-bottom: 20px;
+
+    padding: 0px 25px 0px 25px;
+    
+    overflow: hidden!important;
+}
+
+.joinWrap .input label{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.joinWrap .input input{
+    width: 455px;
+    height: 35px;
+
+    padding-left: 15px;
+
+    border: none;
+    border-radius: 15px;
+
+    background-color: #f2f2f2;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.joinWrap .input input::placeholder{
+    color: #dcdcdc;
+}
+
+.joinWrap .input .availd{
+    height: 25px;
+    margin-bottom: 20px;
+    padding-left: 15px;
+}
+
+.joinWrap .input input[type='button']{
+    width: 100%;
+    height: 45px;
+
+    background: linear-gradient(to right, #5ca7fb, #6373ff);
+
+    border: none;
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.joinWrap .input ul{
+    margin-top: 30px;
+    text-align: center;
+    color: #8d8d8d;
+}
+
+.joinWrap .input ul li{
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.joinWrap .input ul li:last-child{
+    margin-right: 0px;
+}

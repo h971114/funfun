@@ -1,0 +1,161 @@
+.header{
+    position: absolute;
+    top: 30px;
+    z-index: 1000;
+
+    height: 60px;
+    width: 90%;
+    
+    
+    margin-right: 3%;
+    margin-left: 3%;
+    padding-left: 30px;
+    padding-right: 30px;
+
+    background-color: white;
+
+    /* border: 1px solid black; */
+    border-radius: 50px;
+    /* border-bottom: 1px solid #f2f2f2 ; */
+    box-shadow:0px 0px 5px #cfcfcf;
+}
+
+.btn{
+    position: relative;
+    display:inline-block;
+
+    text-align: center;
+    text-decoration: none;
+    color: black;
+}
+
+.header .btn{
+    top: 10px;
+    height: 40px;
+    line-height: 40px;
+}
+
+.header .logo{
+    width: 200px;
+    height: 40px;
+    margin-top: 4px;
+    background-image: url("../../img/pclogo.png");
+    background-size: 200px 40px;
+    background-repeat: no-repeat;
+}
+
+
+.goGame{
+    float: right;
+    width: 120px;
+    height: 40px;
+    
+    position: relative;
+    display:inline-block;
+
+    text-align: center;
+    text-decoration: none;
+    color: #201421;
+
+    /* border: 1px solid #000; */
+    border-radius:30px;
+    background-color: #ffba00;
+
+    font-weight: 900;
+}
+
+.login{
+    float: right;
+    position: relative;
+    display:inline-block;
+
+    text-align: center;
+    text-decoration: none;
+    color: #686868;
+
+    margin-right: 30px;
+
+}
+
+.main_contents{
+    height: 935px;
+    overflow: hidden;
+}
+
+.main_contents .top_triangle,
+.main_contents .bot_triangle{
+    display: inline-block;
+    position: absolute;
+    /* height: 935px; */
+    top: 0px;
+}
+
+.main_contents .top_triangle{
+    width: 45%;
+    /* height: 0px !important; */
+    border-top: 930px solid #ffb801;
+    border-right: 165px solid transparent;
+}
+.main_contents .bot_triangle{
+    width: 45%;
+    /* height: 0px !important; */
+    left: 45%;
+    border-bottom: 930px solid #251a24;
+    border-left: 165px solid transparent;
+}
+
+.main_contents .left_side{
+    position: absolute;
+    z-index: 999;
+    margin-left: 3%;
+    top: 300px;
+}
+
+.main_contents .left_side h2{
+    font-size: 90px;
+    font-weight: 800;
+}
+
+.main_contents .left_side h3{
+    font-size: 30px;
+    font-weight: 400;
+}
+
+.main_contents .left_side h3 span{
+    color: lightcoral;
+    font-weight: 800;
+}
+
+.main_contents .left_side .btnWrap .GGBtn{
+    width: 150px;
+    height: 50px;
+    font-size: 18px;
+    border-radius: 30px; 
+
+    display: inline-block;
+    line-height: 50px;
+    text-align: center;
+    color:#fff;
+    background-color: #2e2229;
+    
+}
+
+.main_contents .right_side{
+    position: absolute;
+    z-index: 999;
+    margin-right: 3%;
+    top: 250px;
+    right: 0;
+}
+
+.main_contents .youtube{
+    width: 700px;
+    height: 400px;
+}
+
+.slider1 .wid1200 img{
+    width: 500px;
+    position: absolute;
+    top: 130px;
+    right: 30px;
+}
