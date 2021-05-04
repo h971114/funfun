@@ -38,10 +38,18 @@ public class MemberController {
         return new ResponseEntity<String>(SUCCESS, HttpStatus.ACCEPTED);
     }
 
+    // 회원 조회
+    @GetMapping("/{no}")
+    public ResponseEntity<Member> getMember(@PathVariable(value = "no") int member_no, HttpServletRequest req){
+        logger.info("회원 조회");
+        return new ResponseEntity<>(memberService.getMember(member_no), HttpStatus.ACCEPTED);
+    }
+
     //회원탈퇴
-    @DeleteMapping("/{memberno}")
-    public ResponseEntity<String> deleteMember(@PathVariable(value = "memberno") int member_no, HttpServletRequest req) {
+    @DeleteMapping("/{no}")
+    public ResponseEntity<String> deleteMember(@PathVariable(value = "no") int member_no, HttpServletRequest req) {
         logger.info("회원 탈퇴");
+        logger.info(String.valueOf(member_no));
         memberService.delete(member_no);
         return new ResponseEntity<String>(SUCCESS, HttpStatus.ACCEPTED);
     }

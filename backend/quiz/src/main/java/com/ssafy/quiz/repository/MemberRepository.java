@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,8 +20,8 @@ public class MemberRepository{
     }
 
     public void delete(int member_no){
-        em.createQuery("delete from Member m where m.member_no = : member_no", Member.class)
-                .setParameter("member_no", member_no);
+        em.createQuery("delete from Member m where m.member_no = : member_no")
+                .setParameter("member_no", member_no).executeUpdate();
     }
 
     public Member find(int member_no){

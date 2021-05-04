@@ -18,6 +18,10 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    public Member getMember(int member_no) {
+        return memberRepository.find(member_no);
+    }
+
     public void delete(int member_no) {
         memberRepository.delete(member_no);
     }
