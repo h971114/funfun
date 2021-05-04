@@ -21,7 +21,7 @@ public class QuizRepository {
 
     public void delete(int quiz_no){
         em.createQuery("delete from Quiz q where q.quiz_no = : quiz_no", Quiz.class)
-                .setParameter("quiz_no", quiz_no);
+                .setParameter("quiz_no", quiz_no).executeUpdate();
     }
 
     public Quiz find(int quiz_no){
