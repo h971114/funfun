@@ -49,7 +49,6 @@ public class MemberController {
     @DeleteMapping("/{no}")
     public ResponseEntity<String> deleteMember(@PathVariable(value = "no") int member_no, HttpServletRequest req) {
         logger.info("회원 탈퇴");
-        logger.info(String.valueOf(member_no));
         memberService.delete(member_no);
         return new ResponseEntity<String>(SUCCESS, HttpStatus.ACCEPTED);
     }
