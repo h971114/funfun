@@ -11,10 +11,14 @@ import Home from "./routes/Home";
 import Login from "./routes/User/Login";
 import Join from "./routes/User/Join";
 
+import InputCode from "./routes/Quiz/inputCode";
+import SetNick from "./routes/Quiz/SetNick";
+import PlayQuiz from "./routes/Quiz/PlayQuiz";
 
 import "./routes/css/reset.css";
 import './routes/css/home.css';
 import './routes/css/user.css';
+import './routes/css/quiz.css';
 
 
 function App() {
@@ -26,7 +30,11 @@ function App() {
         <Switch>
           <Route path="/" exact={true} component={Home}/>
           <Route path="/login" exact={true} component={Login}/>
-          <Route path="/join" exact={true} component={Join}/>
+          <Route path="/join" exact={true} component={Join} />
+
+          <Route path="/game/goGame" exact={true} component={InputCode}/>
+          <Route path="/game/setNick" exact={true} component={SetNick}/>
+          <Route path="/game/PlayQuiz" exact={true} component={PlayQuiz}/>
         </Switch>
       </div>
     </Router>
