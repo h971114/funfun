@@ -15,22 +15,16 @@ import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-@Entity
 @Getter @Setter
 @NoArgsConstructor
 @ToString
 @Builder
 @AllArgsConstructor
-public class Member {
-    @Id @GeneratedValue
-    @Column(name = "member_no")
-    private int member_no;
-    @Column(name = "member_id")
+public class ChatMessage {
+    private MessageType type;
+    private String sender;
+    private String team;
+    private String content;
+    private String roomnumber;
     private String id;
-    @Column(name = "member_pw")
-    private String pw;
-    @Column(name = "member_nick")
-    private String nick;
-    @Column(name = "member_email")
-    private String email;
 }
