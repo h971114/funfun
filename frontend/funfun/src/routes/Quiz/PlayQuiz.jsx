@@ -1,13 +1,64 @@
 import React, { useState, useEffect, Component } from 'react';
 import { render } from 'react-dom';
 import { Link } from "react-router-dom"
-
 import ProgressBar from '../../components/common/ProgressBar';
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+var connected =false;
+var socket ='';
+var stompClient = '';
+var messageArea = document.querySelector('#messageArea');
 
-function PlayQuiz() {
+const  send = (props, msg)=> {
+    let send_message = msg;
+    if (stompClient && stompClient.connected) {
+      const msg = {type : 'CHAT', content: send_message, roomnumber:props.location.state.code, sender: props.location.state.nickname };
+      stompClient.send("/app/chat", JSON.stringify(msg), {});
+  }
+  console.log(send_message);
+  }
+  const connect =(props)=> {
+    socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.connect(
+      {},
+      frame => {
+        connected = true;
+          stompClient.subscribe("/topic/" + props.location.state.code, onMessageReceived
+            //   tick => {
+            //   }
+          );
+        const msg = {type : 'JOIN', content: "", roomnumber: props.location.state.code, sender : props.location.state.nickname};
+        stompClient.send("/app/chat", JSON.stringify(msg), {});
+      },
+      error => {
+        console.log(error);
+        connected = false;
+      }
+      );
+  }
+  const disconnect =(props)=> {
+      if (stompClient) {
+        const msg = {type : 'LEAVE', content: "", roomnumber:props.location.state.code };
+        stompClient.send("/app/chat", JSON.stringify(msg), {});
+      stompClient.disconnect();
+    }
+    connected = false;
+  }
+  const tickleConnection =()=> {
+    connected ? disconnect() : connect();
+}
+function onclick() {
+    console.log("???");
+}
+function onMessageReceived(payload) {
+    var message = JSON.parse(payload.body);
+    console.log(message);
+}
+function PlayQuiz(props) {
     const [seconds, setSeconds] = useState(60);
     const [progress, setProgress] = useState(seconds * 1000);
-
+    const [msg, setMsg] = useState('');
     useEffect(() => {
         const countdown = setInterval(() => {
             if (parseInt(seconds) > 0) {
@@ -18,8 +69,18 @@ function PlayQuiz() {
             }
         }, 1000);
         return () => clearInterval(countdown);
+        
     }, [seconds]);
-
+    useEffect(() => {
+        connect(props);
+        console.log("연결");
+        console.log(stompClient);
+        return () => {
+            disconnect(props);
+            console.log("완료");
+        }
+    },[props.location.state.nickname])
+    
     return (
         <div className="quiz_contents">
             <div className="quiz_parts">
@@ -61,10 +122,13 @@ function PlayQuiz() {
                         테스트_천영재 : 테스트 진행중입니다<br />
                         테스트_한진영 : 테스트 진행중입니다<br />
                         테스트_현수진 : 테스트 진행중입니다
+                    <ul id="messageArea">
+                        
+                    </ul>
                     </div>
                 <div className="send_wrap">
-                    <input type="text" className="chatsend" placeholder="채팅을 입력하세요." ></input>
-                    <input type="button" className="chatsendbtn"></input>
+                    <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
+                    <input type="button" className="chatsendbtn" onClick={() =>send(props, msg)}></input>
                 </div>
             </div>
             <div className="allChat">

@@ -4,7 +4,10 @@ import { Link } from "react-router-dom"
 class InputCode extends Component {
 
     goGame = (e) => {
-        this.props.history.push('/game/setNick');
+        this.props.history.push({
+            pathname: '/game/setNick',
+            state: { code: "code" }});
+        
     }
 
     render() {

@@ -2,9 +2,16 @@ import React, { useState, useEffect, Component } from 'react';
 import { Link } from "react-router-dom"
 
 class SetNick extends Component {
-
+    
     goGame = (e) => {
-        this.props.history.push('/game/PlayQuiz');
+        this.props.history.push({
+            pathname: '/game/PlayQuiz',
+            state: {
+                nickname: "nickname",
+                code : this.props.location.state.code
+            }
+        });
+        console.log(this.props.history);
     }
 
     render() {
