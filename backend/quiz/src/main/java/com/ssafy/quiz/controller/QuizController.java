@@ -22,8 +22,7 @@ public class QuizController {
     private final String SUCCESS = "SUCCESS";
     private final String FAIL = "FAIL";
 
-    @Autowired
-    QuizService quizService;
+    @Autowired QuizService quizService;
 
     @PostMapping("")
     public ResponseEntity<String> saveQuiz(@RequestBody Quiz quiz, HttpServletRequest req) {
@@ -46,7 +45,6 @@ public class QuizController {
         return new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/type/{type}")
     public List<Quiz> findByType(@PathVariable(value = "type") int type, HttpServletRequest req) {
         logger.info(type+" 퀴즈 검색");
         return quizService.findByType(type);
