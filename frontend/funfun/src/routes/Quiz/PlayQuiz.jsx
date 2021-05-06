@@ -7,7 +7,7 @@ import Stomp from "webstomp-client";
 var connected =false;
 var socket ='';
 var stompClient = '';
-var messageArea = document.querySelector('#messageArea');
+
 
 const  send = (props, msg)=> {
     let send_message = msg;
@@ -54,6 +54,32 @@ function onclick() {
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
     console.log(message);
+    var messageArea = document.querySelector('#messageArea');
+    var messageElement = document.createElement('li');
+
+    if(message.type === 'JOIN') {
+        messageElement.classList.add('event-message');
+        message.content = message.sender + ' joined!';
+    } else if (message.type === 'LEAVE') {
+        messageElement.classList.add('event-message');
+        message.content = message.sender + ' left!';
+    } else {
+        messageElement.classList.add('chat-message');
+
+        var usernameElement = document.createElement('span');
+        var usernameText = document.createTextNode(message.sender);
+        usernameElement.appendChild(usernameText);
+        messageElement.appendChild(usernameElement);
+    }
+
+    var textElement = document.createElement('p');
+    var messageText = document.createTextNode(message.content);
+    textElement.appendChild(messageText);
+
+    messageElement.appendChild(textElement);
+
+    messageArea.appendChild(messageElement);
+    messageArea.scrollTop = messageArea.scrollHeight;
 }
 function PlayQuiz(props) {
     const [seconds, setSeconds] = useState(60);
