@@ -38,11 +38,14 @@ public class QuizService {
         tempQuiz.setShort_word(quiz.getShort_word());
         // 정답
         tempQuiz.setAnswer(quiz.getAnswer());
-
+        tempQuiz.setRoom_no(quiz.getRoom_no());
         quizRepository.save(tempQuiz);
     }
 
     public List<Quiz> findByType(int type) {
         return quizRepository.findByType(type);
+    }
+    public List<Quiz> findByRoom(String room_no){
+    	return quizRepository.findwithroom(room_no);
     }
 }

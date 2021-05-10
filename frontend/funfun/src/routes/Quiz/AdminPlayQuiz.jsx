@@ -270,6 +270,9 @@ function AdminPlayQuiz(props) {
     const startGame = () => {
         document.getElementsByClassName('gameStart')[0].setAttribute('style', 'display:none');
         start();
+        axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: 0 } }).then(res => {
+            console.log(res.data);
+        });
         //게임 시작 부 소스 ★
     }
 

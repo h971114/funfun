@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.quiz.domain.Quiz;
 import com.ssafy.quiz.domain.QuizInfoMap;
 
 @RestController
@@ -37,5 +38,11 @@ public class TeamController {
 			 System.out.println(room_no);
 			 System.out.println(quizinfomap.toString());
 			return new ResponseEntity<List<Map<String, String>>>(quizinfomap.getQuizmap().get(room_no).getTeammember().get("team"+team_no), HttpStatus.ACCEPTED);
+		}
+	 @GetMapping("/quiz")
+		public ResponseEntity<Quiz> getQuiz(@RequestParam("no") String room_no, @RequestParam("index") int index, HttpServletRequest req){
+			 System.out.println(room_no);
+			 System.out.println(quizinfomap.toString());
+			return new ResponseEntity<Quiz>(quizinfomap.getQuizmap().get(room_no).getQuizlist().get(index), HttpStatus.ACCEPTED);
 		}
 }

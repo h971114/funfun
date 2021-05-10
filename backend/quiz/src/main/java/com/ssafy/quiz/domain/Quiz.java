@@ -43,4 +43,6 @@ public class Quiz {
     private String answer;
     @Column(name = "quiz_order")
     private int order;
+    @Column(name = "room_no")
+    private String room_no;
 }

@@ -18,6 +18,7 @@ import com.ssafy.quiz.domain.ChatMessage;
 import com.ssafy.quiz.domain.MessageType;
 import com.ssafy.quiz.domain.QuizInfo;
 import com.ssafy.quiz.domain.QuizInfoMap;
+import com.ssafy.quiz.service.QuizService;
 
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -31,6 +32,9 @@ public class ChatController {
 	private QuizInfoMap quizinfomap;
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
+    
+    @Autowired
+    QuizService quizService;
     
     @MessageMapping("/chat")
     public void sendMessage(@Payload ChatMessage chatMessage , SimpMessageHeaderAccessor headerAccessor) {
@@ -64,6 +68,7 @@ public class ChatController {
     			quiz.getTeammember().put("team3", new LinkedList<Map<String, String>>());
     			quiz.getTeammember().put("team4", new LinkedList<Map<String, String>>());
     			quiz.getTeammember().put("team5", new LinkedList<Map<String, String>>());
+    			quiz.setQuizlist(quizService.findByRoom(chatMessage.getRoomnumber()));
     			Map<String, String> tmp = new HashMap<String, String>();
     			tmp.put("id", ID);
     			tmp.put("title", chatMessage.getSender());

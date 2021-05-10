@@ -27,6 +27,9 @@ public class QuizRepository {
     public Quiz find(int quiz_no){
         return em.find(Quiz.class, quiz_no);
     }
+    public List<Quiz> findwithroom(String room_no) {
+    	return em.createQuery("SELECT q FROM Quiz q where q.room_no = : room_no order by quiz_order ", Quiz.class).setParameter("room_no", room_no).getResultList();
+    }
 
     public List<Quiz> findByType(int type) {
         return em.createQuery("select q from Quiz q where q.type = : type", Quiz.class)
