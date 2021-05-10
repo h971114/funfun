@@ -1,5 +1,4 @@
 package com.ssafy.quiz.controller;
-
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -8,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ssafy.quiz.repository.MemberRepository;
 import com.ssafy.quiz.service.JwtService;
 import com.ssafy.quiz.service.MemberService;
 import org.slf4j.Logger;
@@ -28,6 +28,7 @@ public class MemberController {
     private final String FAIL = "FAIL";
 
     @Autowired MemberService memberService;
+    @Autowired MemberRepository memberRepository;
     @Autowired JwtService jwtService;
 
     // 회원가입
@@ -66,10 +67,12 @@ public class MemberController {
     public ResponseEntity<Map<String, String>> loginMember(@RequestBody Member member, HttpServletRequest req) throws NoSuchAlgorithmException {
         Map<String, String> resultMap = new HashMap<>();
 
-        if (memberService.login(member)) {
+        Member tempMember = memberService.login(member);
+        if (tempMember!=null) {
             resultMap.put("conclusion", SUCCESS);
-            resultMap.put("id", member.getId());
-            resultMap.put("nick", member.getNick());
+            resultMap.put("id", tempMember.getId());
+            resultMap.put("nick", tempMember.getNick());
+            resultMap.put("member_no", String.valueOf(tempMember.getMember_no()));
             resultMap.put("token", jwtService.create("member", member, "id"));
             logger.info("로그인 성공");
         } else {
@@ -97,14 +100,21 @@ public class MemberController {
 
     // 비밀번호 찾기
     @GetMapping("/find-pw")
-    public ResponseEntity<String> findId(@RequestParam("id") String id,
+    public ResponseEntity<Map<String, String>> findId(@RequestParam("id") String id,
                                          @RequestParam("email") String email, HttpServletRequest req) {
         logger.info("비밀번호 찾기");
-        String result = FAIL;
-        if (memberService.findPw(id, email))
-            result = SUCCESS;
+        Map<String, String> resultMap = new HashMap<>();
+        if (memberService.findPw(id, email)) {
+            Member tempMember = memberRepository.findById(id);
+            resultMap.put("id", tempMember.getId());
+            resultMap.put("nick", tempMember.getNick());
+            resultMap.put("member_no", String.valueOf(tempMember.getMember_no()));
+            resultMap.put("conclusion", SUCCESS);
+        }else {
+            resultMap.put("conclusion", FAIL);
+        }
 
-        return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(resultMap, HttpStatus.ACCEPTED);
     }
 
     // token 검증

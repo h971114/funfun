@@ -32,6 +32,10 @@ public class MemberService {
         return memberRepository.find(member_no);
     }
 
+    public Member getMemberById(String id) {
+        return memberRepository.findById(id);
+    }
+
     public void delete(int member_no) {
         memberRepository.delete(member_no);
     }
@@ -46,9 +50,13 @@ public class MemberService {
         memberRepository.save(tempMember);
     }
 
-    public boolean login(Member member) throws NoSuchAlgorithmException {
+    public Member login(Member member) throws NoSuchAlgorithmException {
         Member tempMember = memberRepository.findById(member.getId().toLowerCase());
-        return tempMember.getPw().equals(sha256(member.getPw()));
+
+        if(tempMember.getPw().equals(sha256(member.getPw()))){
+            return tempMember;
+        }
+        return null;
     }
 
     public String findId(String email) {
