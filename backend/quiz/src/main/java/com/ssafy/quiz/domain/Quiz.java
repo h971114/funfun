@@ -35,14 +35,14 @@ public class Quiz {
     private String exam4;
     @Column(name = "quiz_exam5")
     private String exam5;
-    @Column(name = "quiz_o")
-    private String quiz_o;
-    @Column(name = "quiz_x")
-    private String quiz_x;
+    @Column(name = "quiz_ox")
+    private String ox;
     @Column(name = "quiz_short_word")
     private String short_word;
     @Column(name = "quiz_answer")
     private String answer;
     @Column(name = "quiz_order")
     private int order;
+    @Column(name = "quiz_img")
+    private String img;
 }
