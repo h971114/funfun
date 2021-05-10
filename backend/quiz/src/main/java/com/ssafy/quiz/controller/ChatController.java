@@ -1,4 +1,8 @@
 package com.ssafy.quiz.controller;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +46,10 @@ public class ChatController {
     			chatMessage.setId(ID);
     			quiz.setUsernumber(quiz.getUsernumber()+1);
     			quiz.getIdnicknamemap().put(ID, chatMessage.getSender());
+    			Map<String, String> tmp = new HashMap<String, String>();
+    			tmp.put("id", ID);
+    			tmp.put("title", chatMessage.getSender());
+    			quiz.getTeammember().get("team0").add(tmp);
     			quizinfomap.getQuizmap().put(chatMessage.getRoomnumber(), quiz);
     		}
     		else { // 방에 사람이 없는 경우
@@ -50,11 +58,47 @@ public class ChatController {
     			chatMessage.setId(ID);
     			quiz.setUsernumber(1);
     			quiz.getIdnicknamemap().put(ID, chatMessage.getSender());
+    			quiz.getTeammember().put("team0", new LinkedList<Map<String,String>>());
+    			quiz.getTeammember().put("team1", new LinkedList<Map<String,String>>());
+    			quiz.getTeammember().put("team2", new LinkedList<Map<String, String>>());
+    			quiz.getTeammember().put("team3", new LinkedList<Map<String, String>>());
+    			quiz.getTeammember().put("team4", new LinkedList<Map<String, String>>());
+    			quiz.getTeammember().put("team5", new LinkedList<Map<String, String>>());
+    			Map<String, String> tmp = new HashMap<String, String>();
+    			tmp.put("id", ID);
+    			tmp.put("title", chatMessage.getSender());
+    			quiz.getTeammember().get("team0").add(tmp);
     			quizinfomap.getQuizmap().put(chatMessage.getRoomnumber(), quiz);
     		}
     	}
     	if(MessageType.ADMIN.equals(chatMessage.getType())) { // 팀 변경.
+    		System.out.println("in");
+    		String fromteam = chatMessage.getFromteam();
+    		String toteam = chatMessage.getToteam();
+    		String id = chatMessage.getId();
+    		System.out.println(fromteam+" "+toteam+" "+id);
+    		QuizInfo quiz = quizinfomap.getQuizmap().get(chatMessage.getRoomnumber());
+    		Map<String, LinkedList<Map<String, String>>> teammap =  quiz.getTeammember();
+    		Map<String, String> removemap = null;
+    		for(Map<String, String> tempmap :teammap.get("team"+fromteam)) {
+    			System.out.println(tempmap);
+    			System.out.println(id+" "+tempmap.get("id"));
+    			if(id.equals(tempmap.get("id"))) {
+    				removemap = tempmap;
+    				System.out.println("in");
+    				System.out.println(removemap);
+    				break;
+    			}
+    		}
+    		System.out.println(removemap);
+    		teammap.get("team"+fromteam).remove(removemap);
+    		teammap.get("team"+toteam).add(removemap);
+    	}
+    	if(MessageType.START.equals(chatMessage.getType())) {
     		
+    	}
+		if(MessageType.NEXT.equals(chatMessage.getType())) {
+		    		
     	}
     	System.out.println(chatMessage);
     	System.out.println(quizinfomap.getQuizmap().toString());

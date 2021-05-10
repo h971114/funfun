@@ -43,12 +43,12 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         System.out.println(event.getMessage());
         String roomnumber = ((String) headerAccessor.getSessionAttributes().get("roomnumber"));
-        QuizInfo quiz = quizinfomap.getQuizmap().get(roomnumber);
-        quiz.setUsernumber(quiz.getUsernumber()-1);
-        if(quiz.getUsernumber() == 0) {
-        	quizinfomap.getQuizmap().remove(roomnumber);
-        }
-        System.out.println(quizinfomap.toString());
+//        QuizInfo quiz = quizinfomap.getQuizmap().get(roomnumber);
+//        quiz.setUsernumber(quiz.getUsernumber()-1);
+//        if(quiz.getUsernumber() == 0) {
+//        	quizinfomap.getQuizmap().remove(roomnumber);
+//        }
+//        System.out.println(quizinfomap.toString());
         String username = (String) headerAccessor.getSessionAttributes().get("username");
             logger.info("User Disconnected : " + username);
 

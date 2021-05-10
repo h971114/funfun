@@ -2,6 +2,7 @@ package com.ssafy.quiz.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,5 +37,5 @@ public class QuizInfo {
 	private Map<String, Integer> userscore = new HashMap<String, Integer>();
 	private Map<String, Integer> teamscore = new HashMap<String, Integer>();
 	private Map<String, Integer> personalscore = new HashMap<String, Integer>();
-	private Map<String, List<String>> teammember = new HashMap<String, List<String>>(); 
+	private Map<String, LinkedList<Map<String, String>>> teammember = new HashMap<String, LinkedList<Map<String, String>>>(); 
 }

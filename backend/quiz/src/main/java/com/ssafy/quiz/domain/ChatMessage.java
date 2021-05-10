@@ -26,5 +26,8 @@ public class ChatMessage {
     private String team;
     private String content;
     private String roomnumber;
+    private String fromteam;
+    private String toteam;
     private String id;
+    private String title;
 }

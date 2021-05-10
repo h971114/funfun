@@ -4,5 +4,8 @@ public enum MessageType {
 	 	CHAT,
 	    JOIN,
 	    ADMIN,
-	    LEAVE
+	    LEAVE,
+	    TEAMCHAT,
+	    START,
+	    NEXT
 }
