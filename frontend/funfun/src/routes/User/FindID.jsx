@@ -5,22 +5,50 @@ import axios from "axios";
 
 class FindID extends Component {
 
+    constructor() {
+        super();
+        this.state = {
+            checkEmail: false,
+            id: "",
+            email: "",
+            resultMessage: "",
+        }
+    }
+
+    emailChange = (e) => {
+        this.setState({
+            email: e.target.value,
+        });
+    }
+
     findID = () => {
         axios.get(`http://127.0.0.1:8080/myapp/member/find-id`, {
             params: {
-                email: "doggydeok2@gmail.com",
+                email: this.state.email,
             },
             }).then(res => {
-                // console.log(res);
+                console.log(res);
                 if (res.data) {
-                    console.log(res.data)
+                    // console.log(res.data)
+                    this.setState({
+                        checkEmail: true,
+                        id: res.data,
+                        resultMessage: `이메일 ${this.state.email}로 가입된 아이디는 다음과 같습니다.`
+                    });
                 } else {
-                    alert("정보와 일치하는 아이디가 존재하지 않습니다.")
+                    this.setState({
+                        checkEmail: true,
+                        resultMessage: `이메일 ${this.state.email}로 가입된 아이디가 존재하지 않습니다.`
+                    })
                 }
             }).catch(err => {
                 console.log(err);
-                alert("알 수 없는 오류가 발생했습니다.");
-                window.location.replace("/");
+                this.setState({
+                    checkEmail: true,
+                    resultMessage: `이메일 ${this.state.email}로 가입된 아이디가 존재하지 않습니다.`
+                })
+                // alert("알 수 없는 오류가 발생했습니다.");
+                // window.location.replace("/");
             })
     }
 
@@ -28,7 +56,65 @@ class FindID extends Component {
         return (
             <div className="userContent">
                 <div className="wid800 loginWrap">
-                    <button onClick={this.findID}>아이디 찾기</button>
+                    <div className="title">
+                            <img className="loginImg" src="/img/login.png" alt="로그인 이미지"/>
+                            <br />
+                            <span>아이디 찾기</span>
+                            <img className="loginBar" src="/img/loginbar.png" alt="로그인바 이미지"/>
+                    </div>
+                    {this.state.checkEmail ?
+                            <div className="input">
+                                <p>{this.state.resultMessage}</p>
+                                <br/>
+                                <p>{this.state.id}</p>
+                            <ul>
+                                <li>
+                                    <Link to="/login">
+                                        로그인
+                                        </Link>
+                                </li>
+                                <li>|</li>
+                                <li>
+                                    <Link to="/join">
+                                        회원가입
+                                        </Link>
+                                </li>
+                                <li>|</li>
+                                <li>
+                                    <Link to="/findpw">
+                                        비밀번호 찾기
+                                        </Link>
+                                </li>
+                            </ul>
+                        </div>
+                    :
+                        <div className="input">
+                            <label htmlFor="userEmail">USER E-MAIL</label><br />
+                            <input type="text" id="userEmail" placeholder="이메일을 입력하세요." onChange={this.emailChange} />
+
+                            <input type="button" onClick={this.findID} value="아이디 찾기" />
+
+                            <ul>
+                                <li>
+                                    <Link to="/login">
+                                        로그인
+                                        </Link>
+                                </li>
+                                <li>|</li>
+                                <li>
+                                    <Link to="/join">
+                                        회원가입
+                                        </Link>
+                                </li>
+                                <li>|</li>
+                                <li>
+                                    <Link to="/findpw">
+                                        비밀번호 찾기
+                                        </Link>
+                                </li>
+                            </ul>
+                        </div>
+                    }
                 </div>
             </div>
         )
