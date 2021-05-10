@@ -14,6 +14,7 @@ import Join from "./routes/User/Join";
 import InputCode from "./routes/Quiz/inputCode";
 import SetNick from "./routes/Quiz/SetNick";
 import PlayQuiz from "./routes/Quiz/PlayQuiz";
+import AdminPlayQuiz from "./routes/Quiz/AdminPlayQuiz";
 
 import "./routes/css/reset.css";
 import './routes/css/home.css';
@@ -35,6 +36,7 @@ function App() {
           <Route path="/game/goGame" exact={true} component={InputCode}/>
           <Route path="/game/setNick" exact={true} component={SetNick}/>
           <Route path="/game/PlayQuiz" exact={true} component={PlayQuiz}/>
+          <Route path="/admin/game/PlayQuiz" exact={true} component={AdminPlayQuiz}/>
         </Switch>
       </div>
     </Router>

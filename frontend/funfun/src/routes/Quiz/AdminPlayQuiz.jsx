@@ -2,89 +2,54 @@ import React, { useState, useEffect, Component } from 'react';
 import { render } from 'react-dom';
 import { Link } from "react-router-dom"
 import ProgressBar from '../../components/common/ProgressBar';
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
-var connected = false;
-var socket = '';
-var stompClient = '';
+import Modal from '../../components/common/Modal';
+import Board, { moveCard } from "@lourenci/react-kanban";
+import "@lourenci/react-kanban/dist/styles.css";
 
-
-const send = (props, msg) => {
-    let send_message = msg;
-    if (stompClient && stompClient.connected) {
-        const msg = { type: 'CHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname };
-        stompClient.send("/app/chat", JSON.stringify(msg), {});
-    }
-    console.log(send_message);
-}
-const connect = (props) => {
-    socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
-    stompClient = Stomp.over(socket);
-    stompClient.connect(
-        {},
-        frame => {
-            connected = true;
-            stompClient.subscribe("/topic/" + props.location.state.code, onMessageReceived
-                //   tick => {
-                //   }
-            );
-            const msg = { type: 'JOIN', content: "", roomnumber: props.location.state.code, sender: props.location.state.nickname };
-            stompClient.send("/app/chat", JSON.stringify(msg), {});
-        },
-        error => {
-            console.log(error);
-            connected = false;
-        }
-    );
-}
-const disconnect = (props) => {
-    if (stompClient) {
-        const msg = { type: 'LEAVE', content: "", roomnumber: props.location.state.code };
-        stompClient.send("/app/chat", JSON.stringify(msg), {});
-        stompClient.disconnect();
-    }
-    connected = false;
-}
-const tickleConnection = () => {
-    connected ? disconnect() : connect();
-}
-function onclick() {
-    console.log("???");
-}
-function onMessageReceived(payload) {
-    var message = JSON.parse(payload.body);
-    console.log(message);
-    var messageArea = document.querySelector('#messageArea');
-    var messageElement = document.createElement('li');
-
-    if (message.type === 'JOIN') {
-        messageElement.classList.add('event-message');
-        message.content = message.sender + ' joined!';
-    } else if (message.type === 'LEAVE') {
-        messageElement.classList.add('event-message');
-        message.content = message.sender + ' left!';
-    } else {
-        messageElement.classList.add('chat-message');
-
-        var usernameElement = document.createElement('span');
-        var usernameText = document.createTextNode(message.sender);
-        usernameElement.appendChild(usernameText);
-        messageElement.appendChild(usernameElement);
-    }
-
-    var textElement = document.createElement('p');
-    var messageText = document.createTextNode(message.content);
-    textElement.appendChild(messageText);
-
-    messageElement.appendChild(textElement);
-
-    messageArea.appendChild(messageElement);
-    messageArea.scrollTop = messageArea.scrollHeight;
-}
-function PlayQuiz(props) {
+function AdminPlayQuiz(props) {
     const [seconds, setSeconds] = useState(60);
     const [progress, setProgress] = useState(seconds * 1000);
     const [msg, setMsg] = useState('');
+    // useState를 사용하여 open상태를 변경한다. (open일때 true로 만들어 열리는 방식)
+    const [modalOpen, setModalOpen] = useState(false);
+    const initialBoard = {
+        columns: [
+            {
+                id: 1,
+                title: "프론트엔드팀",
+                cards: [
+                    {
+                        id: 1,
+                        title: "정현모"
+                    },
+                    {
+                        id: 2,
+                        title: "이홍덕"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "백엔드팀",
+                cards: [
+                    {
+                        id: 3,
+                        title: "현수진"
+                    },
+                    {
+                        id: 4,
+                        title: "천영재"
+                    },
+                    {
+                        id: 5,
+                        title: "한진영"
+                    }
+                ]
+            }
+        ]
+    };
+    const [board, setBoard] = useState(initialBoard);
+
     useEffect(() => {
         const countdown = setInterval(() => {
             if (parseInt(seconds) > 0) {
@@ -97,15 +62,31 @@ function PlayQuiz(props) {
         return () => clearInterval(countdown);
 
     }, [seconds]);
-    useEffect(() => {
-        connect(props);
-        console.log("연결");
-        console.log(stompClient);
-        return () => {
-            disconnect(props);
-            console.log("완료");
-        }
-    }, [props.location.state.nickname])
+
+    function onCardMove(card, source, destination) {
+        const updatedBoard = moveCard(board, source, destination);
+        setBoard(updatedBoard);
+
+        console.log("----------");
+        console.log(card);
+        console.log(source);
+        console.log(destination);
+        console.log(updatedBoard);
+    }
+
+    const startGame = () => {
+        document.getElementsByClassName('gameStart')[0].setAttribute('style', 'display:none');
+        //게임 시작 부 소스 ★
+    }
+
+
+    const openModal = () => {
+        setModalOpen(true);
+        console.log('asdf');
+    }
+    const closeModal = () => {
+        setModalOpen(false);
+    }
 
     return (
         <div className="quiz_contents">
@@ -133,16 +114,17 @@ function PlayQuiz(props) {
                 </div>
             </div>
             <div className="communication">
-                <h3>팀 원 목 록 😎</h3>
-                <div className="members">
+                <h3>전 체 목 록 😎</h3>
+                <div className="members_admin">
                     테스트_현수진<br />
                     테스트_한진영<br />
                     테스트_천영재<br />
                     테스트_정현모<br />
                     테스트_이홍덕
                 </div>
+                <input className="tcBtn" type="button" value="팀 재분배" onClick={openModal} />
                 <h3>팀 원 채 팅 🤩</h3>
-                <div className="chat">
+                <div className="chat_admin">
                     테스트_이홍덕 : 테스트 진행중입니다<br />
                         테스트_정현모 : 테스트 진행중입니다<br />
                         테스트_천영재 : 테스트 진행중입니다<br />
@@ -154,14 +136,35 @@ function PlayQuiz(props) {
                 </div>
                 <div className="send_wrap">
                     <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
-                    <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
+                    <input type="button" className="chatsendbtn"></input>
+                </div>
+                <div className="admin_btn">
+                    <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
+                    <input type="button" className="nextGame" value="결 과"></input>
                 </div>
             </div>
             <div className="allChat">
 
             </div>
+            <Modal open={modalOpen} close={closeModal} header="팀 분배">
+                <div className="allMembers">
+
+                </div>
+                <div className="ctBtnsWrap">
+
+                </div>
+                <div className="teams">
+
+                </div>
+                <Board
+                    onCardDragEnd={onCardMove}
+                    disableColumnDrag
+                >
+                    {board}
+                </Board>
+            </Modal>
         </div>
     );
 }
 
-export default PlayQuiz;
+export default AdminPlayQuiz;
