@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Component } from 'react';
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 class Join extends Component {
 
@@ -88,9 +89,9 @@ class Join extends Component {
 
         // 맞을 때
 
-        // this.setState({
-        //     checkEM:true
-        // })
+        this.setState({
+            checkNN: true
+        })
         // document.getElementById("avalidNN").setAttribute('style', 'color:#f91c37');
         // document.getElementById("avalidNN").innerText = "사용할 수 없는 닉네임입니다.";
 
@@ -122,6 +123,20 @@ class Join extends Component {
             this.state.checkCPW === true && this.state.checkNN === true &&
             this.state.checkEM === true) {
             // 등록 진행
+            axios.post(`http://127.0.0.1:8080/myapp/member/join`, {
+                id: document.getElementById("userID").value,
+                pw: document.getElementById("userPW").value,
+                nick: document.getElementById("userNN").value,
+                email: document.getElementById("userEM").value,
+            }).then(res => {
+                // console.log(res)
+                alert("회원가입이 완료되었습니다.\n 로그인 페이지로 이동합니다.");
+                window.location.replace("/login");
+            }).catch(err => {
+                console.log(err);
+                alert("알 수 없는 오류가 발생했습니다.");
+                window.location.replace("/");
+            })
         }
         else {
             alert("모든 정보를 정확히 입력해주시기 바랍니다.");
