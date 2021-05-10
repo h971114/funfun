@@ -172,7 +172,7 @@ class Join extends Component {
                         <div className="availd" id="avalidNN"></div>
 
                         <label htmlFor="userEM">USER E-MAIL</label><br />
-                        <input type="text" id="userEM" onBlur={this.checkEM} placeholder="이메일를 입력하세요." />
+                        <input type="text" id="userEM" onBlur={this.checkEM} placeholder="이메일을 입력하세요." />
                         <div className="availd" id="avalidEM"></div>
 
                         <input type="button" onClick={this.join} value="회 원 가 입" />

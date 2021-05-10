@@ -11,25 +11,11 @@ class FindPW extends Component {
             checkIDnEmail: false,
             checkPW: false,
             checkCPW: false,
+            no: "",
             id: "",
             nick: "",
             email: "",
         }
-    }
-
-    getUserByID = (member_no) => {
-        axios.get(`http://127.0.0.1:8080/myapp/member/${member_no}`, {
-            params: {
-                no: member_no
-            }
-        }).then(res => {
-            console.log(res)
-            this.setState({
-                id: res.data.id,
-                nick: res.data.nick,
-                email: res.data.email,
-            })
-        })
     }
 
     findPW = () => {
@@ -40,13 +26,16 @@ class FindPW extends Component {
             }
             }).then(res => {
                 console.log(res);
-                if (res.data === "SUCCESS") {
+                if (res.data.conclusion === "SUCCESS") {
                     // window.location.replace("/");
                     alert('성공')
                     this.setState({
                         checkIDnEmail: true,
+                        id: res.data.id,
+                        nick: res.data.nick,
+                        no: res.data.member_no * 1,
                     })
-                    this.getUserByID(7)
+                    console.log(this.state)
                 } else {
                     alert("정보와 일치하는 아이디가 존재하지 않습니다.")
                 }
@@ -59,11 +48,11 @@ class FindPW extends Component {
 
     changePW = () => {
         axios.put(`http://127.0.0.1:8080/myapp/member/`, {
-            no: 7,
+            member_no: this.state.no,
             id: this.state.id,
             pw: "q1w2e3r4!",
-            email: this.state.email,
             nick: this.state.nick,
+            email: "doggydeok2@gmail.com",
         }).then(res => {
             console.log(res);
         }).catch(err => {
