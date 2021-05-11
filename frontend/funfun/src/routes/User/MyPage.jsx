@@ -20,14 +20,12 @@ class MyPage extends Component {
     }
 
     componentDidMount () {
-        this.getUserByID(7)
+        this.getUserByID(sessionStorage.getItem('id'))
     }
 
-    getUserByID = (member_no) => {
-        axios.get(`http://127.0.0.1:8080/myapp/member/${member_no}`, {
-            params: {
-                no: member_no
-            }
+    getUserByID = (member_id) => {
+        axios.get(`http://127.0.0.1:8080/myapp/member/byid/${member_id}`, {
+            id: member_id
         }).then(res => {
             console.log(res)
             this.setState({
@@ -171,7 +169,7 @@ class MyPage extends Component {
                     <div className="sideMenu">
                         <img className="profile" src="./img/profileSample.png" />
                         <div className="idWrap">
-                            {this.state.id} / {this.state.nick}
+                            {sessionStorage.getItem('id')} / {sessionStorage.getItem('nick')}
                         </div>
                         <div className="sideMenuWrap">
                             <Link to="/myquiz" className="sideMenuLink">
@@ -211,7 +209,7 @@ class MyPage extends Component {
                             <div className="availd" id="avalidCPW"></div>
 
                             <label htmlFor="userNN">NICKNAME</label>
-                            <input type="text" id="userNN" onBlur={this.checkNN} placeholder="별명을 입력하세요." defaultValue={this.state.nick}/>
+                            <input type="text" id="userNN" onBlur={this.checkNN} placeholder="별명을 입력하세요." defaultValue={sessionStorage.getItem('nick')}/>
                             <div className="availd" id="avalidNN"></div>
 
                             <label htmlFor="userEM">USER E-MAIL</label>
