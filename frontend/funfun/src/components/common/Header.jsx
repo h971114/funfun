@@ -1,35 +1,47 @@
 import React, { useState, useEffect, Component } from 'react';
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 class Header extends Component {
 
     logout = () => {
-        window.sessionStorage.clear();
-        window.location.replace("/");
+        axios.post(`http://127.0.0.1:8080/myapp/member/logout`, {
+            }).then(res => {
+                console.log(res);
+                window.sessionStorage.clear();
+                alert("로그아웃 되었습니다.");
+                window.location.replace("/");
+            }).catch(err => {
+                console.log(err);
+                alert("알 수 없는 오류가 발생했습니다.");
+                window.location.replace("/");
+            })
+
     }
 
     render() {
         return (
             <div className="header">
                 <Link to="/" className="btn logo">
-
                 </Link>
                 <Link to="/game/goGame" className="btn goGame">
                     <span>Go Game</span>
                 </Link>
                 {sessionStorage.getItem('id') ?
                     <div className="loginWraps">
-                        <a onClick={this.logout} className="btn login" href="">로그아웃</a>
+                        <p className="btn login" onClick={this.logout} style={{ cursor: "pointer" }}>
+                            로그아웃
+                    </p>
                         <Link to="/mypage" className="btn login">
                             마이 페이지
-                        </Link>
+                    </Link>
                     </div>
                     :
                     <Link to="/login" className="btn login">
                         로그인
                     </Link>
                 }
-            </div>
+                </div>
         );
     }
 }
