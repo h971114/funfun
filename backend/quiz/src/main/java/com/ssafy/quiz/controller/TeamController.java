@@ -1,7 +1,10 @@
 package com.ssafy.quiz.controller;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -44,5 +47,50 @@ public class TeamController {
 			 System.out.println(room_no);
 			 System.out.println(quizinfomap.toString());
 			return new ResponseEntity<Quiz>(quizinfomap.getQuizmap().get(room_no).getQuizlist().get(index), HttpStatus.ACCEPTED);
+		}
+	 @GetMapping("/personal")
+		public ResponseEntity<Integer> getPscore(@RequestParam("no") String room_no, @RequestParam("ID") String ID, HttpServletRequest req){
+			 System.out.println(room_no);
+			 System.out.println(quizinfomap.toString());
+			 //List<Entry<String, Integer>> list = new ArrayList<>(quizinfomap.getQuizmap().get(room_no).getPersonalscore().entrySet());
+			return new ResponseEntity<Integer>(quizinfomap.getQuizmap().get(room_no).getPersonalscore().get(ID), HttpStatus.ACCEPTED);
+		}
+	 @GetMapping("/team")
+	 public ResponseEntity<Integer> getTscore(@RequestParam("no") String room_no, @RequestParam("team") String team , HttpServletRequest req){
+		 System.out.println(room_no);
+		 System.out.println(quizinfomap.toString());
+		return new ResponseEntity<Integer>(quizinfomap.getQuizmap().get(room_no).getTeamscore().get(team), HttpStatus.ACCEPTED);
+	}
+	 @GetMapping("/personal5")
+		public ResponseEntity<List> getPscore5(@RequestParam("no") String room_no, HttpServletRequest req){
+			 System.out.println(room_no);
+			 System.out.println(quizinfomap.toString());
+			 List<Entry<String, Integer>> list = new ArrayList<>(quizinfomap.getQuizmap().get(room_no).getPersonalscore().entrySet());
+			 list.sort(Entry.comparingByValue(new Comparator<Integer>() {
+
+					@Override
+					public int compare(Integer o1, Integer o2) {
+						// TODO Auto-generated method stub
+						return o2-o1;
+					}
+				}));
+			 List<Entry<String,Integer>> resultlist = list.subList(0, 4);
+			return new ResponseEntity<List>(resultlist, HttpStatus.ACCEPTED);
+		}
+	 @GetMapping("/team5")
+		public ResponseEntity<List> getTscore5(@RequestParam("no") String room_no, HttpServletRequest req){
+			 System.out.println(room_no);
+			 System.out.println(quizinfomap.toString());
+			 List<Entry<String, Integer>> list = new ArrayList<>(quizinfomap.getQuizmap().get(room_no).getTeamscore().entrySet());
+			 list.sort(Entry.comparingByValue(new Comparator<Integer>() {
+
+				@Override
+				public int compare(Integer o1, Integer o2) {
+					// TODO Auto-generated method stub
+					return o2-o1;
+				}
+			}));
+			 List<Entry<String,Integer>> resultlist = list.subList(0, 4);
+			return new ResponseEntity<List>(resultlist, HttpStatus.ACCEPTED);
 		}
 }
