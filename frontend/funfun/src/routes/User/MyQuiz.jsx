@@ -19,7 +19,7 @@ class MyQuiz extends Component {
     }
 
     // getUserByID = (member_no) => {
-    //     axios.get(`http://127.0.0.1:8080/myapp/member/${member_no}`, {
+    //     axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/member/${member_no}`, {
     //         params: {
     //             no: member_no
     //         }

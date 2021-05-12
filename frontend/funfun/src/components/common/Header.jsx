@@ -5,7 +5,7 @@ import axios from "axios";
 class Header extends Component {
 
     logout = () => {
-        axios.post(`http://127.0.0.1:8080/myapp/member/logout`, {
+        axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/member/logout`, {
             }).then(res => {
                 console.log(res);
                 window.sessionStorage.clear();

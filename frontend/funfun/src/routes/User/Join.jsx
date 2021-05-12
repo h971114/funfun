@@ -123,7 +123,7 @@ class Join extends Component {
             this.state.checkCPW === true && this.state.checkNN === true &&
             this.state.checkEM === true) {
             // 등록 진행
-            axios.post(`http://127.0.0.1:8080/myapp/member/join`, {
+            axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/member/join`, {
                 id: document.getElementById("userID").value,
                 pw: document.getElementById("userPW").value,
                 nick: document.getElementById("userNN").value,
