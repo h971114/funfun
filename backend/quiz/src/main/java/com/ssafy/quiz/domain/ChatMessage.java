@@ -30,4 +30,5 @@ public class ChatMessage {
     private String toteam;
     private String id;
     private String title;
+    private String alive;
 }

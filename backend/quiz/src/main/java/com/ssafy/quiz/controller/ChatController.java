@@ -69,6 +69,8 @@ public class ChatController {
     			quiz.getTeammember().put("team4", new LinkedList<Map<String, String>>());
     			quiz.getTeammember().put("team5", new LinkedList<Map<String, String>>());
     			quiz.setQuizlist(quizService.findByRoom(chatMessage.getRoomnumber()));
+    			quiz.setIndex(0);
+    			quiz.setType(quiz.getQuizlist().get(0).getType());
     			Map<String, String> tmp = new HashMap<String, String>();
     			tmp.put("id", ID);
     			tmp.put("title", chatMessage.getSender());
@@ -99,11 +101,29 @@ public class ChatController {
     		teammap.get("team"+fromteam).remove(removemap);
     		teammap.get("team"+toteam).add(removemap);
     	}
-    	if(MessageType.START.equals(chatMessage.getType())) {
-    		
+    	if(MessageType.NEXT.equals(chatMessage.getType())) {
+    		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setIndex(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex()+1);
     	}
-		if(MessageType.NEXT.equals(chatMessage.getType())) {
-		    		
+    	if(MessageType.CHAT.equals(chatMessage.getType())) {
+    		//정답 처리
+    		QuizInfo quiz = quizinfomap.getQuizmap().get(chatMessage.getRoomnumber());
+    		switch(quiz.getType()) {
+    		case 0:
+    			//생존형은 어케해야될까
+    			break;
+    		case 1:
+    			//객관식 개인전
+    			break;
+    		case 2:
+    			// 객관식 팀전
+    			break;
+    		case 3:
+    			// 주관식 개인전
+    			break;
+    		case 4:
+    			// 주관식 팀전
+    			break;
+    		}
     	}
     	System.out.println(chatMessage);
     	System.out.println(quizinfomap.getQuizmap().toString());

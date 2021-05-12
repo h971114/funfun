@@ -37,5 +37,7 @@ public class QuizInfo {
 	private Map<String, Integer> userscore = new HashMap<String, Integer>();
 	private Map<String, Integer> teamscore = new HashMap<String, Integer>();
 	private Map<String, Integer> personalscore = new HashMap<String, Integer>();
-	private Map<String, LinkedList<Map<String, String>>> teammember = new HashMap<String, LinkedList<Map<String, String>>>(); 
+	private Map<String, LinkedList<Map<String, String>>> teammember = new HashMap<String, LinkedList<Map<String, String>>>();
+	private int index = 0;
+	private int type = 0;
 }
