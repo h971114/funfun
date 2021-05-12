@@ -15,6 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
             "/member/**",
             "/room/**",
             "/quiz/**",
+            "/result/**",
+            "/gallery/**",
             "/team/**"
     };
 

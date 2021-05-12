@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.quiz.domain.Member;
+import com.ssafy.quiz.repository.MemberRepository;
 
 @RestController
 @RequestMapping("/member")
@@ -29,6 +30,7 @@ public class MemberController {
 
     @Autowired MemberService memberService;
     @Autowired JwtService jwtService;
+    @Autowired MemberRepository memberRepository;
 
     // 회원가입
     @PostMapping("/join")
@@ -43,6 +45,11 @@ public class MemberController {
     public ResponseEntity<Member> getMember(@PathVariable(value = "no") int member_no, HttpServletRequest req){
         logger.info("회원 조회");
         return new ResponseEntity<>(memberService.getMember(member_no), HttpStatus.ACCEPTED);
+    }
+    @GetMapping("/byid/{id}")
+    public ResponseEntity<Member> getMemberbyid(@PathVariable(value = "id") String member_id, HttpServletRequest req){
+        logger.info("회원 조회_id값 기반");
+        return new ResponseEntity<>(memberService.getMemberById(member_id), HttpStatus.ACCEPTED);
     }
 
     //회원탈퇴
@@ -67,10 +74,12 @@ public class MemberController {
     public ResponseEntity<Map<String, String>> loginMember(@RequestBody Member member, HttpServletRequest req) throws NoSuchAlgorithmException {
         Map<String, String> resultMap = new HashMap<>();
 
-        if (memberService.login(member)) {
+        Member tempMember = memberService.login(member);
+        if (tempMember!=null) {
+        	resultMap.put("id", tempMember.getId());
+            resultMap.put("nick", tempMember.getNick());
+            resultMap.put("member_no", String.valueOf(tempMember.getMember_no()));
             resultMap.put("conclusion", SUCCESS);
-            resultMap.put("id", member.getId());
-            resultMap.put("nick", member.getNick());
             resultMap.put("token", jwtService.create("member", member, "id"));
             logger.info("로그인 성공");
         } else {
@@ -98,14 +107,20 @@ public class MemberController {
 
     // 비밀번호 찾기
     @GetMapping("/find-pw")
-    public ResponseEntity<String> findId(@RequestParam("id") String id,
+    public ResponseEntity<Map<String, String>> findId(@RequestParam("id") String id,
                                          @RequestParam("email") String email, HttpServletRequest req) {
         logger.info("비밀번호 찾기");
-        String result = FAIL;
-        if (memberService.findPw(id, email))
-            result = SUCCESS;
-
-        return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
+        Map<String, String> resultMap = new HashMap<>();
+        if (memberService.findPw(id, email)) {
+            Member tempMember = memberRepository.findById(id);
+            resultMap.put("id", tempMember.getId());
+            resultMap.put("nick", tempMember.getNick());
+            resultMap.put("member_no", String.valueOf(tempMember.getMember_no()));
+            resultMap.put("conclusion", SUCCESS);
+        }else {
+            resultMap.put("conclusion", FAIL);
+        }
+        return new ResponseEntity<>(resultMap, HttpStatus.ACCEPTED);
     }
 
     // token 검증

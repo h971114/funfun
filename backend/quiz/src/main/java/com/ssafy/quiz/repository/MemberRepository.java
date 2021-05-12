@@ -7,12 +7,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-
+import javax.persistence.NoResultException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @Repository
 @RequiredArgsConstructor
 @Transactional
 public class MemberRepository{
-
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final EntityManager em;
 
     public void save(Member member){
@@ -28,15 +30,23 @@ public class MemberRepository{
         return em.find(Member.class, member_no);
     }
 
-    public Member findById(String member_id){
-        return em.createQuery("select m from Member m where m.id = :member_id", Member.class)
-                .setParameter("member_id", member_id)
-                .getSingleResult();
+    public Member findById(String member_id) {
+        try {
+            return em.createQuery("select m from Member m where m.id = :member_id", Member.class)
+                    .setParameter("member_id", member_id)
+                    .getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
     }
 
-    public Member findByEmail(String member_email){
-        return em.createQuery("select m from Member m where m.email = :member_email", Member.class)
-                .setParameter("member_email", member_email)
-                .getSingleResult();
+    public Member findByEmail(String member_email) {
+        try {
+            return em.createQuery("select m from Member m where m.email = :member_email", Member.class)
+                    .setParameter("member_email", member_email)
+                    .getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
     }
 }
