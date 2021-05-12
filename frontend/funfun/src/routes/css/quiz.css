@@ -1,0 +1,338 @@
+.quiz_contents{
+    height: 98%;
+    width: 100%;
+    position: absolute;
+}
+
+.input_code{
+    width: 98%;
+    text-align: center;
+
+    margin-top: 250px;
+}
+
+.input_code h2{
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.input_code .code{
+    width: 450px;
+    height: 40px;
+
+    padding-left: 18px;
+
+    border-left: 1px solid #3a3a3a;
+    border-top: 1px solid #3a3a3a;
+    border-bottom: 1px solid #3a3a3a;
+    border-radius: 20px 0 0 20px;
+}
+.input_code .codebtn{
+    width: 100px;
+    height: 42px;
+
+    border: 1px solid #3a3a3a;
+    border-radius: 0 20px 20px 0;
+
+    cursor: pointer;
+}
+
+.quiz_contents{
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.quiz_contents .quiz_parts{
+    position: absolute;
+    width: 80%;
+    height: 100%;
+    z-index: 1001;
+    
+    background-color: lightgray;
+}
+.quiz_contents .quiz_parts .quiz_wrap{
+    width: 78%;
+    height: 78%;
+    margin-top: 8%;
+    margin-left: 10%;
+
+    border: 1px solid black;
+    border-radius: 18px;
+
+    background-color: white;
+
+    position: relative;
+}
+.quiz_contents .quiz_parts .quiz_wrap .quiz_tit{
+    font-size: 25px;
+    font-weight: 800;
+
+    position: absolute;
+    top: 100px;
+    left: 50px;
+
+    width: 50%;
+}
+.quiz_contents .quiz_parts .quiz_wrap .quiz_etc{
+    position: absolute;
+    top: 100px;
+    left: 55%;
+
+    width: 40%;
+    height: 250px;
+}
+.quiz_contents .quiz_parts .quiz_wrap .quiz_etc .quiz_video{
+    width: 100%;
+    height: 100%;
+}
+.ytp-title{
+    display: none !important;
+}
+.quiz_contents .quiz_parts .quiz_wrap .quiz_progress{
+    position: absolute;
+    top: 310px;
+
+    left: 50px;
+}
+
+.quiz_contents .quiz_parts .quiz_wrap .quiz_progress div{
+    display: inline-block;
+}
+.quiz_contents .quiz_parts .quiz_wrap .quiz_progress .CustomProgressBar {
+    width: 400px;
+    height: 50px;
+
+    float: left;
+}
+.quiz_contents .quiz_parts .quiz_wrap .quiz_progress .left_time {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 50px;
+    height: 50px;
+
+    margin-left: 20px;
+    float: right;
+}
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap{
+    text-align: center;
+    position: absolute;
+    top: 400px;
+
+    width: 90%;
+    margin-left: 5%;
+    height: 300px;
+    /* background-color: teal; */
+}
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap .O{
+    height: 240px;
+    width: 240px;
+    margin-right: 10px;
+
+    background: url(../../img/O.png) no-repeat center;
+
+    cursor: pointer;
+}
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap .X{
+    height: 240px;
+    width: 240px;
+    margin-left: 10px;
+
+    background: url(../../img/X.png) no-repeat center;
+    border: 1px solid #fefefe;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap .O:hover{
+    background: url(../../img/O_hover.png) no-repeat center;
+}
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap .X:hover{
+    background: url(../../img/X_hover.png) no-repeat center;
+}
+
+
+.quiz_contents .communication{
+    position: absolute;
+    width: 20%;
+    height: 100%;
+    z-index: 1001;
+
+    right: 0;
+    background-color: white;
+}
+.quiz_contents .communication h3{
+    padding-top: 10px;
+    padding-left: 10px;
+
+    font-size: 18px;
+    font-weight: 600;
+}
+.quiz_contents .communication .members{
+    padding-top: 10px;
+    padding-left: 10px;
+
+    width: 90%;
+    height: 15%;
+    border: 1px solid #7f7f7f;
+    border-radius: 10px 0 0 10px;
+
+    margin-left : 9px;
+    margin-top: 10px;
+
+    font-size: 16px;
+
+    overflow-y: scroll;
+}
+.quiz_contents .communication .chat{
+    padding-top: 10px;
+    padding-left: 10px;
+
+    width: 90%;
+    height: 65%;
+    border: 1px solid #7f7f7f;
+    border-radius: 10px 0 0 10px;
+
+    margin-left : 9px;
+    margin-top: 10px;
+
+    font-size: 16px;
+
+    overflow-y: scroll;
+}
+.quiz_contents .communication .send_wrap{
+    position: relative;
+}
+.quiz_contents .communication .chatsend{
+    padding-top: 5px;
+    padding-left: 5px;
+
+    width: 78%;
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 1px solid #7f7f7f;
+
+    margin-left : 9px;
+    margin-top: 10px;
+
+    font-size: 16px;
+}
+.quiz_contents .communication .chatsendbtn{
+    display: inline-block;
+
+    width: 14%;
+    height: 30px;
+
+    background-image: url(../../img/chatsendBtn.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    position: absolute;
+    bottom: 0;
+
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.quiz_contents .communication .members_admin{
+    padding-top: 10px;
+    padding-left: 10px;
+
+    width: 90%;
+    height: 15%;
+    border-top: 1px solid #7f7f7f;
+    border-right: 1px solid #7f7f7f;
+    border-left: 1px solid #7f7f7f;
+    border-radius: 10px 0 0 0px;
+
+    margin-left : 9px;
+    margin-top: 10px;
+
+    font-size: 16px;
+
+    overflow-y: scroll;
+}
+
+.quiz_contents .communication .tcBtn{
+    width: 93.6%;
+    height: 5%;
+
+    margin-left : 9px;
+
+    border-left: 1px solid #7f7f7f;
+    border-right: 1px solid #7f7f7f;
+    border-bottom: 1px solid #7f7f7f;
+
+    background-color: #ffba00;
+
+    font-size: 16px;
+    font-weight: 800;
+    color: #201421;
+
+    cursor: pointer;
+}
+.quiz_contents .communication .chat_admin{
+    padding-top: 10px;
+    padding-left: 10px;
+
+    width: 90%;
+    height: 50%;
+    border: 1px solid #7f7f7f;
+    border-radius: 10px 0 0 10px;
+
+    margin-left : 9px;
+    margin-top: 10px;
+
+    font-size: 16px;
+
+    overflow-y: scroll;
+}
+
+.quiz_contents .communication .admin_btn{
+    height: 10%;
+    width: 93.5%;
+
+    margin-top: 10px;
+    margin-left: 9px;
+    background-color: white;
+    
+    overflow: hidden;
+}
+.quiz_contents .communication .admin_btn .gameStart{
+    background: #ffba00 url(../../img/startBtn.png);
+    background-size: 25%;
+    background-repeat: no-repeat;
+    background-position: 20% center;
+
+    width: 100%;
+    height: 100%;
+    
+    cursor: pointer;
+
+    font-size: 40px;
+    font-weight: 800;
+    color: #201421;
+
+    border-radius: 15px;
+
+    padding-left: 20%;
+}
+
+.quiz_contents .communication .admin_btn .nextGame{
+    background: hsl(96, 79%, 36%) url(../../img/resultBtn.png);
+    background-size: 20%;
+    background-repeat: no-repeat;
+    background-position: 20% center;
+
+    width: 100%;
+    height: 100%;
+    
+    cursor: pointer;
+
+    font-size: 40px;
+    font-weight: 800;
+    color: white;
+
+    border-radius: 15px;
+
+    padding-left: 20%;
+}
