@@ -45,14 +45,18 @@ class MyResult extends Component {
                         <Link to="/game/goGame" className="btn goGame">
                             <span>Go Game</span>
                         </Link>
-                        <Link to="/login" className="btn login">
-                            로그인
+                        {sessionStorage.getItem('id') ?
+                            <a onClick={this.logout} className="btn login" href="">로그아웃</a>
+                            :
+                            <Link to="/login" className="btn login">
+                                로그인
                         </Link>
+                        }
                     </div>
                     <div className="sideMenu">
                         <img className="profile" src="./img/profileSample.png" />
                         <div className="idWrap">
-                            dummy2 / 더미
+                            {sessionStorage.getItem('id')} / {sessionStorage.getItem('nick')}
                         </div>
                         <div className="sideMenuWrap">
                             <Link to="/myquiz" className="sideMenuLink">

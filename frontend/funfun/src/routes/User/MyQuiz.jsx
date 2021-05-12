@@ -45,14 +45,18 @@ class MyQuiz extends Component {
                         <Link to="/game/goGame" className="btn goGame">
                             <span>Go Game</span>
                         </Link>
-                        <Link to="/login" className="btn login">
-                            로그인
+                        {sessionStorage.getItem('id') ?
+                            <a onClick={this.logout} className="btn login" href="">로그아웃</a>
+                            :
+                            <Link to="/login" className="btn login">
+                                로그인
                         </Link>
+                        }
                     </div>
                     <div className="sideMenu">
                         <img className="profile" src="./img/profileSample.png" />
                         <div className="idWrap">
-                            dummy2 / 더미
+                            {sessionStorage.getItem('id')} / {sessionStorage.getItem('nick')}
                         </div>
                         <div className="sideMenuWrap">
                             <Link to="/myquiz" className="sideMenuLink onLink">
@@ -67,8 +71,88 @@ class MyQuiz extends Component {
                         </div>
                     </div>
                     <div className="mainContent">
-                        <div className="input">
+                        <div className="quizWrap">
+                            <div className="quizList">
+                                <label className="scrollAlert">※ 스크롤하시면 리스트를 볼 수 있습니다.</label>
+                                <div className="quizLists">
+                                    <img src="./img/noImage.png" />
+                                    <div className="quizData">
+                                        <div className="quizTitle">
+                                            퀴즈 제목
+                                        </div>
+                                        <div className="quizDetail">
+                                            <span className="quizCnt">Q. 6문제 /</span>
+                                            <span className="quizDate">2021-05-12 /</span>
+                                            <span className="quizTeam">6 team /</span>
+                                            <span className="quizRoomCode">123 </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="quizLists">
+                                    <img src="./img/noImage.png" />
+                                    <div className="quizData">
+                                        <div className="quizTitle">
+                                            퀴즈 제목
+                                        </div>
+                                        <div className="quizDetail">
+                                            <span className="quizCnt">Q. 6문제 /</span>
+                                            <span className="quizDate">2021-05-12 /</span>
+                                            <span className="quizTeam">6 team /</span>
+                                            <span className="quizRoomCode">123 </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="quizLists">
+                                    <img src="./img/noImage.png" />
+                                    <div className="quizData">
+                                        <div className="quizTitle">
+                                            퀴즈 제목
+                                        </div>
+                                        <div className="quizDetail">
+                                            <span className="quizCnt">Q. 6문제 /</span>
+                                            <span className="quizDate">2021-05-12 /</span>
+                                            <span className="quizTeam">6 team /</span>
+                                            <span className="quizRoomCode">123 </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="quizLists">
+                                    <img src="./img/noImage.png" />
+                                    <div className="quizData">
+                                        <div className="quizTitle">
+                                            퀴즈 제목
+                                        </div>
+                                        <div className="quizDetail">
+                                            <span className="quizCnt">Q. 6문제 /</span>
+                                            <span className="quizDate">2021-05-12 /</span>
+                                            <span className="quizTeam">6 team /</span>
+                                            <span className="quizRoomCode">123 </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="quizLists">
+                                    <img src="./img/noImage.png" />
+                                    <div className="quizData">
+                                        <div className="quizTitle">
+                                            퀴즈 제목
+                                        </div>
+                                        <div className="quizDetail">
+                                            <span className="quizCnt">Q. 6문제 /</span>
+                                            <span className="quizDate">2021-05-12 /</span>
+                                            <span className="quizTeam">6 team /</span>
+                                            <span className="quizRoomCode">123 </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="quizDetailWrap">
+                                <div className="quizPre">
 
+                                </div>
+                                <div className="quizBtnWrap">
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
