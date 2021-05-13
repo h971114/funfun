@@ -188,7 +188,7 @@
     padding-left: 10px;
 
     width: 90%;
-    height: 65%;
+    height: 55%;
     border: 1px solid #7f7f7f;
     border-radius: 10px 0 0 10px;
 
@@ -198,6 +198,9 @@
     font-size: 16px;
 
     overflow-y: scroll;
+}
+.quiz_contents .communication .waitingChat{
+    height: 65% !important;
 }
 .quiz_contents .communication .send_wrap{
     position: relative;
@@ -336,3 +339,144 @@
 
     padding-left: 20%;
 }
+
+.quiz_contents .communication .teamPlayer_btn{
+    height: 10%;
+    width: 93.5%;
+
+    margin-top: 10px;
+    margin-left: 9px;
+    background-color: white;
+    
+    overflow: hidden;
+}
+.quiz_contents .communication .teamPlayer_btn .passBtn{
+    background: hsl(96, 79%, 36%) url(../../img/pass.png);
+    background-size: 60%;
+    background-repeat: no-repeat;
+    background-position: 50% center;
+
+    width: 100%;
+    height: 100%;
+    
+    cursor: pointer;
+
+    font-size: 40px;
+    font-weight: 800;
+    color: white;
+
+    border-radius: 15px;
+
+    padding-left: 20%;
+}
+
+
+.quiz_contents .quiz_parts .waiting{
+    display: block;
+    text-align: center;
+
+    margin-top: 25%;
+
+    font-size: 30px;
+    font-weight: 800;
+}
+
+
+.loading {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    margin: 0 auto;
+    margin-top: 5%;
+    transform:translateY(-50%);
+    padding: 10px;
+    
+  }
+  
+  .dot div {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    height: 20px;
+    margin: auto;
+    border-radius: 10px;
+    background-color: #6373ff;
+    opacity: 0.2;
+    animation: dot 1s linear infinite;
+  }
+  
+  .dot div:nth-child(1) {
+    transform: rotate(0) translateX(40px);
+    animation-delay: 0;
+  }
+  
+  .dot div:nth-child(2) {
+    transform: rotate(45deg) translateX(40px);
+    animation-delay: 0.1s;
+  }
+  
+  .dot div:nth-child(3) {
+    transform: rotate(90deg) translateX(40px);
+    animation-delay: 0.2s;
+  }
+  
+  .dot div:nth-child(4) {
+    transform: rotate(135deg) translateX(40px);
+    animation-delay: 0.3s;
+  }
+  
+  .dot div:nth-child(5) {
+    transform: rotate(180deg) translateX(40px);
+    animation-delay: 0.4s;
+  }
+  
+  .dot div:nth-child(6) {
+    transform: rotate(225deg) translateX(40px);
+    animation-delay: 0.5s;
+  }
+  
+  .dot div:nth-child(7) {
+    transform: rotate(270deg) translateX(40px);
+    animation-delay: 0.6s;
+  }
+  
+  .dot div:nth-child(8) {
+    transform: rotate(315deg) translateX(40px);
+    animation-delay: 0.7s;
+  }
+  
+  @keyframes dot {
+    0% {
+      opacity: 0.2;
+    }
+    25% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.2;
+    }
+    100% {
+      opacity: 0.2;
+    }
+  }
+  
+  
+  .resultWrap{
+      width: 100%;
+      height: 100%;
+
+      position: relative;
+  }
+
+  .resultWrap .main_content{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      
+    background-color: #fff;
+
+    z-index: 1001;
+  }

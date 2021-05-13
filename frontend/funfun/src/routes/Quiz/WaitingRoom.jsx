@@ -12,7 +12,7 @@ var ID = '';
 var nickname = '';
 var code = '';
 var team = '0';
-function PlayQuiz(props) {
+function WaitingRoom(props) {
 
     const [seconds, setSeconds] = useState(60);
     const [progress, setProgress] = useState(seconds * 1000);
@@ -159,26 +159,16 @@ function PlayQuiz(props) {
     return (
         <div className="quiz_contents">
             <div className="quiz_parts">
-                <div className="quiz_wrap">
-                    <div className="quiz_tit">
-                        해당 노래는 이무진님의 과제곡 입니다.<br />
-                        이 노래는 진짜 과제였을까요 아니였을까요?<br />
-                        맞으면 O, 틀리면 X를 눌러주세요!
-                        </div>
-                    <div className="quiz_etc">
-                        {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
-                        <iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <div className="quiz_progress">
-                        <ProgressBar duration={progress} />
-                        <div className="left_time">
-                            {seconds < 10 ? `0${seconds}` : seconds}
-                        </div>
-                    </div>
-                    <div className="answer_wrap">
-                        <input type="button" className="O"></input>
-                        <input type="button" className="X"></input>
-                    </div>
+                <label className="waiting">대기중입니다!</label>
+                <div className="loading dot">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
                 </div>
             </div>
             <div className="communication">
@@ -189,7 +179,7 @@ function PlayQuiz(props) {
                     </ul>
                 </div>
                 <h3>팀 원 채 팅 🤩</h3>
-                <div className="chat">
+                <div className="chat waitingChat">
                     <ul id="messageArea">
 
                     </ul>
@@ -197,9 +187,6 @@ function PlayQuiz(props) {
                 <div className="send_wrap">
                     <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
                     <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
-                </div>
-                <div className="teamPlayer_btn">
-                    <input type="button" className="passBtn" />
                 </div>
             </div>
             <div className="allChat">
@@ -209,4 +196,4 @@ function PlayQuiz(props) {
     );
 }
 
-export default PlayQuiz;
+export default WaitingRoom;

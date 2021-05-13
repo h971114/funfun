@@ -17,6 +17,8 @@ import InputCode from "./routes/Quiz/inputCode";
 import SetNick from "./routes/Quiz/SetNick";
 import PlayQuiz from "./routes/Quiz/PlayQuiz";
 import AdminPlayQuiz from "./routes/Quiz/AdminPlayQuiz";
+import WaitingRoom from "./routes/Quiz/WaitingRoom";
+import ResultQuiz from "./routes/Quiz/ResultQuiz";
 
 import Mypage from "./routes/User/MyPage";
 import MyQuiz from "./routes/User/MyQuiz";
@@ -44,6 +46,8 @@ function App() {
           <Route path="/game/goGame" exact={true} component={InputCode}/>
           <Route path="/game/setNick" exact={true} component={SetNick}/>
           <Route path="/game/PlayQuiz" exact={true} component={PlayQuiz}/>
+          <Route path="/game/waiting" exact={true} component={WaitingRoom} />
+          <Route path="/game/gameResult" exact={true} component={ResultQuiz} />
           <Route path="/admin/game/PlayQuiz" exact={true} component={AdminPlayQuiz} />
           
           <Route path="/mypage" exact={true} component={Mypage}/>
