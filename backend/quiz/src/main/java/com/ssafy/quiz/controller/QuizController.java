@@ -51,5 +51,10 @@ public class QuizController {
         logger.info(type+" 퀴즈 검색");
         return quizService.findByType(type);
     }
+	 @GetMapping("/quizall")
+		public ResponseEntity<List<Quiz>> getQuiz(@RequestParam("no") String room_no, HttpServletRequest req){
+			 System.out.println(room_no);
+			return new ResponseEntity<List<Quiz>>(quizService.findByRoom(room_no), HttpStatus.ACCEPTED);
+		}
 }
 

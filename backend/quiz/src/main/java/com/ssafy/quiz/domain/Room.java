@@ -26,4 +26,8 @@ public class Room {
     private String code;
     @Column(name = "room_member_no")
     private int member_no;
+    @Column(name = "room_team_cnt")
+    private int team_cnt;
+    @Column(name ="room_quiz_cnt")
+    private int quiz_cnt;
 }
