@@ -6,7 +6,7 @@ import axios from "axios";
 class Login extends Component {
 
     login = () => {
-        axios.post(`http://127.0.0.1:8080/myapp/member/login`, {
+        axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/member/login`, {
                 id: document.getElementById("userID").value,
                 pw: document.getElementById("userPW").value,
             }).then(res => {

@@ -75,7 +75,7 @@ class FindPW extends Component {
     }
 
     findPW = () => {
-        axios.get(`http://127.0.0.1:8080/myapp/member/find-pw`, {
+        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/member/find-pw`, {
             params: {
                 id: this.state.id,
                 email: this.state.email,
@@ -108,7 +108,7 @@ class FindPW extends Component {
 
     updatePW = () => {
         if (this.state.checkPW === true && this.state.checkCPW === true) {
-            axios.put(`http://127.0.0.1:8080/myapp/member/`, {
+            axios.put(`${process.env.REACT_APP_SERVER_BASE_URL}/member/`, {
                 member_no: this.state.no,
                 id: this.state.id,
                 pw: document.getElementById("userPW").value,

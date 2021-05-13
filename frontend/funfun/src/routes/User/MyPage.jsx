@@ -24,7 +24,7 @@ class MyPage extends Component {
     }
 
     getUserByID = (member_id) => {
-        axios.get(`http://127.0.0.1:8080/myapp/member/byid/${member_id}`, {
+        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/member/byid/${member_id}`, {
             id: member_id
         }).then(res => {
             console.log(res)
@@ -117,7 +117,7 @@ class MyPage extends Component {
 
     updateUser = () => {
         if (this.state.checkPW === true && this.state.checkCPW === true && this.state.checkEM === true && this.state.checkNN === true) {
-            axios.put(`http://127.0.0.1:8080/myapp/member/`, {
+            axios.put(`${process.env.REACT_APP_SERVER_BASE_URL}/member/`, {
                 member_no: this.state.no,
                 id: this.state.id,
                 pw: document.getElementById("userPW").value,

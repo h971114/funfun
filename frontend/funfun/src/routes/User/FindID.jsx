@@ -22,7 +22,7 @@ class FindID extends Component {
     }
 
     findID = () => {
-        axios.get(`http://127.0.0.1:8080/myapp/member/find-id`, {
+        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/member/find-id`, {
             params: {
                 email: this.state.email,
             },

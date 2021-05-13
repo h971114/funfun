@@ -88,7 +88,7 @@ function AdminPlayQuiz(props) {
         
     }
     const connect = (props) => {
-        socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
+        socket = new SockJS('${process.env.REACT_APP_SERVER_BASE_URL}/ws');
         stompClient = Stomp.over(socket);
         stompClient.connect(
             {},
@@ -141,7 +141,7 @@ function AdminPlayQuiz(props) {
         if (message.type === 'JOIN') {
             messageElement.classList.add('event-message');
             if (message.sender === nickname && ID === '') {
-                axios.get(`http://127.0.0.1:8080/myapp/team/${code}`).then(res => {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/${code}`).then(res => {
                     // console.log(res);
                     if (res.data) {
                         initialBoard.columns.map(obj => {
@@ -270,7 +270,7 @@ function AdminPlayQuiz(props) {
     const startGame = () => {
         document.getElementsByClassName('gameStart')[0].setAttribute('style', 'display:none');
         start();
-        axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: 0 } }).then(res => {
+        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: 0 } }).then(res => {
             console.log(res.data);
         });
         //게임 시작 부 소스 ★
