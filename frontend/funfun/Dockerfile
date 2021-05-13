@@ -15,21 +15,31 @@
 # EXPOSE 3000
 # CMD [ "http-server", "-p 3000", "dist" ]
 
-FROM node:12
-
-MAINTAINER Lucas Shin <h971114@lieklion.org>
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
+FROM node:alpine as builder
+WORKDIR '/usr/src/app'
+COPY package.json ./
 RUN npm install
+COPY ./ ./
+CMD ["npm", "run", "build"]
 
-COPY . .
+FROM nginx
+COPY --from=builder /usr/src/app/build /usr/share/nginx/html
 
-EXPOSE 3000
+# FROM node:12
 
-CMD ["npm", "start"]
+# MAINTAINER Lucas Shin <h971114@lieklion.org>
+
+# WORKDIR /usr/src/app
+
+# COPY package*.json ./
+
+# RUN npm install
+
+# COPY . .
+
+# EXPOSE 3000
+
+# CMD ["npm", "start"]
  
 #  FROM  node:lts-alpine
 

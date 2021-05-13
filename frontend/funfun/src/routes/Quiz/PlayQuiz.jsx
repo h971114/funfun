@@ -38,7 +38,7 @@ function PlayQuiz(props) {
         memberArea.appendChild(infoElement);
     }
     const connect = (props) => {
-        socket = new SockJS('${process.env.REACT_APP_SERVER_BASE_URL}/ws');
+        socket = new SockJS(`${process.env.REACT_APP_SERVER_BASE_URL}/ws`);
         stompClient = Stomp.over(socket);
         stompClient.connect(
             {},
