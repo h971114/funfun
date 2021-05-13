@@ -2,6 +2,7 @@ package com.ssafy.quiz.controller;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,12 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.quiz.domain.Member;
+import com.ssafy.quiz.domain.Quiz;
 import com.ssafy.quiz.domain.Room;
 import com.ssafy.quiz.repository.MemberRepository;
 import com.ssafy.quiz.repository.RoomRepository;
@@ -90,4 +94,9 @@ public class RoomController {
 		}
 		return "ERROR : Size is required."; 
 	}
+	 @GetMapping("/room_memberno")
+		public ResponseEntity<List<Room>> getQuiz(@RequestParam("no") String member_no, HttpServletRequest req){
+			 
+			return new ResponseEntity<List<Room>>(roomRepository.findyBymember_no(member_no), HttpStatus.ACCEPTED);
+		}
 }
