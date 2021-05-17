@@ -91,20 +91,28 @@ class MyQuiz extends Component {
 
                                     {this.state.myRooms.map((room, index) => (
                                         (
-                                        <div className="quizLists">
+                                        <Link to={{
+                                            pathname: `./game/playQuiz`,
+                                            state: {
+                                                code: room.code,
+                                                nick: this.state.nick, 
+                                            }
+                                        }}>
+                                        <div className="quizLists" >
                                             <img src="./img/noImage.png" />
                                             <div className="quizData">
                                                 <div className="quizTitle">
-                                                    {index + 1}번째 퀴즈 목록
+                                                    {room.quiz_title}
                                                 </div>
                                                 <div className="quizDetail">
                                                     <span className="quizCnt">{room.quiz_cnt}문제 / </span>
-                                                    {/* <span className="quizDate">2021-05-12 /</span> */}
+                                                    <span className="quizDate">{room.quiz_date} /</span>
                                                     <span className="quizTeam">{room.team_cnt}팀 / </span>
                                                     <span className="quizRoomCode">{room.code} </span>
                                                 </div>
                                             </div>
                                         </div>
+                                        </Link>
                                         ))
                                     )}
 

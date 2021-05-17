@@ -13,7 +13,6 @@ var nickname = '';
 var code = '';
 var team = '0';
 function PlayQuiz(props) {
-    
     const [seconds, setSeconds] = useState(60);
     const [progress, setProgress] = useState(seconds * 1000);
     const [msg, setMsg] = useState('');
@@ -156,6 +155,7 @@ function PlayQuiz(props) {
             console.log("완료");
         }
     }, []);
+
     return (
         <div className="quiz_contents">
             <div className="quiz_parts">
