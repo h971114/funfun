@@ -30,4 +30,8 @@ public class Room {
     private int team_cnt;
     @Column(name ="room_quiz_cnt")
     private int quiz_cnt;
+    @Column(name ="quiz_title")
+    private String quiz_title;
+    @Column(name ="quiz_date")
+    private String quiz_date;
 }

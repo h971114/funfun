@@ -40,4 +40,7 @@ public class QuizInfo {
 	private Map<String, LinkedList<Map<String, String>>> teammember = new HashMap<String, LinkedList<Map<String, String>>>();
 	private int index = 0;
 	private int type = 0;
+	private int leftmember =3;
+	private int alivemember = 0;
+	private int perteam = 0;
 }

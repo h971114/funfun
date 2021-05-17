@@ -2,6 +2,7 @@ package com.ssafy.quiz.controller;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -48,6 +49,10 @@ public class TeamController {
 			 System.out.println(quizinfomap.toString());
 			return new ResponseEntity<Quiz>(quizinfomap.getQuizmap().get(room_no).getQuizlist().get(index), HttpStatus.ACCEPTED);
 		}
+	 @GetMapping("/quizsize")
+		public ResponseEntity<Integer> getQuizsize(@RequestParam("no") String room_no, HttpServletRequest req){
+			return new ResponseEntity<Integer>(quizinfomap.getQuizmap().get(room_no).getQuizlist().size(), HttpStatus.ACCEPTED);
+		}
 	 @GetMapping("/personal")
 		public ResponseEntity<Integer> getPscore(@RequestParam("no") String room_no, @RequestParam("ID") String ID, HttpServletRequest req){
 			 System.out.println(room_no);
@@ -59,7 +64,7 @@ public class TeamController {
 	 public ResponseEntity<Integer> getTscore(@RequestParam("no") String room_no, @RequestParam("team") String team , HttpServletRequest req){
 		 System.out.println(room_no);
 		 System.out.println(quizinfomap.toString());
-		return new ResponseEntity<Integer>(quizinfomap.getQuizmap().get(room_no).getTeamscore().get(team), HttpStatus.ACCEPTED);
+		return new ResponseEntity<Integer>(quizinfomap.getQuizmap().get(room_no).getTeamscore().get("team"+team), HttpStatus.ACCEPTED);
 	}
 	 @GetMapping("/personal5")
 		public ResponseEntity<List> getPscore5(@RequestParam("no") String room_no, HttpServletRequest req){
@@ -74,8 +79,20 @@ public class TeamController {
 						return o2-o1;
 					}
 				}));
-			 List<Entry<String,Integer>> resultlist = list.subList(0, 4);
-			return new ResponseEntity<List>(resultlist, HttpStatus.ACCEPTED);
+			 List<Entry<String,Integer>> resultlist = null;
+			 if(list.size() >=6) {
+				 resultlist = list.subList(0, 5);
+			 }
+			 else {
+				resultlist = list;
+			 }
+			 Map<String, String> idmap =  quizinfomap.getQuizmap().get(room_no).getIdnicknamemap();
+			 List<String> returnlist = new ArrayList<String>();
+			 for(Entry<String, Integer> ent : resultlist) {
+				 returnlist.add(idmap.get(ent.getKey())+" : " + ent.getValue());
+			 }
+			 System.out.println(returnlist.toString());
+			return new ResponseEntity<List>(returnlist, HttpStatus.ACCEPTED);
 		}
 	 @GetMapping("/team5")
 		public ResponseEntity<List> getTscore5(@RequestParam("no") String room_no, HttpServletRequest req){
@@ -90,7 +107,18 @@ public class TeamController {
 					return o2-o1;
 				}
 			}));
-			 List<Entry<String,Integer>> resultlist = list.subList(0, 4);
+			 List<Entry<String,Integer>> resultlist = null;
+			 if(list.size() >=6) {
+				 resultlist = list.subList(0, 5);
+			 }
+			 else {
+				resultlist = list;
+			 }
 			return new ResponseEntity<List>(resultlist, HttpStatus.ACCEPTED);
 		}
+	 @GetMapping("/OX")
+	 public ResponseEntity<Integer> getalivemember(@RequestParam("no") String room_no, HttpServletRequest req){
+		return new ResponseEntity<Integer>(quizinfomap.getQuizmap().get(room_no).getAlivemember(), HttpStatus.ACCEPTED);
+		 
+	 }
 }

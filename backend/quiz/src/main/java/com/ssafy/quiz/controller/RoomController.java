@@ -1,6 +1,8 @@
 package com.ssafy.quiz.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,11 +42,14 @@ public class RoomController {
     MemberRepository memberRepository;
     //방코드생성 - 임시저장
     @PostMapping("/make/{id}/temp")
-    public ResponseEntity<String> makeRoomcode1(@PathVariable(value = "id") String memberid, HttpServletRequest req) throws NoSuchAlgorithmException {
+    public ResponseEntity<String> makeRoomcode1(@RequestParam("id") String memberid,@RequestParam("title") String quiz_title, HttpServletRequest req) throws NoSuchAlgorithmException {
     	Map<String, String> resultMap = new HashMap<>();
         Member tmpMember = memberRepository.findById(memberid);
         int member_no = tmpMember.getMember_no();
         String code = "";
+        SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
+        Date time = new Date();
+        String time1 = format1.format(time);
         while(true) {
         	code = getRandomStr(6);
         	int n = roomRepository.findByRoomCode(code);
@@ -54,16 +59,21 @@ public class RoomController {
         roomRepository.save(Room.builder()
                 .code(code)
                 .member_no(member_no)
+                .quiz_title(quiz_title)
+                .quiz_date(time1)
                 .build());
         return  new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
     }
     //방코드생성 - 저장완료되면 방코드 7자리 (6자리 랜덤 + 숫자 1)
     @PostMapping("/make/{id}/save")
-    public ResponseEntity<String> makeRoomcode2(@PathVariable(value = "id") String memberid, HttpServletRequest req) throws NoSuchAlgorithmException {
+    public ResponseEntity<String> makeRoomcode2(@RequestParam("id") String memberid,@RequestParam("title") String quiz_title, HttpServletRequest req) throws NoSuchAlgorithmException {
     	Map<String, String> resultMap = new HashMap<>();
         Member tmpMember = memberRepository.findById(memberid);
         int member_no = tmpMember.getMember_no();
         String code = "";
+        SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
+        Date time = new Date();
+        String time1 = format1.format(time);
         while(true) {
         	code = getRandomStr(6);
         	int n = roomRepository.findByRoomCode(code);
@@ -74,6 +84,8 @@ public class RoomController {
         roomRepository.save(Room.builder()
                 .code(code)
                 .member_no(member_no)
+                .quiz_title(quiz_title)
+                .quiz_date(time1)
                 .build());
         return  new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
     }

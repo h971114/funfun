@@ -39,7 +39,7 @@ public class ChatController {
     @MessageMapping("/chat")
     public void sendMessage(@Payload ChatMessage chatMessage , SimpMessageHeaderAccessor headerAccessor) {
     	System.out.println(headerAccessor.getSessionId());
-
+    	boolean issend = true;
     	String ID = headerAccessor.getSessionId();
     	if(MessageType.JOIN.equals(chatMessage.getType())) {
     		chatMessage.setContent(chatMessage.getSender()+"님이 입장하셨습니다.");
@@ -54,6 +54,17 @@ public class ChatController {
     			tmp.put("id", ID);
     			tmp.put("title", chatMessage.getSender());
     			quiz.getTeammember().get("team0").add(tmp);
+    			switch(quiz.getType()) {
+    			case 0:
+    				quiz.getPersonalscore().put(ID, 0);
+    				break;
+    			case 1:
+    				quiz.getPersonalscore().put(ID, 0);
+    				break;
+    			case 3 :
+    				quiz.getPersonalscore().put(ID, 0);
+    				break;
+    			}
     			quizinfomap.getQuizmap().put(chatMessage.getRoomnumber(), quiz);
     		}
     		else { // 방에 사람이 없는 경우
@@ -74,6 +85,31 @@ public class ChatController {
     			Map<String, String> tmp = new HashMap<String, String>();
     			tmp.put("id", ID);
     			tmp.put("title", chatMessage.getSender());
+    			switch(quiz.getType()) {
+    			case 0:
+    				quiz.getPersonalscore().put(ID, 0);
+    				break;
+    			case 1:
+    				quiz.getPersonalscore().put(ID, 0);
+    				break;
+    			case 2:
+    				quiz.getTeamscore().put("team1", 0);
+    				quiz.getTeamscore().put("team2", 0);
+    				quiz.getTeamscore().put("team3", 0);
+    				quiz.getTeamscore().put("team4", 0);
+    				quiz.getTeamscore().put("team5", 0);
+    				break;
+    			case 3 :
+    				quiz.getPersonalscore().put(ID, 0);
+    				break;
+    			case 4 :
+    				quiz.getTeamscore().put("team1", 0);
+    				quiz.getTeamscore().put("team2", 0);
+    				quiz.getTeamscore().put("team3", 0);
+    				quiz.getTeamscore().put("team4", 0);
+    				quiz.getTeamscore().put("team5", 0);
+    				break;
+    			}
     			quiz.getTeammember().get("team0").add(tmp);
     			quizinfomap.getQuizmap().put(chatMessage.getRoomnumber(), quiz);
     		}
@@ -103,31 +139,103 @@ public class ChatController {
     	}
     	if(MessageType.NEXT.equals(chatMessage.getType())) {
     		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setIndex(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex()+1);
+    		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setLeftmember(3);
     	}
     	if(MessageType.CHAT.equals(chatMessage.getType())) {
     		//정답 처리
     		QuizInfo quiz = quizinfomap.getQuizmap().get(chatMessage.getRoomnumber());
+    		System.out.println(chatMessage.getContent());
     		switch(quiz.getType()) {
-    		case 0:
-    			//생존형은 어케해야될까
-    			break;
-    		case 1:
-    			//객관식 개인전
-    			break;
-    		case 2:
-    			// 객관식 팀전
-    			break;
     		case 3:
-    			// 주관식 개인전
+    			if("alive".equals(chatMessage.getContent())) {
+    				if(quiz.getLeftmember() == 3) {
+    					quiz.getPersonalscore().put(chatMessage.getId(), quiz.getPersonalscore().get(chatMessage.getId()) + 10);
+    				}
+    				else if(quiz.getLeftmember() ==2) {
+    					quiz.getPersonalscore().put(chatMessage.getId(), quiz.getPersonalscore().get(chatMessage.getId()) + 7);
+    				}
+    				else if(quiz.getLeftmember() ==1) {
+    					quiz.getPersonalscore().put(chatMessage.getId(), quiz.getPersonalscore().get(chatMessage.getId()) + 3);
+    				}
+    				issend = false;
+    				quiz.setLeftmember(quiz.getLeftmember()-1);
+        			if(quiz.getLeftmember() == 0) {
+        				issend = true;
+        				chatMessage.setType(MessageType.NEXT);
+        			}
+    			}
     			break;
     		case 4:
     			// 주관식 팀전
+    			if("alive".equals(chatMessage.getContent())) {
+    				quiz.getTeamscore().put("team"+chatMessage.getTeam(), quiz.getTeamscore().get("team"+chatMessage.getTeam())+1);
+    				chatMessage.setContent("정답! +1점!");
+    			}
+    			else {
+    				chatMessage.setContent("오답! +0점!");
+    			}
+    			chatMessage.setType(MessageType.NEXT);
     			break;
     		}
     	}
+    	if(MessageType.ANSWER.equals(chatMessage.getType())) {
+    		QuizInfo quiz = quizinfomap.getQuizmap().get(chatMessage.getRoomnumber());
+    		switch(quiz.getType()) {
+    		case 0:
+    			if("alive".equals(chatMessage.getContent())) {
+    				//정답
+    				quiz.setAlivemember(quiz.getAlivemember()+1);
+    			}
+    			else {
+    				//탈락
+    			}
+    			issend = false;
+    			break;
+    		case 1:
+    			if("alive".equals(chatMessage.getContent())) {
+    				if(quiz.getLeftmember() == 3) {
+    					quiz.getPersonalscore().put(chatMessage.getId(), quiz.getPersonalscore().get(chatMessage.getId()) + 10);
+    				}
+    				else if(quiz.getLeftmember() ==2) {
+    					quiz.getPersonalscore().put(chatMessage.getId(), quiz.getPersonalscore().get(chatMessage.getId()) + 7);
+    				}
+    				else if(quiz.getLeftmember() ==1) {
+    					quiz.getPersonalscore().put(chatMessage.getId(), quiz.getPersonalscore().get(chatMessage.getId()) + 3);
+    				}
+    				quiz.setLeftmember(quiz.getLeftmember()-1);
+    				issend = false;
+        			if(quiz.getLeftmember() == 0) {
+        				issend = true;
+        				chatMessage.setType(MessageType.NEXT);
+        			}
+        			System.out.println(quiz.getLeftmember());
+    			}
+    			else {
+    				
+    			}
+    			
+    			break;
+    		case 2:
+    			if("alive".equals(chatMessage.getContent())) {
+    				quiz.getTeamscore().put("team"+chatMessage.getTeam(), quiz.getTeamscore().get("team"+chatMessage.getTeam())+1);
+    				chatMessage.setContent("정답! +1점!");
+    			}
+    			else {
+    				chatMessage.setContent("오답! +0점!");
+    				//nothing
+    			}
+				chatMessage.setType(MessageType.NEXT);
+    			break;
+    		}
+    	}
+    	if(MessageType.TOINDEX.equals(chatMessage.getType())) {
+    		//do nothing
+    	}
     	System.out.println(chatMessage);
     	System.out.println(quizinfomap.getQuizmap().toString());
-    	messagingTemplate.convertAndSend("/topic/"+chatMessage.getRoomnumber(), chatMessage);
+    	if(issend) {
+    		messagingTemplate.convertAndSend("/topic/"+chatMessage.getRoomnumber(), chatMessage);
+    	}
     }
     
 }

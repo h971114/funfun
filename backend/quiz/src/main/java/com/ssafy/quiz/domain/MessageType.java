@@ -6,6 +6,10 @@ public enum MessageType {
 	    ADMIN,
 	    LEAVE,
 	    TEAMCHAT,
+	    ANSWER,
 	    START,
-	    NEXT
+	    NEXT,
+	    NEXTTEAM,
+	    PERTEAM,
+	    TOINDEX
 }
