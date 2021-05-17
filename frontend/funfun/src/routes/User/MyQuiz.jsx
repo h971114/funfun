@@ -92,7 +92,7 @@ class MyQuiz extends Component {
                                     {this.state.myRooms.map((room, index) => (
                                         (
                                         <Link to={{
-                                            pathname: `./game/playQuiz`,
+                                            pathname: `./admin/game/playQuiz`,
                                             state: {
                                                 code: room.code,
                                                 nick: this.state.nick, 
