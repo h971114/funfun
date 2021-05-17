@@ -12,9 +12,28 @@ var ID = '';
 var nickname = '';
 var code = '';
 var team = '0';
+var quiz = '';
+var index = 0;
+var isstart = 0;
+var answerbutton1 = ''
+var answerbutton2 = ''
+var answerbutton3 = ''
+var answerbutton4 = ''
+var answerbutton5 = ''
+var passbutton = ''
+var answer = ''
+var alive = 'alive';
+var isresult = 1;
+var yourstate = ''
+var leftstate = ''
+var currentcheck = ''
+var perteam = 1;
+var sendanswer = false;
+var teammember = [];
+var memberview;
 function PlayQuiz(props) {
 
-    const [seconds, setSeconds] = useState(60);
+    const [seconds, setSeconds] = useState(10);
     const [progress, setProgress] = useState(seconds * 1000);
     const [msg, setMsg] = useState('');
     const send = (props, msg) => {
@@ -22,6 +41,17 @@ function PlayQuiz(props) {
         if (stompClient && stompClient.connected) {
             const msg = { type: 'TEAMCHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team: team };
             stompClient.send("/app/chat", JSON.stringify(msg), {});
+        }
+        console.log(quiz)
+        if (quiz !== '' && (quiz.type === 3 || quiz.type === 4) && sendanswer === false) {
+            console.log("in")
+            if (msg === quiz.answer) {
+                if (stompClient && stompClient.connected) {
+                    const msg = { type: 'CHAT', content: "alive", roomnumber: code, sender: nickname, id: ID , team : team };
+                    stompClient.send("/app/chat", JSON.stringify(msg), {});
+                }
+                sendanswer = true;
+            }
         }
         console.log(stompClient)
         console.log(stompClient.connected)
@@ -32,6 +62,7 @@ function PlayQuiz(props) {
         var infoElement = document.createElement('li');
         var memberElement = document.createElement('p');
         var memberinfo = title
+
         var memberText = document.createTextNode(memberinfo);
         memberElement.appendChild(memberText);
         infoElement.appendChild(memberElement);
@@ -70,6 +101,109 @@ function PlayQuiz(props) {
     const tickleConnection = () => {
         connected ? disconnect() : connect();
     }
+    const onclick1 = () => {
+        if (quiz.type === 0) {
+            if (quiz.answer === "O" && alive === "alive") {
+                answer = 'alive'
+            }
+            else {
+                answer = 'die'
+            }
+            currentcheck = "O"
+        }
+        else {
+            if (sendanswer === false) { 
+            if (quiz.answer === "1") {
+                answer = 'alive'
+            }
+            else {
+                answer = 'die'
+            }
+            currentcheck = "1." + quiz.exam1
+            if (stompClient && stompClient.connected) {
+                const msg = { type: 'ANSWER', content: answer, roomnumber: code, sender: nickname, id: ID  , team : team};
+                stompClient.send("/app/chat", JSON.stringify(msg), {});
+                }
+                sendanswer = true;
+            }
+            
+        }
+    }
+    const onclick2 = () => {
+        if (quiz.type === 0) {
+            if (quiz.answer === "X" && alive === "alive") {
+                answer = 'alive'
+            }
+                else {
+                    answer = 'die'
+            }
+            currentcheck = "X"
+        }
+        else {
+            if (sendanswer === false) {
+                if (quiz.answer === "2") {
+                    answer = 'alive'
+                }
+                else {
+                    answer = 'die'
+                }
+                currentcheck = "2." + quiz.exam2
+                if (stompClient && stompClient.connected) {
+                    const msg = { type: 'ANSWER', content: answer, roomnumber: code, sender: nickname, id: ID , team : team };
+                    stompClient.send("/app/chat", JSON.stringify(msg), {});
+                }
+                sendanswer = true;
+            }
+        }
+    }
+    const onclick3 = () => {
+        if (sendanswer === false) {
+            if (quiz.answer === "3") {
+                answer = 'alive'
+            }
+            else {
+                answer = 'die'
+            }
+            currentcheck = "3." + quiz.exam3
+            if (stompClient && stompClient.connected) {
+                const msg = { type: 'ANSWER', content: answer, roomnumber: code, sender: nickname, id: ID , team : team};
+                stompClient.send("/app/chat", JSON.stringify(msg), {});
+            }
+            sendanswer = true;
+        }
+    }
+    const onclick4 = () => {
+        if (sendanswer === false) {
+            if (quiz.answer === "4") {
+                answer = 'alive'
+            }
+            else {
+                answer = 'die'
+            }
+            currentcheck = "4." + quiz.exam4
+            if (stompClient && stompClient.connected) {
+                const msg = { type: 'ANSWER', content: answer, roomnumber: code, sender: nickname, id: ID  , team : team};
+                stompClient.send("/app/chat", JSON.stringify(msg), {});
+            }
+            sendanswer = true;
+        }
+    }
+    const onclick5 = () => {
+        if (sendanswer === false) {
+            if (quiz.answer === "5") {
+                answer = 'alive'
+            }
+            else {
+                answer = 'die'
+            }
+            currentcheck = "5." + quiz.exam5
+            if (stompClient && stompClient.connected) {
+                const msg = { type: 'ANSWER', content: answer, roomnumber: code, sender: nickname, id: ID  , team : team};
+                stompClient.send("/app/chat", JSON.stringify(msg), {});
+            }
+            sendanswer = true;
+        }
+    }
     function onMessageReceived(payload) {
         var message = JSON.parse(payload.body);
         var messageArea = document.querySelector('#messageArea');
@@ -90,7 +224,21 @@ function PlayQuiz(props) {
             var usernameText = document.createTextNode(message.sender);
             usernameElement.appendChild(usernameText);
             messageElement.appendChild(usernameElement);
-            console.log("in")
+        }
+        else if (message.type === 'START') {
+            isstart = 1;
+            setSeconds(15);
+            isresult = perteam;
+            axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index } }).then(res => {
+                console.log(res.data);
+                quiz = res.data;
+                index += 1;
+                console.log(index);
+                if (quiz.type === 2 || quiz.type === 4) {
+                    setSeconds(60);
+                }
+            });
+
         }
         else if (message.type === 'TEAMCHAT') {
             if (message.team === team) {
@@ -99,49 +247,184 @@ function PlayQuiz(props) {
                 var usernameText = document.createTextNode(message.sender);
                 usernameElement.appendChild(usernameText);
                 messageElement.appendChild(usernameElement);
+                var textElement = document.createElement('p');
+                var messageText = document.createTextNode(message.content);
+                textElement.appendChild(messageText);
+
+                messageElement.appendChild(textElement);
+
+                messageArea.appendChild(messageElement);
+                messageArea.scrollTop = messageArea.scrollHeight;
             }
+        }
+        else if (message.type === 'NEXT') {
+            if (index === isresult) {
+                switch (quiz.type) {
+                    case 0:
+                        axios.get(`http://127.0.0.1:8080/myapp/team/OX`, { params: { no: code } }).then(res => {
+                            console.log(res.data);
+                            leftstate = "남은인원 : "+res.data;
+                        })
+                        break;
+                    case 1:
+                        axios.get(`http://127.0.0.1:8080/myapp/team/personal`, { params: { no: code, ID: ID } }).then(res => {
+                            console.log(res.data);
+                            yourstate = "내 점수 : " + res.data;
+                        }); // 개인전 자기 자신 점수
+                        axios.get(`http://127.0.0.1:8080/myapp/team/personal5`, { params: { no: code } }).then(res => {
+                            console.log(res.data);
+                            leftstate = res.data.map((obj) =>
+                                <li>{JSON.stringify(obj)}</li>
+                            );
+                            console.log(leftstate)
+                        }); // 개인전 상위 5명 점수
+                        break;
+                    case 2:
+                        axios.get(`http://127.0.0.1:8080/myapp/team/team`, { params: { no: code, team: team } }).then(res => {
+                            console.log(res.data);
+                            yourstate ="우리 팀 점수 : " + res.data;
+                        }); // 팀전 자기 팀 점수
+                        axios.get(`http://127.0.0.1:8080/myapp/team/team5`, { params: { no: code } }).then(res => {
+                            console.log(res.data);
+                            leftstate = res.data.map((obj) =>
+                            <li>{JSON.stringify(obj)}</li>
+                        );
+                        }); // 팀전 상위 5팀 점수
+                        break;
+                    case 3:
+                        axios.get(`http://127.0.0.1:8080/myapp/team/personal`, { params: { no: code, ID: ID } }).then(res => {
+                            console.log(res.data);
+                            yourstate = "내 점수 : " + res.data;
+                        }); // 개인전 자기 자신 점수
+                        axios.get(`http://127.0.0.1:8080/myapp/team/personal5`, { params: { no: code } }).then(res => {
+                            console.log(res.data);
+                            leftstate = res.data.map((obj) =>
+                            <li>{JSON.stringify(obj)}</li>
+                        );
+                        }); // 개인전 상위 5명 점수
+                        break;
+                    case 4:
+                        axios.get(`http://127.0.0.1:8080/myapp/team/team`, { params: { no: code, team: team } }).then(res => {
+                            console.log(res.data);
+                            yourstate = "우리 팀 점수 : "+res.data;
+                        }); // 팀전 자기 팀 점수
+                        axios.get(`http://127.0.0.1:8080/myapp/team/team5`, { params: { no: code } }).then(res => {
+                            console.log(res.data);
+                            leftstate = res.data.map((obj) =>
+                            <li>{JSON.stringify(obj)}</li>
+                        );
+                        }); // 팀전 상위 5팀 점수
+                        break;
+                }
+                currentcheck = ''
+                isstart = 2;
+                isresult += perteam;
+            }
+            else {
+                sendanswer = false;
+                
+                axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index } }).then(res => {
+                    console.log(res.data);
+                    quiz = res.data;
+                    index += 1;
+                    console.log(index);
+                });
+                isstart = 1;
+
+                if (index === isresult - perteam ) {
+                    setSeconds(15);
+                    if (quiz.type === 2 || quiz.type === 4) {
+                        setSeconds(60);
+                    }
+                }
+            }
+            console.log(isstart);
+        }
+        else if (message.type === 'PERTEAM') {
+            perteam = parseInt(message.content);
+        }
+        else if (message.type === 'NEXTTEAM') {
+            if (team === message.content) {
+                sendanswer = false;
+                
+            }
+            else {
+                sendanswer = true;
+            }
+            console.log(sendanswer)
+        }
+        else if (message.type === 'TOINDEX') {
+            index = parseInt(message.content);
         }
         else {
             messageElement.classList.add('event-message');
             console.log(message)
             if (message.id === ID) {
                 team = message.toteam
+                teammember = []
+                console.log(team)
                 axios.get(`http://127.0.0.1:8080/myapp/team`, { params: { no: code, team: message.toteam } }).then(res => {
                     // console.log(res);
                     if (res.data) {
                         res.data.map(obj => {
-                            addmember(obj.title);
+                            // addmember(obj.title);
+                            teammember.push(obj.title);
                         })
                     } else {
-                        alert("정보와 일치하는 아이디가 존재하지 않습니다.")
                     }
                 }).catch(err => {
                     console.log(err);
-                    alert("알 수 없는 오류가 발생했습니다.");
                 })
 
             }
-            if (message.toteam === team) {
-                addmember(message.title)
+            else if (message.toteam === team) {
+                // addmember(message.title)
+                teammember.push(message.title);
             }
+            else if (message.fromteam === team) {
+                teammember = []
+                axios.get(`http://127.0.0.1:8080/myapp/team`, { params: { no: code, team: message.fromteam } }).then(res => {
+                    // console.log(res);
+                    if (res.data) {
+                        res.data.map(obj => {
+                            // addmember(obj.title);
+                            teammember.push(obj.title);
+                        })
+                    } else {
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            }
+            memberview = teammember.map((obj) => 
+                <li>{obj}</li>
+            )
+            console.log(memberview)
         }
-
-        var textElement = document.createElement('p');
-        var messageText = document.createTextNode(message.content);
-        textElement.appendChild(messageText);
-
-        messageElement.appendChild(textElement);
-
-        messageArea.appendChild(messageElement);
-        messageArea.scrollTop = messageArea.scrollHeight;
+        
     }
     useEffect(() => {
         const countdown = setInterval(() => {
-            if (parseInt(seconds) > 0) {
+            if (parseInt(seconds) > -2000) {
                 setSeconds(parseInt(seconds) - 1);
             }
-            if (parseInt(seconds) === 0) {
-                clearInterval(countdown)
+            if (parseInt(seconds) === 1) {
+                if (quiz.type === 0) { // ox퀴즈
+                    if (stompClient && stompClient.connected) {
+                        const msg = { type: 'ANSWER', content: answer, roomnumber: code, sender: nickname, team: team , id : ID};
+                        stompClient.send("/app/chat", JSON.stringify(msg), {});
+                    }
+                    if (answer === 'die' && alive === 'alive') {
+                        alive = 'die';
+                    }
+                    // result 호출
+                }
+                else if (quiz.type === '2') { // 객관식 팀전
+                    // result 호출
+                }
+                else if (quiz.type === '4') { // 주관식 팀전
+                    // result 호출
+                }
             }
         }, 1000);
         return () => clearInterval(countdown);
@@ -156,36 +439,118 @@ function PlayQuiz(props) {
             console.log("완료");
         }
     }, []);
+    if (quiz.type === 0) {
+        answerbutton1 = <input type="button" className="O" onClick = {() => onclick1()}></input>
+        answerbutton2 = <input type="button" className="X" onClick={() => onclick2()}></input>
+        answerbutton3 = ""
+        answerbutton4 = ""
+        answerbutton5 = ""
+        passbutton = ""
+    }
+    else if (quiz.type === 1) {
+        answerbutton1 = <button onClick={() => onclick1()}>{1. + quiz.exam1}</button>
+        answerbutton2 = <button onClick={() => onclick2()}>{2. + quiz.exam2}</button>
+        answerbutton3 = <button onClick={() => onclick3()}>{3. + quiz.exam3}</button>
+        answerbutton4 = <button onClick={() => onclick4()}>{4. + quiz.exam4}</button>
+        answerbutton5 = <button onClick={() => onclick5()}>{5. + quiz.exam5}</button>
+        passbutton = ""
+    }
+    else if (quiz.type === 2) {
+        answerbutton1 = <button onClick={() => onclick1()}>{1. + quiz.exam1}</button>
+        answerbutton2 = <button onClick={() => onclick2()}>{2. + quiz.exam2}</button>
+        answerbutton3 = <button onClick={() => onclick3()}>{3. + quiz.exam3}</button>
+        answerbutton4 = <button onClick={() => onclick4()}>{4. + quiz.exam4}</button>
+        answerbutton5 = <button onClick={() => onclick5()}>{5. + quiz.exam5}</button>
+        passbutton = <input type="button" className="passBtn" />
+    }
+    else if (quiz.type === 3) {
+        answerbutton1 = ""
+        answerbutton2 = ""
+        answerbutton3 = ""
+        answerbutton4 = ""
+        answerbutton5 = ""
+        passbutton = ""
+    }
+    else if (quiz.type === 4) {
+        answerbutton1 = ""
+        answerbutton2 = ""
+        answerbutton3 = ""
+        answerbutton4 = ""
+        answerbutton5 = ""
+        passbutton = <input type="button" className="passBtn" />
+    }
+    if (isstart === 0) {
     return (
         <div className="quiz_contents">
+    <div className="quiz_parts">
+        <label className="waiting">대기중입니다!</label>
+        <div className="loading dot">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <div className="communication">
+        <h3>팀 원 목 록 😎</h3>
+                <div className="members">
+                    
+            <ul id="memberArea">
+                        {memberview}
+            </ul>
+        </div>
+        <h3>팀 원 채 팅 🤩</h3>
+        <div className="chat waitingChat">
+            <ul id="messageArea">
+
+            </ul>
+        </div>
+        <div className="send_wrap">
+            <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
+            <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
+        </div>
+    </div>
+    <div className="allChat">
+
+    </div>
+        </div>
+    );
+    }
+    if (isstart === 2) {
+        if (quiz.type === 0) {
+            if (alive === 'alive') {
+                yourstate = "당신은 살아남았습니다."
+            }
+            else {
+                yourstate = "당신은 죽었습니다."
+            }
+        }
+        return (
+            <div className="quiz_contents">
             <div className="quiz_parts">
                 <div className="quiz_wrap">
                     <div className="quiz_tit">
-                        해당 노래는 이무진님의 과제곡 입니다.<br />
-                        이 노래는 진짜 과제였을까요 아니였을까요?<br />
-                        맞으면 O, 틀리면 X를 눌러주세요!
-                        </div>
+                        {yourstate}
+                    </div>
                     <div className="quiz_etc">
                         {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
-                        <iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <div className="quiz_progress">
-                        <ProgressBar duration={progress} />
-                        <div className="left_time">
-                            {seconds < 10 ? `0${seconds}` : seconds}
-                        </div>
+                        {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
                     </div>
                     <div className="answer_wrap">
-                        <input type="button" className="O"></input>
-                        <input type="button" className="X"></input>
+                        {leftstate}
                     </div>
                 </div>
             </div>
             <div className="communication">
                 <h3>팀 원 목 록 😎</h3>
-                <div className="members">
+                    <div className="members">
+                    
                     <ul id="memberArea">
-
+                        {memberview}
                     </ul>
                 </div>
                 <h3>팀 원 채 팅 🤩</h3>
@@ -199,14 +564,71 @@ function PlayQuiz(props) {
                     <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
                 </div>
                 <div className="teamPlayer_btn">
-                    <input type="button" className="passBtn" />
+                    {passbutton}
                 </div>
             </div>
             <div className="allChat">
 
             </div>
         </div>
-    );
+        )
+    }
+        return (
+            <div className="quiz_contents">
+                <div className="quiz_parts">
+                    <div className="quiz_wrap">
+                        <div className="quiz_tit">
+                            {quiz.content}
+                        </div>
+                        <div className="quiz_etc">
+                            {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
+                            {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
+                        </div>
+                        <div className="quiz_progress">
+                            <ProgressBar duration={progress} />
+                            <div className="left_time">
+                                {seconds}
+                            </div>
+                        </div>
+                        <div className="answer_wrap">
+                            {answerbutton1}
+                            {answerbutton2}
+                            {answerbutton3}
+                            {answerbutton4}
+                            {answerbutton5}
+                            <br />
+                            현재선택 : {currentcheck}
+                        </div>
+                    </div>
+                </div>
+                <div className="communication">
+                    <h3>팀 원 목 록 😎</h3>
+
+                    <div className="members">
+                    
+                        <ul id="memberArea">
+                        {memberview}
+                        </ul>
+                    </div>
+                    <h3>팀 원 채 팅 🤩</h3>
+                    <div className="chat">
+                        <ul id="messageArea">
+
+                        </ul>
+                    </div>
+                    <div className="send_wrap">
+                        <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
+                        <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
+                    </div>
+                    <div className="teamPlayer_btn">
+                        {passbutton}
+                    </div>
+                </div>
+                <div className="allChat">
+
+                </div>
+            </div>
+        );
 }
 
 export default PlayQuiz;

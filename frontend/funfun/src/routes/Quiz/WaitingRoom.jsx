@@ -70,6 +70,16 @@ function WaitingRoom(props) {
     const tickleConnection = () => {
         connected ? disconnect() : connect();
     }
+    const goGame = (e) => {
+        this.props.history.push({
+            pathname: '/game/PlayQuiz',
+            state: {
+                nickname: "nickname",
+                code : this.props.location.state.code
+            }
+        });
+        console.log(this.props.history);
+    }
     function onMessageReceived(payload) {
         var message = JSON.parse(payload.body);
         var messageArea = document.querySelector('#messageArea');
@@ -90,7 +100,6 @@ function WaitingRoom(props) {
             var usernameText = document.createTextNode(message.sender);
             usernameElement.appendChild(usernameText);
             messageElement.appendChild(usernameElement);
-            console.log("in")
         }
         else if (message.type === 'TEAMCHAT') {
             if (message.team === team) {
