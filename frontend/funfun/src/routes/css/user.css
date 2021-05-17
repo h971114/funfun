@@ -212,3 +212,301 @@
 .joinWrap .input ul li:last-child{
     margin-right: 0px;
 }
+
+.myPageContent{
+    width: 100%;
+    height: 100%;
+    
+    position: relative;
+}
+
+.myPageContent .wrapContent{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1001;
+    
+    /* background-color: lightgray; */
+}
+
+.myPageContent .wrapContent .rec_header{
+    height: 100px;
+    width: 100%;
+
+    margin: 0px;
+    padding: 0px;
+
+    top: 0px;
+
+    border-radius: 0px !important;
+    
+    background-color: white;
+}
+
+.myPageContent .wrapContent .rec_header .logo{
+    margin-left: 50px;
+    margin-top: 20px;
+}
+.myPageContent .wrapContent .rec_header .goGame,
+.myPageContent .wrapContent .rec_header .login{
+    margin-right: 50px;
+    margin-top: 20px;
+}
+
+.myPageContent .wrapContent .sideMenu{
+    position: absolute;
+    width: 20%;
+    height: calc(100% - 100px);
+
+    top:100px;
+
+    background-color: white;
+
+    border-right: 1px solid #7f7f7f;
+}
+
+.myPageContent .wrapContent .sideMenu .profile{
+    width: 60%;
+    margin-left: 20%;
+    margin-top: 100px;
+    border-radius: 50%;
+}
+.myPageContent .wrapContent .sideMenu .idWrap{
+    font-size: 25px;
+    font-weight: 800;
+
+    text-align: center;
+
+    margin-top: 20px;
+}
+.myPageContent .wrapContent .sideMenu .sideMenuWrap{
+    border-top: 1px solid #737373;
+    width: 80%;
+
+    margin-top: 50px;
+    margin-left: 10%;
+    padding-top: 50px;
+}
+.myPageContent .wrapContent .sideMenu .sideMenuWrap .sideMenuLink{
+    display: block;
+    margin-bottom: 50px;
+    font-size: 25px;
+    font-weight: 800;
+}
+.myPageContent .wrapContent .sideMenu .sideMenuWrap .sideMenuLink.onLink{
+    color: #ff7200;
+}
+
+.myPageContent .wrapContent .mainContent{
+    position: absolute;
+    width: 80%;
+    height: calc(100% - 100px);
+
+    top: 100px;
+    left: 20%;
+}
+
+.myPageContent .wrapContent .mainContent .input{
+    width: 40%;
+    margin: 0 auto;
+}
+
+.myPageContent .wrapContent .mainContent .input h3{
+    font-size: 50px;
+    font-weight: 800;
+
+    text-align: center;
+}
+.myPageContent .wrapContent .mainContent .input .profileImg{
+    width: 100%;
+    height: 30%;
+    display: inline-block;
+    overflow: hidden;
+
+    text-align: center;
+}
+.myPageContent .wrapContent .mainContent .input .profileImg img{
+    width: 30%;
+    border-radius: 50%;
+}
+.myPageContent .wrapContent .mainContent .input .profileImgLabel{
+    width: 100%;
+    display: inline-block;
+    overflow: hidden;
+    
+    text-align: center;
+}
+.myPageContent .wrapContent .mainContent .input .forProfile{
+    margin-top: 10px;
+    display: inline-block;
+
+    background-color: #fff;
+    
+    width: 150px;
+    height: 50px;
+
+    border-radius: 20px;
+    line-height: 50px;
+
+    cursor: pointer;
+}
+.myPageContent .wrapContent .mainContent .input .upload-hidden{
+    display: none;
+    width: 0px;
+    height: 0px;
+}
+
+.myPageContent .wrapContent .mainContent .input label{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.myPageContent .wrapContent .mainContent .input input{
+    width: 500px;
+    height: 35px;
+
+    padding-left: 15px;
+
+    border: none;
+    border-radius: 15px;
+
+    background-color: #f2f2f2;
+    margin-top: 10px;
+}
+
+.myPageContent .wrapContent .mainContent .input input::placeholder{
+    color: #dcdcdc;
+}
+
+.myPageContent .wrapContent .mainContent .input label{
+    display: block;
+    margin-top: 20px;
+}
+
+.myPageContent .wrapContent .mainContent .input input[type='button']{
+    width: 515px;
+    height: 40px;
+
+    background: linear-gradient(to right, #5ca7fb, #6373ff);
+
+    border: none;
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+
+    margin-top: 20px;
+}
+
+.myPageContent .wrapContent .mainContent .quizWrap{
+    width: 100%;
+    height: 100%;
+}
+
+.myPageContent .wrapContent .mainContent .quizWrap .quizList{
+    display: inline-block;
+
+    width: 50%;
+    height: calc(100% - 90px);
+
+    padding-top: 60px;
+    padding-bottom: 30px;
+
+    position: relative;
+
+    overflow-y: scroll;
+
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+.myPageContent .wrapContent .mainContent .quizWrap .quizList::-webkit-scrollbar{
+    display: none;
+}
+.myPageContent .wrapContent .mainContent .quizWrap .quizList .scrollAlert{
+    display: block;
+
+    text-align: center;
+    
+    top: 30px;
+
+    left: 50%;
+    transform: translate(-50%,0);
+
+    position: absolute;
+}
+.myPageContent .wrapContent .mainContent .quizWrap .quizList .quizLists{
+    width: calc( 95% - 20px);
+    height: 130px;
+    border: 1px solid #000;
+    border-radius: 5px;
+
+    padding-top: 10px;
+    padding-left: 10px;
+
+    margin-top: 30px;
+    margin-left: 25px;
+
+    box-shadow: 5px 5px 5px #c2c2c2;
+
+    cursor: pointer;
+}
+.myPageContent .wrapContent .mainContent .quizWrap .quizList .quizLists img{
+    width: 120px;
+    height: 120px;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+.myPageContent .wrapContent .mainContent .quizWrap .quizList .quizLists .quizData{
+    display: inline-block;
+    width: calc( 95% - 140px);    
+    height: 120px;
+
+    margin-left: 20px;
+
+    overflow: hidden;
+
+    font-size: 40px;
+    line-height: 120px;
+}
+.myPageContent .wrapContent .mainContent .quizWrap .quizList .quizLists .quizTitle{
+    display: block;
+    height: 60px;
+    width: calc( 95% - 140px);    
+
+    margin-left: 20px;
+
+    overflow: hidden;
+
+    font-size: 30px;
+    line-height: 60px;
+}
+.myPageContent .wrapContent .mainContent .quizWrap .quizList .quizLists .quizDetail{
+    display: inline-block;
+    height: 60px;
+
+    margin-left: 20px;
+
+    overflow: hidden;
+
+    font-size: 20px;
+    line-height: 60px;
+}
+
+/* .myPageContent .wrapContent .mainContent .quizWrap .quizList .quizLists {
+    width: calc(100%-50px);
+    height: 100px;
+    border: 1px solid #000;
+
+} */
+
+.myPageContent .wrapContent .mainContent .quizWrap .quizDetailWrap{
+    display: inline-block;
+
+    width: 50%;
+    height: 100%;
+}

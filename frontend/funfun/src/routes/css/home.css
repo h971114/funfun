@@ -44,6 +44,10 @@
     background-repeat: no-repeat;
 }
 
+.header .loginWraps{
+    float: right;
+    display: inline-block;
+}
 
 .goGame{
     float: right;
