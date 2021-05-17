@@ -5,6 +5,7 @@ import ProgressBar from '../../components/common/ProgressBar';
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import axios from 'axios';
+import cookie from 'react-cookies';
 var stompClient = '';
 var socket = '';
 var connected = false;
@@ -31,6 +32,8 @@ var perteam = 1;
 var sendanswer = false;
 var teammember = [];
 var memberview;
+var nextteamchat = ''
+var turn = ''
 function PlayQuiz(props) {
 
     const [seconds, setSeconds] = useState(10);
@@ -79,8 +82,18 @@ function PlayQuiz(props) {
                     //   tick => {
                     //   }
                 );
-                const msg = { type: 'JOIN', content: "", roomnumber: props.location.state.code, sender: props.location.state.nickname };
-                stompClient.send("/app/chat", JSON.stringify(msg), {});
+                // console.log(cookie.load('ID'));
+                // console.log(cookie.loadAll())
+                // ID = cookie.load('ID')
+                // if (ID !== undefined) {
+                    const msg = { type: 'JOIN', content: "", roomnumber: props.location.state.code, sender: props.location.state.nickname };
+                    stompClient.send("/app/chat", JSON.stringify(msg), {});
+                // }
+                // else {
+                //     const msg = { type: 'REJOIN', content: "", roomnumber: props.location.state.code, sender: props.location.state.nickname , id: ID };
+                //     stompClient.send("/app/chat", JSON.stringify(msg), {});
+
+                // }
                 nickname = props.location.state.nickname;
                 code = props.location.state.code;
             },
@@ -204,6 +217,12 @@ function PlayQuiz(props) {
             sendanswer = true;
         }
     }
+    const onclicknext = () => {
+        if (stompClient && stompClient.connected && sendanswer === false) {
+            const msg = { type: 'NEXT', content: answer, roomnumber: code, sender: nickname, id: ID  , team : team};
+            stompClient.send("/app/chat", JSON.stringify(msg), {});
+        }
+    }
     function onMessageReceived(payload) {
         var message = JSON.parse(payload.body);
         var messageArea = document.querySelector('#messageArea');
@@ -212,6 +231,12 @@ function PlayQuiz(props) {
             messageElement.classList.add('event-message');
             if (message.sender === nickname && ID === '') {
                 ID = message.id;
+                const expires = new Date()
+                expires.setDate(expires.getDate() + 14);
+                cookie.save('ID', ID, {
+                    path: '/',
+                    expires,
+                });
             }
             console.log(ID);
             message.content = message.sender + ' joined!';
@@ -320,9 +345,16 @@ function PlayQuiz(props) {
                 isstart = 2;
                 isresult += perteam;
             }
-            else {
-                sendanswer = false;
-                
+            else
+            {
+                if ((quiz.type === 2 || quiz.type === 4)) {
+                    if (nextteamchat === team) {
+                        sendanswer = false;
+                    }
+                }
+                else {
+                    sendanswer = false;
+                }
                 axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index } }).then(res => {
                     console.log(res.data);
                     quiz = res.data;
@@ -346,12 +378,13 @@ function PlayQuiz(props) {
         else if (message.type === 'NEXTTEAM') {
             if (team === message.content) {
                 sendanswer = false;
-                
+                turn = '당신의 팀 차례입니다.'
             }
             else {
+                turn = '다른 팀의 차례입니다.'
                 sendanswer = true;
             }
-            console.log(sendanswer)
+            nextteamchat = message.content
         }
         else if (message.type === 'TOINDEX') {
             index = parseInt(message.content);
@@ -461,7 +494,7 @@ function PlayQuiz(props) {
         answerbutton3 = <button onClick={() => onclick3()}>{3. + quiz.exam3}</button>
         answerbutton4 = <button onClick={() => onclick4()}>{4. + quiz.exam4}</button>
         answerbutton5 = <button onClick={() => onclick5()}>{5. + quiz.exam5}</button>
-        passbutton = <input type="button" className="passBtn" />
+        passbutton = <input type="button" className="passBtn" onClick={ () => onclicknext()}/>
     }
     else if (quiz.type === 3) {
         answerbutton1 = ""
@@ -477,7 +510,7 @@ function PlayQuiz(props) {
         answerbutton3 = ""
         answerbutton4 = ""
         answerbutton5 = ""
-        passbutton = <input type="button" className="passBtn" />
+        passbutton = <input type="button" className="passBtn" onClick={ () => onclicknext()}/>
     }
     if (isstart === 0) {
     return (
@@ -598,6 +631,13 @@ function PlayQuiz(props) {
                             {answerbutton5}
                             <br />
                             현재선택 : {currentcheck}
+                            <br />
+                            당신은 : team{team} 입니다
+                            <br />
+                            {turn}
+                            <br />
+                            총 {perteam} 문제입니다.
+                            
                         </div>
                     </div>
                 </div>

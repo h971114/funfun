@@ -31,6 +31,7 @@ var currentcheck = ''
 var perteam = 1;
 var sendanswer = false;
 var quizsize = 0;
+var nextteamchat = ''
 function AdminPlayQuiz(props) {
     const [seconds, setSeconds] = useState(10);
     const [progress, setProgress] = useState(seconds * 1000);
@@ -108,6 +109,7 @@ function AdminPlayQuiz(props) {
             const msg = { type: 'NEXTTEAM', content: send_message, roomnumber: code, sender: nickname };
             stompClient.send("/app/chat", JSON.stringify(msg), {});
         }
+        nextteamchat = send_message;
     }
     const changeteam = (props, msg, card, source, destination) => {
         let send_message = msg;
@@ -160,7 +162,12 @@ function AdminPlayQuiz(props) {
         memberArea.appendChild(infoElement);
     }
     const start = () => {
-        if (stompClient && stompClient.connected) {
+        if (quiz.type === 2 || quiz.type === 4) {
+            if (nextteamchat === '') {
+                alert("문제를 풀 팀을 적어주세요!")
+            }
+        }
+        else if (stompClient && stompClient.connected) {
             const msg = { type: 'START', content: "" , roomnumber : code};
             stompClient.send("/app/chat", JSON.stringify(msg), {});
         }
@@ -168,6 +175,15 @@ function AdminPlayQuiz(props) {
     const next = () => {
         if (quizsize === index && isstart === 2) {
             alert("마지막 문제입니다")
+        }
+        else if (isresult -perteam === index) {
+            if (nextteamchat === '') {
+                alert("문제를 풀 팀을 정해주세요")
+            }
+            else if (stompClient && stompClient.connected) {
+                const msg = { type: 'NEXT', content: "" , roomnumber : code};
+                stompClient.send("/app/chat", JSON.stringify(msg), {});
+            }
         }
         else if (stompClient && stompClient.connected) {
             const msg = { type: 'NEXT', content: "" , roomnumber : code};
@@ -306,6 +322,7 @@ function AdminPlayQuiz(props) {
             console.log(isresult)
             console.log(index)
             if (index === isresult) {
+                nextteamchat=''
                 switch (quiz.type) {
                     case 0:
                         axios.get(`http://127.0.0.1:8080/myapp/team/OX`, { params: { no: code } }).then(res => {
