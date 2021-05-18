@@ -19,6 +19,7 @@ import PlayQuiz from "./routes/Quiz/PlayQuiz";
 import AdminPlayQuiz from "./routes/Quiz/AdminPlayQuiz";
 import WaitingRoom from "./routes/Quiz/WaitingRoom";
 import ResultQuiz from "./routes/Quiz/ResultQuiz";
+import MakeQuiz from "./routes/Quiz/MakeQuiz";
 
 import Mypage from "./routes/User/MyPage";
 import MyQuiz from "./routes/User/MyQuiz";
@@ -49,6 +50,7 @@ function App() {
           <Route path="/game/waiting" exact={true} component={WaitingRoom} />
           <Route path="/game/gameResult" exact={true} component={ResultQuiz} />
           <Route path="/admin/game/PlayQuiz" exact={true} component={AdminPlayQuiz} />
+          <Route path="/game/makeQuiz" exact={true} component={MakeQuiz}/>
           
           <Route path="/mypage" exact={true} component={Mypage}/>
           <Route path="/myquiz" exact={true} component={MyQuiz}/>
