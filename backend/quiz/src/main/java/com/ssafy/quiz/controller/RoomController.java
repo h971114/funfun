@@ -131,15 +131,16 @@ public class RoomController {
 //                .quiz_title(quiz_title)
 //                .quiz_date(time1)
 //                .build());
-        Room tempRoom = roomRepository.findByroom_code(room.getCode());
-        tempRoom.setCode(room.getCode());
-        tempRoom.setMember_no(room.getMember_no());
-        tempRoom.setQuiz_date(time1);
-        tempRoom.setQuiz_cnt(room.getQuiz_cnt());
-        tempRoom.setQuiz_title(room.getQuiz_title());
-        tempRoom.setRoom_no(room.getRoom_no());
-        tempRoom.setTeam_cnt(room.getTeam_cnt());
-        roomRepository.save(tempRoom);
+        roomRepository.updateInquiry(room.getQuiz_cnt(),room.getQuiz_title(),room.getCode());
+//        Room tempRoom = roomRepository.findByroom_code(room.getCode());
+//        tempRoom.setCode(room.getCode());
+//        tempRoom.setMember_no(room.getMember_no());
+//        tempRoom.setQuiz_date(time1);
+//        tempRoom.setQuiz_cnt(room.getQuiz_cnt());
+//        tempRoom.setQuiz_title(room.getQuiz_title());
+//        tempRoom.setRoom_no(room.getRoom_no());
+//        tempRoom.setTeam_cnt(room.getTeam_cnt());
+//        roomRepository.save(tempRoom);
         return  new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
     }
 	 @GetMapping("/room_memberno")
