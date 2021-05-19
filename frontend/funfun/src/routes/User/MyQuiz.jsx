@@ -99,46 +99,21 @@ class MyQuiz extends Component {
                                             }
                                         }}>
                                         <div className="quizLists" >
-                                            <img src="./img/noImage.png" />
                                             <div className="quizData">
                                                 <div className="quizTitle">
                                                     {room.quiz_title}
                                                 </div>
                                                 <div className="quizDetail">
                                                     <span className="quizCnt">{room.quiz_cnt}문제 / </span>
-                                                    <span className="quizDate">{room.quiz_date} /</span>
+                                                    <span className="quizDate">{room.quiz_date} / </span>
                                                     <span className="quizTeam">{room.team_cnt}팀 / </span>
-                                                    <span className="quizRoomCode">{room.code} </span>
+                                                    <span className="quizRoomCode">코드 {room.code} </span>
                                                 </div>
                                             </div>
                                         </div>
                                         </Link>
                                         ))
                                     )}
-
-
-                                <div className="quizLists">
-                                    <img src="./img/noImage.png" />
-                                    <div className="quizData">
-                                        <div className="quizTitle">
-                                            퀴즈 제목
-                                        </div>
-                                        <div className="quizDetail">
-                                            <span className="quizCnt">Q. 6문제 /</span>
-                                            <span className="quizDate">2021-05-12 /</span>
-                                            <span className="quizTeam">6 team /</span>
-                                            <span className="quizRoomCode">123 </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="quizDetailWrap">
-                                <div className="quizPre">
-
-                                </div>
-                                <div className="quizBtnWrap">
-
-                                </div>
                             </div>
                         </div>
                     </div>

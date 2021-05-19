@@ -404,12 +404,14 @@
 .myPageContent .wrapContent .mainContent .quizWrap{
     width: 100%;
     height: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .myPageContent .wrapContent .mainContent .quizWrap .quizList{
     display: inline-block;
 
-    width: 50%;
+    width: 70%;
     height: calc(100% - 90px);
 
     padding-top: 60px;
@@ -438,6 +440,9 @@
     position: absolute;
 }
 .myPageContent .wrapContent .mainContent .quizWrap .quizList .quizLists{
+    display: flex;
+    justify-content: center;
+    
     width: calc( 95% - 20px);
     height: 130px;
     border: 1px solid #000;
@@ -452,6 +457,7 @@
     box-shadow: 5px 5px 5px #c2c2c2;
 
     cursor: pointer;
+    text-align: center;
 }
 .myPageContent .wrapContent .mainContent .quizWrap .quizList .quizLists img{
     width: 120px;
@@ -462,11 +468,15 @@
     overflow: hidden;
 }
 .myPageContent .wrapContent .mainContent .quizWrap .quizList .quizLists .quizData{
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
     width: calc( 95% - 140px);    
+    width: 90%;
     height: 120px;
 
-    margin-left: 20px;
+    /* margin-left: 20px; */
 
     overflow: hidden;
 
@@ -474,22 +484,25 @@
     line-height: 120px;
 }
 .myPageContent .wrapContent .mainContent .quizWrap .quizList .quizLists .quizTitle{
-    display: block;
+    display: inline-block;
+    width: 90%;
     height: 60px;
-    width: calc( 95% - 140px);    
+    /* width: calc( 95% - 140px);     */
 
-    margin-left: 20px;
+    /* margin-left: 20px; */
 
     overflow: hidden;
 
     font-size: 30px;
+    text-align: center;
     line-height: 60px;
 }
 .myPageContent .wrapContent .mainContent .quizWrap .quizList .quizLists .quizDetail{
     display: inline-block;
+    width: 90%;
     height: 60px;
 
-    margin-left: 20px;
+    /* margin-left: 20px; */
 
     overflow: hidden;
 
