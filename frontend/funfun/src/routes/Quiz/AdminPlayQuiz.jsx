@@ -143,6 +143,7 @@ function AdminPlayQuiz(props) {
         socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
         stompClient = Stomp.over(socket);
         isstart = 0;
+        ID = ''
         stompClient.connect(
             {},
             frame => {
@@ -218,7 +219,6 @@ function AdminPlayQuiz(props) {
             messageElement.classList.add('event-message');
             if (message.sender === nickname && ID === '') {
                 axios.get(`http://127.0.0.1:8080/myapp/team/${code}`).then(res => {
-                    // console.log(res);
                     if (res.data) {
                         initialBoard.columns.map(obj => {
                             if (obj.id === 0) {
@@ -259,6 +259,7 @@ function AdminPlayQuiz(props) {
                             }
                         })
                         setBoard(initialBoard);
+                        console.log(res.data);
                         console.log(initialBoard);
                         console.log(board);
                     } else {
@@ -526,6 +527,41 @@ function AdminPlayQuiz(props) {
     }
     const closeModal = () => {
         setModalOpen(false);
+    }
+    if (quiz.type === 0) {
+        answerbutton1 = <input type="button" className="O" ></input>
+        answerbutton2 = <input type="button" className="X" ></input>
+        answerbutton3 = ""
+        answerbutton4 = ""
+        answerbutton5 = ""
+    }
+    else if (quiz.type === 1) {
+        answerbutton1 = <button >{1. + quiz.exam1}</button>
+        answerbutton2 = <button >{2. + quiz.exam2}</button>
+        answerbutton3 = <button >{3. + quiz.exam3}</button>
+        answerbutton4 = <button >{4. + quiz.exam4}</button>
+        answerbutton5 = <button >{5. + quiz.exam5}</button>
+    }
+    else if (quiz.type === 2) {
+        answerbutton1 = <button >{1. + quiz.exam1}</button>
+        answerbutton2 = <button >{2. + quiz.exam2}</button>
+        answerbutton3 = <button >{3. + quiz.exam3}</button>
+        answerbutton4 = <button >{4. + quiz.exam4}</button>
+        answerbutton5 = <button >{5. + quiz.exam5}</button>
+    }
+    else if (quiz.type === 3) {
+        answerbutton1 = ""
+        answerbutton2 = ""
+        answerbutton3 = ""
+        answerbutton4 = ""
+        answerbutton5 = ""
+    }
+    else if (quiz.type === 4) {
+        answerbutton1 = ""
+        answerbutton2 = ""
+        answerbutton3 = ""
+        answerbutton4 = ""
+        answerbutton5 = ""
     }
     if (isstart === 0) {
         return (

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -106,6 +107,36 @@ public class RoomController {
 		}
 		return "ERROR : Size is required."; 
 	}
+    @PostMapping("/make/{code}/modify")
+    public ResponseEntity<String> makeRoomcode3(@RequestParam("code") String roomcode,@RequestBody Room room, HttpServletRequest req) throws NoSuchAlgorithmException {
+    	Map<String, String> resultMap = new HashMap<>();
+//        Member tmpMember = memberRepository.findById(memberid);
+//        int member_no = tmpMember.getMember_no();
+//        String code = "";
+        SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
+        Date time = new Date();
+        String time1 = format1.format(time);
+//        while(true) {
+//        	code = getRandomStr(6);
+//        	int n = roomRepository.findByRoomCode(code);
+//        	if(n==0) break;
+//        }
+        logger.info(roomcode);
+//        roomRepository.save(Room.builder()
+//                .code(code)
+//                .member_no(member_no)
+//                .quiz_title(quiz_title)
+//                .quiz_date(time1)
+//                .build());
+        Room tempRoom = roomRepository.findByroom_code(roomcode);
+        tempRoom.setCode(roomcode);
+        tempRoom.setMember_no(room.getMember_no());
+        tempRoom.setQuiz_date(time1);
+        tempRoom.setQuiz_cnt(room.getQuiz_cnt());
+        tempRoom.setQuiz_title(room.getQuiz_title());
+        roomRepository.save(tempRoom);
+        return  new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
+    }
 	 @GetMapping("/room_memberno")
 		public ResponseEntity<List<Room>> getQuiz(@RequestParam("no") String member_no, HttpServletRequest req){
 			 

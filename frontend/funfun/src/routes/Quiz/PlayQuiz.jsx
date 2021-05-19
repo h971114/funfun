@@ -484,13 +484,16 @@ function PlayQuiz(props) {
                 team = message.toteam
                 teammember = []
                 console.log(team)
-                axios.get(`http://127.0.0.1:8080/myapp/getteammember`, { params: { no: code, team: message.toteam } }).then(res => {
+                axios.get(`http://127.0.0.1:8080/myapp/team/getteammember`, { params: { no: code, team: message.toteam } }).then(res => {
                     // console.log(res);
                     if (res.data) {
                         res.data.map(obj => {
                             // addmember(obj.title);
                             teammember.push(obj.title);
                         })
+                        memberview = teammember.map((obj) => 
+                            <li>{obj}</li>
+                        )
                     } else {
                     }
                 }).catch(err => {
@@ -501,6 +504,9 @@ function PlayQuiz(props) {
             else if (message.toteam === team) {
                 // addmember(message.title)
                 teammember.push(message.title);
+                memberview = teammember.map((obj) => 
+                    <li>{obj}</li>
+                )
             }
             else if (message.fromteam === team) {
                 teammember = []
@@ -510,16 +516,18 @@ function PlayQuiz(props) {
                         res.data.map(obj => {
                             // addmember(obj.title);
                             teammember.push(obj.title);
+                            
                         })
+                        memberview = teammember.map((obj) => 
+                            <li>{obj}</li>
+                        )
                     } else {
                     }
                 }).catch(err => {
                     console.log(err);
                 })
             }
-            memberview = teammember.map((obj) => 
-                <li>{obj}</li>
-            )
+            
             console.log(memberview)
         }
         

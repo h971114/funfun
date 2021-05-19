@@ -12,4 +12,6 @@ public interface RoomRepository extends JpaRepository<Room, Integer>{
 	    int findByRoomCode(String room_code);
 	 @Query(value = "select r.* from room as r where r.room_member_no = :member_no", nativeQuery = true)
 	 	List<Room> findyBymember_no(String member_no);
+	 @Query(value = "select * from room as r where r.room_code = :room_code", nativeQuery = true)
+	    Room findByroom_code(String room_code);
 }
