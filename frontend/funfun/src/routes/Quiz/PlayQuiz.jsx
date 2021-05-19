@@ -34,6 +34,7 @@ var teammember = [];
 var memberview;
 var nextteamchat = ''
 var turn = ''
+var left_member = ''
 function PlayQuiz(props) {
 
     const [seconds, setSeconds] = useState(10);
@@ -60,7 +61,6 @@ function PlayQuiz(props) {
         console.log(stompClient.connected)
         console.log("send");
     }
-
     const send = (props, msg) => {
         let send_message = msg;
         if (stompClient && stompClient.connected) {
@@ -96,28 +96,56 @@ function PlayQuiz(props) {
     const connect = (props) => {
         socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
         stompClient = Stomp.over(socket);
+        isstart = 0;
         stompClient.connect(
             {},
             frame => {
                 connected = true;
-                stompClient.subscribe("/topic/" + props.location.state.code, onMessageReceived
+                ID = cookie.load('ID')
+                code = cookie.load('code')
+                nickname = cookie.load('nickname')
+                if (code === undefined) {
+                    code = props.location.state.code
+                }
+                if (nickname === undefined) {
+                    nickname = props.location.state.nickname
+                }
+                stompClient.subscribe("/topic/" + code, onMessageReceived
                     //   tick => {
                     //   }
                 );
-                // console.log(cookie.load('ID'));
-                // console.log(cookie.loadAll())
-                // ID = cookie.load('ID')
-                // if (ID !== undefined) {
+                console.log(cookie.load('ID'));
+                console.log(cookie.loadAll())
+                if (ID === undefined) {
                     const msg = { type: 'JOIN', content: "", roomnumber: props.location.state.code, sender: props.location.state.nickname };
                     stompClient.send("/app/chat", JSON.stringify(msg), {});
-                // }
-                // else {
-                //     const msg = { type: 'REJOIN', content: "", roomnumber: props.location.state.code, sender: props.location.state.nickname , id: ID };
-                //     stompClient.send("/app/chat", JSON.stringify(msg), {});
+                    nickname = props.location.state.nickname;
+                    code = props.location.state.code;
+                }
+                else {
+                    const msg = { type: 'REJOIN', content: "", roomnumber: code, sender: "" , id: ID };
+                    stompClient.send("/app/chat", JSON.stringify(msg), {});
+                        axios.get(`http://127.0.0.1:8080/myapp/team/rejoin`, { params: { no: code, id : ID } }).then(res => {
+                            console.log(res.data);
+                            index = parseInt(res.data.title)
+                            team = res.data.team
+                            nickname = res.data.sender
+                            isresult = parseInt(res.data.content)
+                            perteam = parseInt(res.data.toteam)
+                            console.log(isresult)
+                            console.log(index)
+                            if (perteam === 0) {
+                                perteam = 1;
+                            }
+                            if (index === isresult) {
+                                isresult += perteam
+                            }
 
-                // }
-                nickname = props.location.state.nickname;
-                code = props.location.state.code;
+                        });
+
+                }
+
+               
             },
             error => {
                 console.log(error);
@@ -127,7 +155,7 @@ function PlayQuiz(props) {
     }
     const disconnect = (props) => {
         if (stompClient) {
-            const msg = { type: 'LEAVE', content: "", roomnumber: props.location.state.code };
+            const msg = { type: 'LEAVE', content: "", roomnumber: code };
             stompClient.send("/app/chat", JSON.stringify(msg), {});
             stompClient.disconnect();
         }
@@ -252,16 +280,25 @@ function PlayQuiz(props) {
         var cloudArea = document.querySelector('#cloudArea');
         if (message.type === 'JOIN') {
             messageElement.classList.add('event-message');
-            if (message.sender === nickname && ID === '') {
+            if (message.sender === nickname && ID === undefined) {
                 ID = message.id;
                 const expires = new Date()
-                expires.setDate(expires.getDate() + 14);
+                expires.setDate(expires.getDate() + 14 );
                 cookie.save('ID', ID, {
                     path: '/',
                     expires,
                 });
+                cookie.save('code', code, {
+                    path: '/',
+                    expires,
+                })
+                cookie.save('nickname', nickname, {
+                    path: '/',
+                    expires,
+                })
             }
-            console.log(ID);
+            console.log(cookie.loadAll());
+            console.log(cookie.load('ID'))
             message.content = message.sender + ' joined!';
         } else if (message.type === 'LEAVE') {
             messageElement.classList.add('event-message');
@@ -299,7 +336,7 @@ function PlayQuiz(props) {
             isstart = 1;
             setSeconds(15);
             isresult = perteam;
-            axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index } }).then(res => {
+            axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index, isresult : isresult } }).then(res => {
                 console.log(res.data);
                 quiz = res.data;
                 index += 1;
@@ -333,7 +370,13 @@ function PlayQuiz(props) {
                     case 0:
                         axios.get(`http://127.0.0.1:8080/myapp/team/OX`, { params: { no: code } }).then(res => {
                             console.log(res.data);
-                            leftstate = "남은인원 : "+res.data;
+                            left_member = "남은인원 : "+res.data;
+                        })
+                        axios.get(`http://127.0.0.1:8080/myapp/team/OXmembers`, { params: { no: code } }).then(res => {
+                            console.log(res.data);
+                            leftstate = res.data.map((obj) =>
+                                <li>{JSON.stringify(obj)}</li>
+                            );
                         })
                         break;
                     case 1:
@@ -400,7 +443,7 @@ function PlayQuiz(props) {
                 else {
                     sendanswer = false;
                 }
-                axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index } }).then(res => {
+                axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index, isresult : isresult} }).then(res => {
                     console.log(res.data);
                     quiz = res.data;
                     index += 1;
@@ -434,14 +477,14 @@ function PlayQuiz(props) {
         else if (message.type === 'TOINDEX') {
             index = parseInt(message.content);
         }
-        else {
+        else if (message.type === 'ADMIN'){
             messageElement.classList.add('event-message');
             console.log(message)
             if (message.id === ID) {
                 team = message.toteam
                 teammember = []
                 console.log(team)
-                axios.get(`http://127.0.0.1:8080/myapp/team`, { params: { no: code, team: message.toteam } }).then(res => {
+                axios.get(`http://127.0.0.1:8080/myapp/getteammember`, { params: { no: code, team: message.toteam } }).then(res => {
                     // console.log(res);
                     if (res.data) {
                         res.data.map(obj => {
@@ -461,7 +504,7 @@ function PlayQuiz(props) {
             }
             else if (message.fromteam === team) {
                 teammember = []
-                axios.get(`http://127.0.0.1:8080/myapp/team`, { params: { no: code, team: message.fromteam } }).then(res => {
+                axios.get(`http://127.0.0.1:8080/myapp/team/getteammember`, { params: { no: code, team: message.fromteam } }).then(res => {
                     // console.log(res);
                     if (res.data) {
                         res.data.map(obj => {
@@ -560,8 +603,8 @@ function PlayQuiz(props) {
     if (isstart === 0) {
     return (
         <div className="quiz_contents">
-    <div className="quiz_parts">
-        <div id="cloudArea">
+            <div className="quiz_parts">
+            <div id="cloudArea">
             
             <div className="cloud_wrap">
                 <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
@@ -616,14 +659,14 @@ function PlayQuiz(props) {
         }
         return (
             <div className="quiz_contents">
-            <div className="quiz_parts">
+                <div className="quiz_parts">
                 <div id="cloudArea">
-                
-                    <div className="cloud_wrap">
-                        <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
-                        <input type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></input>
-                    </div>
-                </div>
+            
+            <div className="cloud_wrap">
+                <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
+            </div>
+        </div>
                 <div className="quiz_wrap">
                     <div className="quiz_tit">
                         {yourstate}
@@ -632,7 +675,8 @@ function PlayQuiz(props) {
                         {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
                         {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
                     </div>
-                    <div className="answer_wrap">
+                        <div className="answer_wrap">
+                            {left_member}
                         {leftstate}
                     </div>
                 </div>
@@ -668,13 +712,13 @@ function PlayQuiz(props) {
         return (
             <div className="quiz_contents">
                 <div className="quiz_parts">
-                    <div id="cloudArea">
-                    
-                        <div className="cloud_wrap">
-                            <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
-                            <input type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></input>
-                        </div>
-                    </div>
+                <div id="cloudArea">
+            
+            <div className="cloud_wrap">
+                <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
+            </div>
+        </div>
                     <div className="quiz_wrap">
                         <div className="quiz_tit">
                             {quiz.content}

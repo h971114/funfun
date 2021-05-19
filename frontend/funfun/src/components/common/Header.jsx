@@ -1,13 +1,15 @@
 import React, { useState, useEffect, Component } from 'react';
 import { Link } from "react-router-dom"
-
+import cookie from 'react-cookies'
 class Header extends Component {
 
     logout = () => {
         window.sessionStorage.clear();
         window.location.replace("/");
     }
-
+    click = () => {
+        console.log(cookie.loadAll())
+    }
     render() {
         return (
             <div className="header">
@@ -28,6 +30,18 @@ class Header extends Component {
                     <Link to="/login" className="btn login">
                         로그인
                     </Link>
+                }
+                {cookie.load('ID') !== undefined ?
+                    <div className = "loginWraps">
+                    <Link to="/game/PlayQuiz" className="btn login">
+                        이전 퀴즈로 접속
+                    </Link>
+                        </div>
+                    :
+                    
+                    <div>
+                    
+                </div>
                 }
             </div>
         );
