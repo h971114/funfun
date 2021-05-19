@@ -3,6 +3,7 @@ package com.ssafy.quiz.controller;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.quiz.domain.ChatMessage;
 import com.ssafy.quiz.domain.Quiz;
 import com.ssafy.quiz.domain.QuizInfoMap;
 
@@ -37,18 +39,20 @@ public class TeamController {
 		 System.out.println(quizinfomap.toString());
 		return new ResponseEntity<Map>(quizinfomap.getQuizmap().get(room_no).getTeammember(), HttpStatus.ACCEPTED);
 	}
-	 @GetMapping("")
+	 @GetMapping("/getteammember")
 		public ResponseEntity<List<Map<String, String>>> getTeammember(@RequestParam("no") String room_no, @RequestParam("team") String team_no, HttpServletRequest req){
 			 System.out.println(room_no);
 			 System.out.println(quizinfomap.toString());
 			return new ResponseEntity<List<Map<String, String>>>(quizinfomap.getQuizmap().get(room_no).getTeammember().get("team"+team_no), HttpStatus.ACCEPTED);
 		}
 	 @GetMapping("/quiz")
-		public ResponseEntity<Quiz> getQuiz(@RequestParam("no") String room_no, @RequestParam("index") int index, HttpServletRequest req){
+		public ResponseEntity<Quiz> getQuiz(@RequestParam("no") String room_no, @RequestParam("index") int index, @RequestParam("isresult") int isresult, HttpServletRequest req){
 			 System.out.println(room_no);
 			 System.out.println(quizinfomap.toString());
+			 quizinfomap.getQuizmap().get(room_no).setIsresult(isresult);
 			return new ResponseEntity<Quiz>(quizinfomap.getQuizmap().get(room_no).getQuizlist().get(index), HttpStatus.ACCEPTED);
 		}
+	 
 	 @GetMapping("/quizsize")
 		public ResponseEntity<Integer> getQuizsize(@RequestParam("no") String room_no, HttpServletRequest req){
 			return new ResponseEntity<Integer>(quizinfomap.getQuizmap().get(room_no).getQuizlist().size(), HttpStatus.ACCEPTED);
@@ -121,4 +125,37 @@ public class TeamController {
 		return new ResponseEntity<Integer>(quizinfomap.getQuizmap().get(room_no).getAlivemember(), HttpStatus.ACCEPTED);
 		 
 	 }
+	 @GetMapping("/OXmembers")
+	 public ResponseEntity<List<String>> getalivemembers(@RequestParam("no") String room_no, HttpServletRequest req){
+		 List<String> resultlist = new LinkedList<String>();
+		 for(String memberid : quizinfomap.getQuizmap().get(room_no).getAlivemembers()) {
+			 resultlist.add(quizinfomap.getQuizmap().get(room_no).getIdnicknamemap().get(memberid));
+		 }
+		return new ResponseEntity<List<String>>(resultlist, HttpStatus.ACCEPTED);
+		 
+	 }
+	 @GetMapping("/rejoin")
+	 public ResponseEntity<ChatMessage> getleftparams(@RequestParam("no") String room_no, @RequestParam("id") String member_id, HttpServletRequest req){
+		 ChatMessage returninfo = new ChatMessage();
+		 System.out.println("here");
+		 returninfo.setSender(quizinfomap.getQuizmap().get(room_no).getIdnicknamemap().get(member_id));
+		 System.out.println(returninfo.toString());
+		 System.out.println("here");
+		 String team = null;
+		 for(String tmp :quizinfomap.getQuizmap().get(room_no).getTeammember().keySet()) {
+			 for(Map<String, String> tmpmap : quizinfomap.getQuizmap().get(room_no).getTeammember().get(tmp)) {
+				 if(tmpmap.get("id").equals(member_id)) {
+					 team = tmp.substring(4);
+				 }
+			 }
+		 }
+		 System.out.println(team);
+		 returninfo.setTeam(team);
+		 returninfo.setToteam(Integer.toString(quizinfomap.getQuizmap().get(room_no).getPerteam()));
+		 returninfo.setTitle(Integer.toString(quizinfomap.getQuizmap().get(room_no).getIndex()));
+		 returninfo.setContent(Integer.toString(quizinfomap.getQuizmap().get(room_no).getIsresult()));
+		return new ResponseEntity<ChatMessage>(returninfo, HttpStatus.ACCEPTED);
+		 
+	 }
+
 }

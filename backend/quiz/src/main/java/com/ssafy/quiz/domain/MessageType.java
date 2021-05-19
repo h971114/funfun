@@ -11,5 +11,6 @@ public enum MessageType {
 	    NEXT,
 	    NEXTTEAM,
 	    PERTEAM,
-	    TOINDEX
+	    TOINDEX,
+	    REJOIN
 }

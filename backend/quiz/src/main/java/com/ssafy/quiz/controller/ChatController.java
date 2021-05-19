@@ -41,6 +41,15 @@ public class ChatController {
     	System.out.println(headerAccessor.getSessionId());
     	boolean issend = true;
     	String ID = headerAccessor.getSessionId();
+    	if(MessageType.REJOIN.equals(chatMessage.getType())) {
+    		if(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getUsernumber() == 0) {
+    			chatMessage.setType(MessageType.JOIN);
+    		}
+    		headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+    		headerAccessor.getSessionAttributes().put("roomnumber", chatMessage.getRoomnumber());
+    		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setUsernumber(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getUsernumber()+1);
+    	}
+    	System.out.println(chatMessage);
     	if(MessageType.JOIN.equals(chatMessage.getType())) {
     		chatMessage.setContent(chatMessage.getSender()+"님이 입장하셨습니다.");
     		headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
@@ -57,6 +66,8 @@ public class ChatController {
     			switch(quiz.getType()) {
     			case 0:
     				quiz.getPersonalscore().put(ID, 0);
+    				quiz.getAlivemembers().add(ID);
+    				quiz.setAlivemember(quiz.getAlivemember()+1);
     				break;
     			case 1:
     				quiz.getPersonalscore().put(ID, 0);
@@ -72,6 +83,8 @@ public class ChatController {
     			QuizInfo quiz = new QuizInfo();
     			chatMessage.setId(ID);
     			quiz.setUsernumber(1);
+    			headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+        		headerAccessor.getSessionAttributes().put("roomnumber", chatMessage.getRoomnumber());
     			quiz.getIdnicknamemap().put(ID, chatMessage.getSender());
     			quiz.getTeammember().put("team0", new LinkedList<Map<String,String>>());
     			quiz.getTeammember().put("team1", new LinkedList<Map<String,String>>());
@@ -88,6 +101,8 @@ public class ChatController {
     			switch(quiz.getType()) {
     			case 0:
     				quiz.getPersonalscore().put(ID, 0);
+    				quiz.getAlivemembers().add(ID);
+    				quiz.setAlivemember(quiz.getAlivemember()+1);
     				break;
     			case 1:
     				quiz.getPersonalscore().put(ID, 0);
@@ -138,7 +153,14 @@ public class ChatController {
     		teammap.get("team"+toteam).add(removemap);
     	}
     	if(MessageType.NEXT.equals(chatMessage.getType())) {
-    		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setIndex(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex()+1);
+    		if(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex() == quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIsresult()) {
+    			
+    		}
+    		else {
+    			quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setIndex(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex()+1);
+    		}
+    		System.out.println(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex());
+    		System.out.println(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIsresult());
     		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setLeftmember(3);
     	}
     	if(MessageType.CHAT.equals(chatMessage.getType())) {
@@ -184,9 +206,10 @@ public class ChatController {
     		case 0:
     			if("alive".equals(chatMessage.getContent())) {
     				//정답
-    				quiz.setAlivemember(quiz.getAlivemember()+1);
     			}
     			else {
+    				quiz.setAlivemember(quiz.getAlivemember()-1);
+    				quiz.getAlivemembers().remove(chatMessage.getId());
     				//탈락
     			}
     			issend = false;
@@ -219,17 +242,31 @@ public class ChatController {
     			if("alive".equals(chatMessage.getContent())) {
     				quiz.getTeamscore().put("team"+chatMessage.getTeam(), quiz.getTeamscore().get("team"+chatMessage.getTeam())+1);
     				chatMessage.setContent("정답! +1점!");
+    				
     			}
     			else {
     				chatMessage.setContent("오답! +0점!");
     				//nothing
     			}
 				chatMessage.setType(MessageType.NEXT);
+				if(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex() == quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIsresult()) {
+	    			
+	    		}
+	    		else {
+	    			quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setIndex(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex()+1);
+	    		}
     			break;
     		}
     	}
     	if(MessageType.TOINDEX.equals(chatMessage.getType())) {
     		//do nothing
+    	}
+    	if(MessageType.START.equals(chatMessage.getType())) {
+    		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setIndex(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex()+1);;
+    	}
+    	
+    	if(MessageType.PERTEAM.equals(chatMessage.getType())) {
+    		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setPerteam(Integer.parseInt(chatMessage.getContent()));
     	}
     	System.out.println(chatMessage);
     	System.out.println(quizinfomap.getQuizmap().toString());
