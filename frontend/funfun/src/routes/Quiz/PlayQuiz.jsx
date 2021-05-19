@@ -565,7 +565,7 @@ function PlayQuiz(props) {
             
             <div className="cloud_wrap">
                 <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
-                <input type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></input>
+                <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
             </div>
         </div>
         <label className="waiting">대기중입니다!</label>

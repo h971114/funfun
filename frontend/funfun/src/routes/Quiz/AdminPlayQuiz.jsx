@@ -85,6 +85,26 @@ function AdminPlayQuiz(props) {
     };
     const [board, setBoard] = useState(initialBoard);
 
+    const [cloud, setCloud] = useState('');
+
+    function getRandomNumber(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+    function getRandomColor() {
+        return '#' + ('00000' + (Math.random() * 16777216 << 0).toString(16)).substr(-6);
+    }
+
+    const sendCloud = (props, msg) => {
+        let send_message = msg;
+        if (stompClient && stompClient.connected) {
+            const cloud = { type: 'CHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team : team };
+            stompClient.send("/app/chat", JSON.stringify(cloud), {});
+        }
+        console.log(stompClient)
+        console.log(stompClient.connected)
+        console.log("send");
+    }
+
     const send = (props, msg) => {
         let send_message = msg;
         if (stompClient && stompClient.connected) {
@@ -193,6 +213,7 @@ function AdminPlayQuiz(props) {
     function onMessageReceived(payload) {
         var message = JSON.parse(payload.body);
         var messageArea = document.querySelector('#messageArea');
+        var cloudArea = document.querySelector('#cloudArea');
         var messageElement = document.createElement('li');
         if (message.type === 'JOIN') {
             messageElement.classList.add('event-message');
@@ -270,11 +291,32 @@ function AdminPlayQuiz(props) {
             messageElement.classList.add('event-message');
             message.content = message.sender + ' left!';
         } else if(message.type ==='CHAT'){
-            messageElement.classList.add('chat-message');
-            var usernameElement = document.createElement('span');
-            var usernameText = document.createTextNode(message.sender);
-            usernameElement.appendChild(usernameText);
-            messageElement.appendChild(usernameElement);
+            // messageElement.classList.add('chat-message');
+            // var usernameElement = document.createElement('span');
+            // var usernameText = document.createTextNode(message.sender);
+            // usernameElement.appendChild(usernameText);
+            // messageElement.appendChild(usernameElement);
+            var textElement = document.createElement('span');
+            var messageText = document.createTextNode(message.content);
+            var clouds = document.getElementsByClassName('cloud-message');
+            
+            textElement.classList.add('cloud-message');
+            textElement.appendChild(messageText);
+            cloudArea.appendChild(textElement);
+            
+            for (var i=0; i < clouds.length; i++) {
+                var thisCloud = clouds[i]
+                var randomTop = getRandomNumber(0, 100);
+                var randomLeft = getRandomNumber(0, 95);
+                var randomColor = getRandomColor();
+                
+                thisCloud.style.top = randomTop + "%";
+                thisCloud.style.left = randomLeft + "%";
+                thisCloud.style.color = randomColor;
+                setTimeout(() => {
+                    thisCloud.remove();
+                }, 5000);
+            }
         }
         else if (message.type === 'TEAMCHAT') {
             if (message.team === team) {
@@ -490,6 +532,13 @@ function AdminPlayQuiz(props) {
         return (
             <div className="quiz_contents">
         <div className="quiz_parts">
+            <div id="cloudArea">
+                
+                <div className="cloud_wrap">
+                    <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                    <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
+                </div>
+            </div>
             <label className="waiting">대기중입니다!</label>
             <div className="loading dot">
                 <div></div>
@@ -564,6 +613,12 @@ function AdminPlayQuiz(props) {
             return (
                 <div className="quiz_contents">
                 <div className="quiz_parts">
+                    <div id="cloudArea">
+                        <div className="cloud_wrap">
+                            <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                            <input type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></input>
+                        </div>
+                    </div>
                     <div className="quiz_wrap">
                         <div className="quiz_tit">
                             {yourstate}
@@ -628,6 +683,12 @@ function AdminPlayQuiz(props) {
             return (
                 <div className="quiz_contents">
                     <div className="quiz_parts">
+                        <div id="cloudArea">  
+                            <div className="cloud_wrap">
+                                <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                                <input type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></input>
+                            </div>
+                        </div>
                         <div className="quiz_wrap">
                             <div className="quiz_tit">
                                 {quiz.content}
