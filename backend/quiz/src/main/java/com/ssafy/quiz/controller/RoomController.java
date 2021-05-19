@@ -42,28 +42,30 @@ public class RoomController {
     @Autowired
     MemberRepository memberRepository;
     //방코드생성 - 임시저장
-    @PostMapping("/make/{id}/temp")
-    public ResponseEntity<String> makeRoomcode1(@RequestParam("id") String memberid,@RequestParam("title") String quiz_title, HttpServletRequest req) throws NoSuchAlgorithmException {
-    	Map<String, String> resultMap = new HashMap<>();
-        Member tmpMember = memberRepository.findById(memberid);
+    @PostMapping("/make/quiz/temp")
+    public ResponseEntity<String> makeRoomcode1(@RequestBody Map<String, String> room, HttpServletRequest req) throws NoSuchAlgorithmException {
+       Map<String, String> resultMap = new HashMap<>();
+        Member tmpMember = memberRepository.findById(room.get("memberid"));
         int member_no = tmpMember.getMember_no();
         String code = "";
         SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
         Date time = new Date();
         String time1 = format1.format(time);
+        System.out.println("in");
+        System.out.println(room.toString());
         while(true) {
-        	code = getRandomStr(6);
-        	int n = roomRepository.findByRoomCode(code);
-        	if(n==0) break;
+           code = getRandomStr(6);
+           int n = roomRepository.findByRoomCode(code);
+           if(n==0) break;
         }
         logger.info(code);
         roomRepository.save(Room.builder()
                 .code(code)
                 .member_no(member_no)
-                .quiz_title(quiz_title)
+                .quiz_title(room.get("quiz_title"))
                 .quiz_date(time1)
                 .build());
-        return  new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
+        return  new ResponseEntity<>(code, HttpStatus.ACCEPTED);
     }
     //방코드생성 - 저장완료되면 방코드 7자리 (6자리 랜덤 + 숫자 1)
     @PostMapping("/make/{id}/save")
@@ -107,8 +109,8 @@ public class RoomController {
 		}
 		return "ERROR : Size is required."; 
 	}
-    @PostMapping("/make/{code}/modify")
-    public ResponseEntity<String> makeRoomcode3(@RequestParam("code") String roomcode,@RequestBody Room room, HttpServletRequest req) throws NoSuchAlgorithmException {
+    @PostMapping("/make/quiz/modify")
+    public ResponseEntity<String> makeRoomcode3(@RequestBody Map<String, String> room, HttpServletRequest req) throws NoSuchAlgorithmException {
     	Map<String, String> resultMap = new HashMap<>();
 //        Member tmpMember = memberRepository.findById(memberid);
 //        int member_no = tmpMember.getMember_no();
@@ -121,19 +123,19 @@ public class RoomController {
 //        	int n = roomRepository.findByRoomCode(code);
 //        	if(n==0) break;
 //        }
-        logger.info(roomcode);
+//        logger.info(roomcode);
 //        roomRepository.save(Room.builder()
 //                .code(code)
 //                .member_no(member_no)
 //                .quiz_title(quiz_title)
 //                .quiz_date(time1)
 //                .build());
-        Room tempRoom = roomRepository.findByroom_code(roomcode);
-        tempRoom.setCode(roomcode);
-        tempRoom.setMember_no(room.getMember_no());
+        Room tempRoom = roomRepository.findByroom_code(room.get("code"));
+ //       tempRoom.setCode(roomcode);
+ //       tempRoom.setMember_no(room.getMember_no());
         tempRoom.setQuiz_date(time1);
-        tempRoom.setQuiz_cnt(room.getQuiz_cnt());
-        tempRoom.setQuiz_title(room.getQuiz_title());
+        tempRoom.setQuiz_cnt(Integer.parseInt(room.get("quiz_cnt")));
+        tempRoom.setQuiz_title(room.get("quiz_title"));
         roomRepository.save(tempRoom);
         return  new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
     }
