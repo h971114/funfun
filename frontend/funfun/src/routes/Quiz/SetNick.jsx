@@ -1,9 +1,23 @@
 import React, { useState, useEffect, Component } from 'react';
 import { Link } from "react-router-dom"
-var nickname =''
+import cookie from 'react-cookies';
+var nickname = ''
+
 class SetNick extends Component {
     
     goGame = (e) => {
+                cookie.save('ID', "", {
+                    path: '/',
+                    expires: new Date(Date.now()),
+                });
+                cookie.save('code', "", {
+                    path: '/',
+                    expires: new Date(Date.now()),
+                });
+                cookie.save('nickname', "", {
+                    path: '/',
+                    expires: new Date(Date.now()),
+                });
         this.props.history.push({
             pathname: '/game/PlayQuiz',
             state: {

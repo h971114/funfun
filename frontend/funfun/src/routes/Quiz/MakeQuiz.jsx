@@ -137,7 +137,10 @@ function MakeQuiz() {
     const C5Change = (e) => {
         setC5(e.target.value);
     }
-
+    const logout = () => {
+        window.sessionStorage.clear();
+        window.location.replace("/");
+    }
     return (
         <div className="quiz_contents">
             <div className="wrapContent">
@@ -149,7 +152,7 @@ function MakeQuiz() {
                         <span>Go Game</span>
                     </Link>
                     {sessionStorage.getItem('id') ?
-                        <a onClick={this.logout} className="btn login" href="">로그아웃</a>
+                        <a onClick={()=> logout()} className="btn login" href="">로그아웃</a>
                         :
                         <Link to="/login" className="btn login">
                             로그인
