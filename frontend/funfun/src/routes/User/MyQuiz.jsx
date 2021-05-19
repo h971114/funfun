@@ -31,7 +31,7 @@ class MyQuiz extends Component {
         })
     }
 
-    getRoomsByMemberNo (member_no) {
+    getRoomsByMemberNo(member_no) {
         axios.get(`http://127.0.0.1:8080/myapp/room/room_memberno`, {
             params: {
                 no: member_no,
@@ -44,7 +44,7 @@ class MyQuiz extends Component {
         })
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.getUserByID(sessionStorage.getItem('id'));
     }
 
@@ -76,11 +76,11 @@ class MyQuiz extends Component {
                             <Link to="/myquiz" className="sideMenuLink onLink">
                                 FunFun 목록
                             </Link>
-                            <Link to="/myresult" className="sideMenuLink">
-                                FunFun 결과
-                            </Link>
                             <Link to="/mypage" className="sideMenuLink">
                                 Profile
+                            </Link>
+                            <Link to="/game/makeQuiz" className="sideMenuLink">
+                                문제 만들기
                             </Link>
                         </div>
                     </div>
@@ -89,31 +89,30 @@ class MyQuiz extends Component {
                             <div className="quizList">
                                 <label className="scrollAlert">※ 스크롤하시면 리스트를 볼 수 있습니다.</label>
 
-                                    {this.state.myRooms.map((room, index) => (
-                                        (
+                                {this.state.myRooms.map((room, index) => (
+                                    (
                                         <Link to={{
                                             pathname: `./admin/game/playQuiz`,
                                             state: {
                                                 code: room.code,
-                                                nick: this.state.nick, 
+                                                nick: this.state.nick,
                                             }
                                         }}>
-                                        <div className="quizLists" >
-                                            <div className="quizData">
-                                                <div className="quizTitle">
-                                                    {room.quiz_title}
-                                                </div>
-                                                <div className="quizDetail">
-                                                    <span className="quizCnt">{room.quiz_cnt}문제 / </span>
-                                                    <span className="quizDate">{room.quiz_date} / </span>
-                                                    <span className="quizTeam">{room.team_cnt}팀 / </span>
-                                                    <span className="quizRoomCode">코드 {room.code} </span>
+                                            <div className="quizLists" >
+                                                <div className="quizData">
+                                                    <div className="quizTitle">
+                                                        {room.quiz_title}
+                                                    </div>
+                                                    <div className="quizDetail">
+                                                        <span className="quizCnt">{room.quiz_cnt}문제 / </span>
+                                                        <span className="quizDate">{room.quiz_date} / </span>
+                                                        <span className="quizRoomCode">코드 {room.code} </span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
                                         </Link>
-                                        ))
-                                    )}
+                                    ))
+                                )}
                             </div>
                         </div>
                     </div>

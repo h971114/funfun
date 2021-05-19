@@ -1,9 +1,9 @@
-import React, { useState, useEffect, Component } from 'react';
+import React, { useState, useEffect, Component, useRef } from 'react';
 import { render } from 'react-dom';
 import { Link } from "react-router-dom"
 import ProgressBar from '../../components/common/ProgressBar';
 import Modal from '../../components/common/Modal';
-import Board, { moveCard} from "@lourenci/react-kanban";
+import Board, { moveCard } from "@lourenci/react-kanban";
 import "@lourenci/react-kanban/dist/styles.css";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
@@ -38,6 +38,7 @@ function AdminPlayQuiz(props) {
     const [msg, setMsg] = useState('');
     const [perteamset, setQuiz] = useState('');
     const [nextteam, setTeam] = useState('');
+    const [copycode, setCopyCode] = useState(props.location.state.code);
     // useState를 사용하여 open상태를 변경한다. (open일때 true로 만들어 열리는 방식)
     const [modalOpen, setModalOpen] = useState(false);
     const initialBoard = {
@@ -58,14 +59,14 @@ function AdminPlayQuiz(props) {
                 id: 2,
                 title: "team2",
                 cards: [
-    
+
                 ]
             },
             {
                 id: 3,
                 title: "team3",
                 cards: [
-                    
+
                 ]
             },
             {
@@ -78,7 +79,7 @@ function AdminPlayQuiz(props) {
                 id: 5,
                 title: "team5",
                 cards: [
-                    
+
                 ]
             }
         ]
@@ -96,7 +97,7 @@ function AdminPlayQuiz(props) {
     const sendCloud = (props, msg) => {
         let send_message = msg;
         if (stompClient && stompClient.connected) {
-            const cloud = { type: 'CHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team : team };
+            const cloud = { type: 'CHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team: team };
             stompClient.send("/app/chat", JSON.stringify(cloud), {});
         }
         console.log(stompClient)
@@ -110,9 +111,9 @@ function AdminPlayQuiz(props) {
             stompClient.send("/app/chat", JSON.stringify(msg), {});
         }
         console.log(stompClient)
-    console.log(stompClient.connected)
-    console.log("send");
-        
+        console.log(stompClient.connected)
+        console.log("send");
+
     }
     const sendQuiz = (msg) => {
         let send_message = msg;
@@ -132,12 +133,12 @@ function AdminPlayQuiz(props) {
     const changeteam = (props, msg, card, source, destination) => {
         let send_message = msg;
         if (stompClient && stompClient.connected) {
-            const msg = { type: 'ADMIN', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, fromteam: source.fromColumnId, toteam: destination.toColumnId, id: card.id, title : card.title };
+            const msg = { type: 'ADMIN', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, fromteam: source.fromColumnId, toteam: destination.toColumnId, id: card.id, title: card.title };
             console.log(msg)
             stompClient.send("/app/chat", JSON.stringify(msg), {});
         }
         console.log(send_message);
-        
+
     }
     const connect = (props) => {
         socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
@@ -173,7 +174,7 @@ function AdminPlayQuiz(props) {
     }
     const addmember = (title) => {
         var memberArea = document.querySelector('#memberArea');
-        var infoElement =  document.createElement('li');
+        var infoElement = document.createElement('li');
         var memberElement = document.createElement('p');
         var memberinfo = title
         var memberText = document.createTextNode(memberinfo);
@@ -188,7 +189,7 @@ function AdminPlayQuiz(props) {
             }
         }
         else if (stompClient && stompClient.connected) {
-            const msg = { type: 'START', content: "" , roomnumber : code};
+            const msg = { type: 'START', content: "", roomnumber: code };
             stompClient.send("/app/chat", JSON.stringify(msg), {});
         }
     }
@@ -196,17 +197,17 @@ function AdminPlayQuiz(props) {
         if (quizsize === index && isstart === 2) {
             alert("마지막 문제입니다")
         }
-        else if (isresult -perteam === index) {
+        else if (isresult - perteam === index) {
             if (nextteamchat === '' && (quiz.type === 2 || quiz.type === 4)) {
                 alert("문제를 풀 팀을 정해주세요")
             }
             else if (stompClient && stompClient.connected) {
-                const msg = { type: 'NEXT', content: "" , roomnumber : code};
+                const msg = { type: 'NEXT', content: "", roomnumber: code };
                 stompClient.send("/app/chat", JSON.stringify(msg), {});
             }
         }
         else if (stompClient && stompClient.connected) {
-            const msg = { type: 'NEXT', content: "" , roomnumber : code};
+            const msg = { type: 'NEXT', content: "", roomnumber: code };
             stompClient.send("/app/chat", JSON.stringify(msg), {});
         }
     }
@@ -269,10 +270,10 @@ function AdminPlayQuiz(props) {
                 })
                 ID = message.id;
                 console.log(initialBoard)
-                axios.get(`http://127.0.0.1:8080/myapp/team/quizsize`, { params: { no: code} }).then(res => {
-                console.log(res.data);
-                quizsize = parseInt(res.data);
-            });
+                axios.get(`http://127.0.0.1:8080/myapp/team/quizsize`, { params: { no: code } }).then(res => {
+                    console.log(res.data);
+                    quizsize = parseInt(res.data);
+                });
             }
             else {
                 initialBoard.columns.map(obj => {
@@ -285,12 +286,12 @@ function AdminPlayQuiz(props) {
                 console.log(initialBoard)
                 setBoard(initialBoard);
             };
-            
+
             message.content = message.sender + ' joined!';
         } else if (message.type === 'LEAVE') {
             messageElement.classList.add('event-message');
             message.content = message.sender + ' left!';
-        } else if(message.type ==='CHAT'){
+        } else if (message.type === 'CHAT') {
             // messageElement.classList.add('chat-message');
             // var usernameElement = document.createElement('span');
             // var usernameText = document.createTextNode(message.sender);
@@ -299,17 +300,17 @@ function AdminPlayQuiz(props) {
             var textElement = document.createElement('span');
             var messageText = document.createTextNode(message.content);
             var clouds = document.getElementsByClassName('cloud-message');
-            
+
             textElement.classList.add('cloud-message');
             textElement.appendChild(messageText);
             cloudArea.appendChild(textElement);
-            
-            for (var i=0; i < clouds.length; i++) {
+
+            for (var i = 0; i < clouds.length; i++) {
                 var thisCloud = clouds[i]
                 var randomTop = getRandomNumber(0, 100);
                 var randomLeft = getRandomNumber(0, 95);
                 var randomColor = getRandomColor();
-                
+
                 thisCloud.style.top = randomTop + "%";
                 thisCloud.style.left = randomLeft + "%";
                 thisCloud.style.color = randomColor;
@@ -320,12 +321,12 @@ function AdminPlayQuiz(props) {
         }
         else if (message.type === 'TEAMCHAT') {
             if (message.team === team) {
-            messageElement.classList.add('chat-message');
-            var usernameElement = document.createElement('span');
-            var usernameText = document.createTextNode(message.sender);
-            usernameElement.appendChild(usernameText);
-            messageElement.appendChild(usernameElement);
-            }    
+                messageElement.classList.add('chat-message');
+                var usernameElement = document.createElement('span');
+                var usernameText = document.createTextNode(message.sender);
+                usernameElement.appendChild(usernameText);
+                messageElement.appendChild(usernameElement);
+            }
         }
         else if (message.type === 'START') {
             isstart = 1;
@@ -333,7 +334,7 @@ function AdminPlayQuiz(props) {
             isresult = perteam;
             console.log(isresult)
             console.log(perteam)
-            axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index, isresult : isresult } }).then(res => {
+            axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
                 console.log(res.data);
                 quiz = res.data;
                 index += 1;
@@ -363,12 +364,12 @@ function AdminPlayQuiz(props) {
             console.log(isresult)
             console.log(index)
             if (index === isresult) {
-                nextteamchat=''
+                nextteamchat = ''
                 switch (quiz.type) {
                     case 0:
                         axios.get(`http://127.0.0.1:8080/myapp/team/OX`, { params: { no: code } }).then(res => {
                             console.log(res.data);
-                            leftstate = "남은인원 : "+res.data;
+                            leftstate = "남은인원 : " + res.data;
                         })
                         break;
                     case 1:
@@ -387,13 +388,13 @@ function AdminPlayQuiz(props) {
                     case 2:
                         axios.get(`http://127.0.0.1:8080/myapp/team/team`, { params: { no: code, team: team } }).then(res => {
                             console.log(res.data);
-                            yourstate ="우리 팀 점수 : " + res.data;
+                            yourstate = "우리 팀 점수 : " + res.data;
                         }); // 팀전 자기 팀 점수
                         axios.get(`http://127.0.0.1:8080/myapp/team/team5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
-                            <li>{JSON.stringify(obj)}</li>
-                        );
+                                <li>{JSON.stringify(obj)}</li>
+                            );
                         }); // 팀전 상위 5팀 점수
                         break;
                     case 3:
@@ -404,20 +405,20 @@ function AdminPlayQuiz(props) {
                         axios.get(`http://127.0.0.1:8080/myapp/team/personal5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
-                            <li>{JSON.stringify(obj)}</li>
-                        );
+                                <li>{JSON.stringify(obj)}</li>
+                            );
                         }); // 개인전 상위 5명 점수
                         break;
                     case 4:
                         axios.get(`http://127.0.0.1:8080/myapp/team/team`, { params: { no: code, team: team } }).then(res => {
                             console.log(res.data);
-                            yourstate = "우리 팀 점수 : "+res.data;
+                            yourstate = "우리 팀 점수 : " + res.data;
                         }); // 팀전 자기 팀 점수
                         axios.get(`http://127.0.0.1:8080/myapp/team/team5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
-                            <li>{JSON.stringify(obj)}</li>
-                        );
+                                <li>{JSON.stringify(obj)}</li>
+                            );
                         }); // 팀전 상위 5팀 점수
                         break;
                 }
@@ -429,7 +430,7 @@ function AdminPlayQuiz(props) {
 
             else {
                 sendanswer = false;
-                axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index, isresult : isresult } }).then(res => {
+                axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
                     console.log(res.data);
                     quiz = res.data;
                     index += 1;
@@ -437,8 +438,8 @@ function AdminPlayQuiz(props) {
                 });
                 isstart = 1;
                 console.log(index)
-                console.log(isresult - perteam )
-                if (index === isresult - perteam ) {
+                console.log(isresult - perteam)
+                if (index === isresult - perteam) {
                     setSeconds(15);
                     if (quiz.type === 2 || quiz.type === 4) {
                         setSeconds(60);
@@ -519,6 +520,16 @@ function AdminPlayQuiz(props) {
         //게임 시작 부 소스 ★
     }
 
+    const textInput = React.useRef();
+    const copyCode = () => {
+        var dummy = document.createElement("textarea");
+        document.body.appendChild(dummy);
+        dummy.value = textInput.current.value;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+        alert("방코드가 복사 되었습니다.");
+    }
 
 
     const openModal = () => {
@@ -567,94 +578,100 @@ function AdminPlayQuiz(props) {
         return (
             <div className="quiz_contents">
                 <div className="quiz_parts">
-                <div id="cloudArea">
-                
-                <div className="cloud_wrap">
-                    <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
-                    <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
-                </div>
-            </div>
-            <label className="waiting">대기중입니다!</label>
-            <div className="loading dot">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-        </div>
-        <div className="communication">
-                <h3>전 체 목 록 😎</h3>
-                <div className="members_admin">
-                <ul id="memberArea">
+                    <div id="cloudArea">
 
-                </ul>
+                        <div className="cloud_wrap">
+                            <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                            <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
+                        </div>
+                    </div>
+                    <label className="waiting">대기중입니다!</label>
+                    <div className="loading dot">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                 </div>
-                <input className="tcBtn" type="button" value="팀 재분배" onClick={openModal} />
-                <h3>팀 원 채 팅 🤩</h3>
-                <div className="chat_admin">
-                    <ul id="messageArea">
+                <div className="communication">
+                    <h3 className="inlineHeader">전 체 목 록 😎</h3>
+                    <input type="text" className="copycode" value={copycode} ref={textInput} disabled />
+                    <input type="button" className="copy" value="방 코드 복사" onClick={copyCode}></input>
+                    <div className="members_admin">
+                        <ul id="memberArea">
 
-                    </ul>
-                </div>
-                <div className="send_wrap">
-                    <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
-                    <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
-                    <input type="text" className="chatsend" placeholder="팀당 문제 수 입력." onChange={event => setQuiz(event.target.value)}></input>
-                    <button onClick={() => sendQuiz(perteamset)}>다음문제버튼</button>
-                    <input type="text" className="chatsend" placeholder="다음을 풀 팀 입력." onChange={event => setTeam(event.target.value)}></input>
-                    <button onClick={() => sendTeam(nextteam)}>다음 팀 버튼</button>
-                </div>
-                <div className="admin_btn">
-                    <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
-                    <input type="button" className="nextGame" value="결 과" onClick = {next}></input>
-                </div>
-            </div>
-            <div className="allChat">
+                        </ul>
+                    </div>
+                    <input className="tcBtn" type="button" value="팀 재분배" onClick={openModal} />
+                    <h3>팀 원 채 팅 🤩</h3>
+                    <div className="chat_admin">
+                        <ul id="messageArea">
 
-            </div>
-            <Modal open={modalOpen} close={closeModal} header="팀 분배">
-                <div className="allMembers">
-
+                        </ul>
+                    </div>
+                    <div className="send_wrap">
+                        <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
+                        <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
+                        <div className="nextQuizWrap">
+                            <input type="text" className="chatsend teamQuizCnt" placeholder="팀당 문제 수 입력" onChange={event => setQuiz(event.target.value)}></input>
+                            <button className="nextBtn" onClick={() => sendQuiz(perteamset)}>다음 문제</button>
+                        </div>
+                        <div className="nextTeamWrap">
+                            <input type="text" className="chatsend teamNum" placeholder="다음을 풀 팀 입력" onChange={event => setTeam(event.target.value)}></input>
+                            <button className="nextBtn" onClick={() => sendTeam(nextteam)}>다음 팀</button>
+                        </div>
+                    </div>
+                    <div className="admin_btn">
+                        <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
+                        <input type="button" className="nextGame" value="결 과" onClick={next}></input>
+                    </div>
                 </div>
-                <div className="ctBtnsWrap">
-
-                </div>
-                <div className="teams">
+                <div className="allChat">
 
                 </div>
-                <Board
-                    onCardDragEnd={onCardMove}
-                    disableColumnDrag
-                >
-                    {board}
-                </Board>
-            </Modal>
+                <Modal open={modalOpen} close={closeModal} header="팀 분배">
+                    <div className="allMembers">
+
+                    </div>
+                    <div className="ctBtnsWrap">
+
+                    </div>
+                    <div className="teams">
+
+                    </div>
+                    <Board
+                        onCardDragEnd={onCardMove}
+                        disableColumnDrag
+                    >
+                        {board}
+                    </Board>
+                </Modal>
             </div>
         );
-        }
-        if (isstart === 2) {
-            if (quiz.type === 0) {
-                if (alive === 'alive') {
-                    yourstate = "당신은 살아남았습니다."
-                }
-                else {
-                    yourstate = "당신은 죽었습니다."
-                }
+    }
+    if (isstart === 2) {
+        if (quiz.type === 0) {
+            if (alive === 'alive') {
+                yourstate = "당신은 살아남았습니다."
             }
-            return (
-                <div className="quiz_contents">
-                    <div className="quiz_parts">
+            else {
+                yourstate = "당신은 죽었습니다."
+            }
+        }
+        return (
+            <div className="quiz_contents">
+                <div className="quiz_parts">
                     <div id="cloudArea">
-                
-                <div className="cloud_wrap">
-                    <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
-                    <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
-                </div>
-            </div>
+
+                        <div className="cloud_wrap">
+                            <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                            <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
+                        </div>
+                    </div>
                     <div className="quiz_wrap">
                         <div className="quiz_tit">
                             {yourstate}
@@ -669,11 +686,96 @@ function AdminPlayQuiz(props) {
                     </div>
                 </div>
                 <div className="communication">
+                    <h3>전 체 목 록 😎</h3>
+                    <div className="members_admin">
+                        <ul id="memberArea">
+
+                        </ul>
+                    </div>
+                    <input className="tcBtn" type="button" value="팀 재분배" onClick={openModal} />
+                    <h3>팀 원 채 팅 🤩</h3>
+                    <div className="chat_admin">
+                        <ul id="messageArea">
+
+                        </ul>
+                    </div>
+                    <div className="send_wrap">
+                        <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
+                        <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
+                        <input type="text" className="chatsend" placeholder="다음을 풀 팀 입력." onChange={event => setTeam(event.target.value)}></input>
+                        <button onClick={() => sendTeam(nextteam)}>다음 팀 버튼</button>
+                    </div>
+                    <div className="admin_btn">
+                        <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
+                        <input type="button" className="nextGame" value="결 과" onClick={next}></input>
+                    </div>
+                </div>
+                <div className="allChat">
+
+                </div>
+                <Modal open={modalOpen} close={closeModal} header="팀 분배">
+                    <div className="allMembers">
+
+                    </div>
+                    <div className="ctBtnsWrap">
+
+                    </div>
+                    <div className="teams">
+
+                    </div>
+                    <Board
+                        onCardDragEnd={onCardMove}
+                        disableColumnDrag
+                    >
+                        {board}
+                    </Board>
+                </Modal>
+            </div>
+        )
+    }
+    return (
+        <div className="quiz_contents">
+            <div className="quiz_parts">
+                <div id="cloudArea">
+
+                    <div className="cloud_wrap">
+                        <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                        <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
+                    </div>
+                </div>
+                <div className="quiz_wrap">
+                    <div className="quiz_tit">
+                        {quiz.content}
+                    </div>
+                    <div className="quiz_etc">
+                        {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
+                        {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
+                    </div>
+                    <div className="quiz_progress">
+                        <ProgressBar duration={progress} />
+                        <div className="left_time">
+                            {seconds < 10 ? `0${seconds}` : seconds}
+                        </div>
+                    </div>
+                    <div className="answer_wrap">
+                        {answerbutton1}
+                        {answerbutton2}
+                        {answerbutton3}
+                        {answerbutton4}
+                        {answerbutton5}
+                        <br />
+                                전체문제 : {quizsize}
+                        <br />
+                                현재문제 : {index}
+                    </div>
+                </div>
+            </div>
+            <div className="communication">
                 <h3>전 체 목 록 😎</h3>
                 <div className="members_admin">
-                <ul id="memberArea">
+                    <ul id="memberArea">
 
-                </ul>
+                    </ul>
                 </div>
                 <input className="tcBtn" type="button" value="팀 재분배" onClick={openModal} />
                 <h3>팀 원 채 팅 🤩</h3>
@@ -685,12 +787,10 @@ function AdminPlayQuiz(props) {
                 <div className="send_wrap">
                     <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
                     <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
-                    <input type="text" className="chatsend" placeholder="다음을 풀 팀 입력." onChange={event => setTeam(event.target.value)}></input>
-                    <button onClick={() => sendTeam(nextteam)}>다음 팀 버튼</button>
                 </div>
                 <div className="admin_btn">
                     <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
-                    <input type="button" className="nextGame" value="결 과" onClick = {next}></input>
+                    <input type="button" className="nextGame" value="결 과" onClick={next}></input>
                 </div>
             </div>
             <div className="allChat">
@@ -713,91 +813,8 @@ function AdminPlayQuiz(props) {
                     {board}
                 </Board>
             </Modal>
-            </div>
-            )
-        }
-            return (
-                <div className="quiz_contents">
-                    <div className="quiz_parts">
-                    <div id="cloudArea">
-                
-                <div className="cloud_wrap">
-                    <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
-                    <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
-                </div>
-            </div>
-                        <div className="quiz_wrap">
-                            <div className="quiz_tit">
-                                {quiz.content}
-                            </div>
-                            <div className="quiz_etc">
-                                {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
-                                {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
-                            </div>
-                            <div className="quiz_progress">
-                                <ProgressBar duration={progress} />
-                                <div className="left_time">
-                                    {seconds < 10 ? `0${seconds}` : seconds}
-                                </div>
-                            </div>
-                            <div className="answer_wrap">
-                                {answerbutton1}
-                                {answerbutton2}
-                                {answerbutton3}
-                                {answerbutton4}
-                                {answerbutton5}
-                                <br />
-                                전체문제 : {quizsize}
-                                <br />
-                                현재문제 : {index}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="communication">
-                <h3>전 체 목 록 😎</h3>
-                <div className="members_admin">
-                <ul id="memberArea">
-
-                </ul>
-                </div>
-                <input className="tcBtn" type="button" value="팀 재분배" onClick={openModal} />
-                <h3>팀 원 채 팅 🤩</h3>
-                <div className="chat_admin">
-                    <ul id="messageArea">
-
-                    </ul>
-                </div>
-                <div className="send_wrap">
-                    <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
-                    <input type="button" className="chatsendbtn"onClick={() => send(props, msg)}></input>
-                </div>
-                <div className="admin_btn">
-                    <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
-                    <input type="button" className="nextGame" value="결 과" onClick = {next}></input>
-                </div>
-            </div>
-            <div className="allChat">
-
-            </div>
-            <Modal open={modalOpen} close={closeModal} header="팀 분배">
-                <div className="allMembers">
-
-                </div>
-                <div className="ctBtnsWrap">
-
-                </div>
-                <div className="teams">
-
-                </div>
-                <Board
-                    onCardDragEnd={onCardMove}
-                    disableColumnDrag
-                >
-                    {board}
-                </Board>
-            </Modal>
-                </div>
-            );
+        </div>
+    );
 }
 
 export default AdminPlayQuiz;

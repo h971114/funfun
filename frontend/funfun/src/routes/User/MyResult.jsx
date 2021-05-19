@@ -62,9 +62,6 @@ class MyResult extends Component {
                             <Link to="/myquiz" className="sideMenuLink">
                                 FunFun 목록
                             </Link>
-                            <Link to="/myresult" className="sideMenuLink onLink">
-                                FunFun 결과
-                            </Link>
                             <Link to="/mypage" className="sideMenuLink">
                                 Profile
                             </Link>

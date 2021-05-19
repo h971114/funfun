@@ -169,11 +169,11 @@ class MyPage extends Component {
                             <Link to="/myquiz" className="sideMenuLink">
                                 FunFun 목록
                             </Link>
-                            <Link to="/myresult" className="sideMenuLink">
-                                FunFun 결과
-                            </Link>
                             <Link to="/mypage" className="sideMenuLink onLink">
                                 Profile
+                            </Link>
+                            <Link to="/game/makeQuiz" className="sideMenuLink">
+                                문제 만들기
                             </Link>
                         </div>
                     </div>
