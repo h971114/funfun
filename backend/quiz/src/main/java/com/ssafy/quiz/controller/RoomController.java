@@ -34,7 +34,7 @@ import com.ssafy.quiz.repository.RoomRepository;
 @RequestMapping("/room")
 @CrossOrigin("*")
 public class RoomController {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+   private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String SUCCESS = "SUCCESS";
     private final String FAIL = "FAIL";
     
@@ -69,47 +69,53 @@ public class RoomController {
         return  new ResponseEntity<>(code, HttpStatus.ACCEPTED);
     }
     //방코드생성 - 저장완료되면 방코드 7자리 (6자리 랜덤 + 숫자 1)
-    @PostMapping("/make/{id}/save")
-    public ResponseEntity<String> makeRoomcode2(@RequestParam("id") String memberid,@RequestParam("title") String quiz_title, HttpServletRequest req) throws NoSuchAlgorithmException {
-    	Map<String, String> resultMap = new HashMap<>();
-        Member tmpMember = memberRepository.findById(memberid);
+    @PostMapping("/make/quiz/save")
+    public ResponseEntity<String> makeRoomcode2(@RequestBody Map<String, String> room, HttpServletRequest req) throws NoSuchAlgorithmException {
+       Map<String, String> resultMap = new HashMap<>();
+        Member tmpMember = memberRepository.findById(room.get("memberid"));
         int member_no = tmpMember.getMember_no();
         String code = "";
         SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
         Date time = new Date();
         String time1 = format1.format(time);
         while(true) {
-        	code = getRandomStr(6);
-        	int n = roomRepository.findByRoomCode(code);
-        	if(n==0) break;
+           code = getRandomStr(6);
+           int n = roomRepository.findByRoomCode(code);
+           if(n==0) break;
         }
         code+="1";
         logger.info(code);
         roomRepository.save(Room.builder()
                 .code(code)
                 .member_no(member_no)
-                .quiz_title(quiz_title)
+                .quiz_title(room.get("quiz_title"))
                 .quiz_date(time1)
                 .build());
         return  new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
     }
     //랜덤 6자리 생성
     public static String getRandomStr(int size) {
-		if(size > 0) {
-			char[] tmp = new char[size];
-			for(int i=0; i<tmp.length; i++) {
-				int div = (int) Math.floor( Math.random() * 2 );
-				
-				if(div == 0) { // 0이면 숫자로
-					tmp[i] = (char) (Math.random() * 10 + '0') ;
-				}else { //1이면 알파벳
-					tmp[i] = (char) (Math.random() * 26 + 'A') ;
-				}
-			}
-			return new String(tmp);
-		}
-		return "ERROR : Size is required."; 
-	}
+      if(size > 0) {
+         char[] tmp = new char[size];
+         for(int i=0; i<tmp.length; i++) {
+            int div = (int) Math.floor( Math.random() * 2 );
+            
+            if(div == 0) { // 0이면 숫자로
+               tmp[i] = (char) (Math.random() * 10 + '0') ;
+            }else { //1이면 알파벳
+               tmp[i] = (char) (Math.random() * 26 + 'A') ;
+            }
+         }
+         return new String(tmp);
+      }
+      return "ERROR : Size is required."; 
+   }
+    @GetMapping("/room_memberno")
+      public ResponseEntity<List<Room>> getQuiz(@RequestParam("no") String member_no, HttpServletRequest req){
+          
+         return new ResponseEntity<List<Room>>(roomRepository.findyBymember_no(member_no), HttpStatus.ACCEPTED);
+      }
+    
     @PutMapping("")
     public ResponseEntity<String> makeRoomcode3(@RequestBody Room room, HttpServletRequest req) throws NoSuchAlgorithmException {
     	Map<String, String> resultMap = new HashMap<>();
@@ -131,6 +137,9 @@ public class RoomController {
 //                .quiz_title(quiz_title)
 //                .quiz_date(time1)
 //                .build());
+//        System.out.println(room.getQuiz_cnt());
+//        System.out.println(room.getQuiz_title());
+//        System.out.println(room.getQuiz_cnt());
         roomRepository.updateInquiry(room.getQuiz_cnt(),room.getQuiz_title(),room.getCode());
 //        Room tempRoom = roomRepository.findByroom_code(room.getCode());
 //        tempRoom.setCode(room.getCode());
@@ -143,9 +152,4 @@ public class RoomController {
 //        roomRepository.save(tempRoom);
         return  new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
     }
-	 @GetMapping("/room_memberno")
-		public ResponseEntity<List<Room>> getQuiz(@RequestParam("no") String member_no, HttpServletRequest req){
-			 
-			return new ResponseEntity<List<Room>>(roomRepository.findyBymember_no(member_no), HttpStatus.ACCEPTED);
-		}
 }

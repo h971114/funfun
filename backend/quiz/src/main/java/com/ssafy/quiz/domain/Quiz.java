@@ -17,10 +17,12 @@ public class Quiz {
     @Column(name = "quiz_no")
     private int quiz_no;
 
-    @ManyToOne
-    @JoinColumn(name = "quiz_member_no")
-    private Member member;
-
+//    @ManyToOne
+//    @JoinColumn(name = "quiz_member_no")
+//    private Member member;
+    
+    @Column(name = "quiz_member_no")
+    private int memberno;
     @Column(name = "quiz_type")
     private int type;
     @Column(name = "quiz_content")
