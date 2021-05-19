@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -136,6 +137,8 @@ public class RoomController {
         tempRoom.setQuiz_date(time1);
         tempRoom.setQuiz_cnt(room.getQuiz_cnt());
         tempRoom.setQuiz_title(room.getQuiz_title());
+        tempRoom.setRoom_no(room.getRoom_no());
+        tempRoom.setTeam_cnt(room.getTeam_cnt());
         roomRepository.save(tempRoom);
         return  new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
     }

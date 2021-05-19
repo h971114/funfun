@@ -2,8 +2,10 @@ package com.ssafy.quiz.repository;
 
 import java.util.List;
 
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
 
 import com.ssafy.quiz.domain.Room;
 
@@ -14,4 +16,5 @@ public interface RoomRepository extends JpaRepository<Room, Integer>{
 	 	List<Room> findyBymember_no(String member_no);
 	 @Query(value = "select * from room as r where r.room_code = :room_code", nativeQuery = true)
 	    Room findByroom_code(String room_code);
+
 }
