@@ -109,8 +109,8 @@ public class RoomController {
 		}
 		return "ERROR : Size is required."; 
 	}
-    @PostMapping("/make/quiz/modify")
-    public ResponseEntity<String> makeRoomcode3(@RequestBody Map<String, String> room, HttpServletRequest req) throws NoSuchAlgorithmException {
+    @PutMapping("")
+    public ResponseEntity<String> makeRoomcode3(@RequestBody Room room, HttpServletRequest req) throws NoSuchAlgorithmException {
     	Map<String, String> resultMap = new HashMap<>();
 //        Member tmpMember = memberRepository.findById(memberid);
 //        int member_no = tmpMember.getMember_no();
@@ -130,12 +130,12 @@ public class RoomController {
 //                .quiz_title(quiz_title)
 //                .quiz_date(time1)
 //                .build());
-        Room tempRoom = roomRepository.findByroom_code(room.get("code"));
- //       tempRoom.setCode(roomcode);
- //       tempRoom.setMember_no(room.getMember_no());
+        Room tempRoom = roomRepository.findByroom_code(room.getCode());
+        tempRoom.setCode(room.getCode());
+        tempRoom.setMember_no(room.getMember_no());
         tempRoom.setQuiz_date(time1);
-        tempRoom.setQuiz_cnt(Integer.parseInt(room.get("quiz_cnt")));
-        tempRoom.setQuiz_title(room.get("quiz_title"));
+        tempRoom.setQuiz_cnt(room.getQuiz_cnt());
+        tempRoom.setQuiz_title(room.getQuiz_title());
         roomRepository.save(tempRoom);
         return  new ResponseEntity<>(SUCCESS, HttpStatus.ACCEPTED);
     }
