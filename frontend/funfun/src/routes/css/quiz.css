@@ -119,6 +119,9 @@
   text-align: center;
   top: 50px !important;
 }
+.quiz_contents .quiz_parts .quiz_wrap .quiz_tit.myScore .myteamScore p{
+  font-size: 30px;
+}
 .quiz_contents .quiz_parts .quiz_wrap .quiz_tit.myScore .preMyImgWrap{
   display: inline-block;
   height: 120px;
@@ -196,6 +199,10 @@
 }
 .quiz_contents .quiz_parts .quiz_wrap .answer_wrap.allteamScore{
   top: 280px !important;
+}
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap.allteamScore h3{
+  font-size: 30px;
+  font-weight: 800;
 }
 .quiz_contents .quiz_parts .quiz_wrap .answer_wrap li{
   height: 60px;

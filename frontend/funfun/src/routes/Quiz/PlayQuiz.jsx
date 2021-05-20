@@ -841,7 +841,7 @@ function PlayQuiz(props) {
                         </div>
                         <div className={"answer_wrap" + (quiz.type != 0 ? ' allteamScore' : '')}>
                             {left_member}
-                            <div ></div>
+                            <h3>전체 점수</h3>
                             {leftstate}
                         </div>
                     </div>
