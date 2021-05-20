@@ -312,6 +312,9 @@ function MakeQuiz({ history }) {
     }
 
     const quizChange = (e) => {
+        for (var i = 0; i < AInputArr.length; i++) {
+            AInputArr[i].value = "";
+        }
         console.log("quiztype : " + quiztype);
         var order = e.target.id;
         order = order.charAt(order.length - 1);
@@ -356,6 +359,7 @@ function MakeQuiz({ history }) {
             var SC4 = quizset[order].SC4;
             var SC5 = quizset[order].SC5;
             var SAnswer = quizset[order].SAnswer;
+            console.log(quizset[order].SAnswer);
             var typeTxt = "";
             // console.log(order + " : " + type);
             setQuiztype(type);
@@ -398,12 +402,23 @@ function MakeQuiz({ history }) {
                 } else if (SAnswer == "5") {
                     document.getElementById("C5").checked = true;
                 }
+                if (type == 1) {
+                    document.getElementById("TradioSoloCS").checked = true;
+                } else {
+                    document.getElementById("TradioTeamCT").checked = true;
+                }
+
             } else if (type == 3 || type == 4) {
                 setOXon(false);
                 setChoiceon(false);
                 setAnsweron(true);
                 document.getElementById("answerQInput").value = Squiztitle;
                 document.getElementById("AanswerInput").value = SAnswer;
+                if (type == 1) {
+                    document.getElementById("TradioSoloAS").checked = true;
+                } else {
+                    document.getElementById("TradioTeamAT").checked = true;
+                }
             } else {
                 setOXon(false);
                 setChoiceon(false);
@@ -614,6 +629,8 @@ function MakeQuiz({ history }) {
                 }
                 alert("문제 등록이 되었습니다.");
                 history.push('/myquiz');
+            } else {
+                alert("오류가 발생하였습니다.");
             }
         }
 

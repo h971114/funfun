@@ -83,7 +83,7 @@
   border: 1px solid black;
   border-radius: 18px;
 
-  background-color: white;
+  background-color: rgba(256,256,256,0.8);
 
   position: relative;
 }
@@ -1097,10 +1097,10 @@
 }
 .quiz_contents .wrapContent .quiz_attr .AWrap label img {
   /* width: 30%; */
-  height: 80px;
+  height: 70px;
 }
 .quiz_contents .wrapContent .quiz_attr .AWrap label img:first-child {
-  margin-right: 30px;
+  margin-right: 20px;
 }
 .quiz_contents .wrapContent .quiz_attr .AWrap .AradioWrap .answerChoice {
   height: 30px !important;
