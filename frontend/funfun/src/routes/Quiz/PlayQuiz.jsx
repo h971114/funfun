@@ -30,7 +30,7 @@ var yourTstate = ''
 var teamnum = 1;
 var leftstate = ''
 var currentcheck = ''
-var perteam;
+var perteam ;
 var sendanswer;
 var teammember = [];
 var memberview;
@@ -171,6 +171,10 @@ function PlayQuiz(props) {
                     //   tick => {
                     //   }
                 );
+                if (props.location.state.beforeid !== '') {
+                    const msg = { type: 'RETIRE', content: "", roomnumber: code, id: props.location.state.beforeid };
+                    stompClient.send("/app/chat", JSON.stringify(msg), {});
+                }
                 if (ID === undefined) {
                     const msg = { type: 'JOIN', content: "", roomnumber: props.location.state.code, sender: props.location.state.nickname };
                     stompClient.send("/app/chat", JSON.stringify(msg), {});
@@ -191,7 +195,7 @@ function PlayQuiz(props) {
                                 if (perteam === 0) {
                                     perteam = 1;
                                 }
-
+                                
                                 if (res.data.fromteam == "yes") {
                                     axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
                                         quiz = res.data;
@@ -217,8 +221,6 @@ function PlayQuiz(props) {
                         else {
                             const msg = { type: 'JOIN', content: "", roomnumber: code, sender: nickname };
                             stompClient.send("/app/chat", JSON.stringify(msg), {});
-                            nickname = props.location.state.nickname;
-                            code = props.location.state.code;
                         }
                     })
                     // const msg = { type: 'REJOIN', content: "", roomnumber: code, sender: "", id: ID };
@@ -405,7 +407,7 @@ function PlayQuiz(props) {
                         });
                     }
                 });
-
+                
             }
             teammember = []
             console.log(team)
@@ -422,9 +424,9 @@ function PlayQuiz(props) {
                 } else {
                 }
             }).catch(err => {
-            })
+        })
             message.content = message.sender + ' joined!';
-
+            
         } else if (message.type === 'LEAVE') {
             messageElement.classList.add('event-message');
             message.content = message.sender + ' left!';
@@ -543,7 +545,7 @@ function PlayQuiz(props) {
                         }); // 개인전 자기 자신 점수
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
                             leftstate = res.data.map((obj, key) =>
-                                <li><img src={"medal" + (key + 1) + ".png"} /> {JSON.stringify(obj)}</li>
+                                <li><img src={"/img/medal" + (key + 1) + ".png"} /> {JSON.stringify(obj)}</li>
                             );
                         }); // 개인전 상위 5명 점수
                         break;
@@ -569,7 +571,7 @@ function PlayQuiz(props) {
                         }); // 개인전 자기 자신 점수
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
                             leftstate = res.data.map((obj, key) =>
-                                <li><img src={"medal" + (key + 1) + ".png"} /> {JSON.stringify(obj)}</li>
+                                <li><img src={"/img/medal" + (key + 1) + ".png"} /> {JSON.stringify(obj)}</li>
                             );
                         }); // 개인전 상위 5명 점수
                         break;
@@ -626,7 +628,7 @@ function PlayQuiz(props) {
                 sendanswer = false;
                 turn = '당신의 팀 차례입니다.'
             }
-            else if (quiz.type === 2 || quiz.type === 4) {
+            else if(quiz.type === 2  || quiz.type === 4) {
                 turn = '다른 팀의 차례입니다.'
                 sendanswer = true;
             }
@@ -693,6 +695,13 @@ function PlayQuiz(props) {
                 })
             }
 
+        }
+        else if (message.type === 'RETIRE') {
+            if (message.id === ID) {
+                disconnect();
+                alert('다른 접속이 감지되었습니다. 통신을 해제합니다.');
+                window.location.replace('/')
+            }
         }
 
     }
@@ -808,6 +817,13 @@ function PlayQuiz(props) {
                 );
             })
         }
+        if (quiz.type === 2 || quiz.type === 4) {
+            teamnum = "Team " + teamnum;
+        }
+        else {
+            teamnum = "";
+            team = 1;
+        }
         return (
             <div className="quiz_contents">
                 <div className="quiz_parts gameplaying">
@@ -819,20 +835,19 @@ function PlayQuiz(props) {
                         </div>
                     </div>
                     <div className="quiz_wrap">
-                        <div className="quiz_tit myScore">
+                    <div className="quiz_tit myScore">
                             {/* {yourstate} */}
                             <div className={(quiz.type != 0 ? 'myteamScore' : 'hidden')}>
                                 <p>{yourTstate}</p>
                                 <div className="preMyScore">
                                     <div className="preMyImgWrap">
-                                        <img src={"/img/team" + teamnum + ".png"} />
+                                        <img src={"/img/team" + team + ".png"} />
                                     </div>
                                     <div className="preMyDataWrap">
-                                        Team {teamnum}<br />
+                                        {teamnum}<br />
                                         <span>{yourstate}점</span>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div className="quiz_etc">
@@ -875,7 +890,7 @@ function PlayQuiz(props) {
     }
     return (
         <div className="quiz_contents">
-            <div className="quiz_parts gameplaying">
+             <div className="quiz_parts gameplaying">
                 <div id="cloudArea">
 
                     <div className="cloud_wrap">

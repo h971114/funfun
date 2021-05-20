@@ -157,4 +157,42 @@ public class TeamController {
 		 }
 		 return new ResponseEntity<String>(returninfo, HttpStatus.ACCEPTED);
 	 }
+	 @GetMapping("/isbefore")
+	 public void beforeidcontroll(@RequestParam("no") String room_no, @RequestParam("id") String member_id, HttpServletRequest req){
+		 String returninfo = "";
+		 if(quizinfomap.getQuizmap().containsKey(room_no)) {
+			 returninfo = "ison";
+			 
+		 }
+		 else {
+			 returninfo = "noton";
+		 }
+		 Map<String, String> removemap = null;
+		 if(returninfo.equals("ison")) {
+			 System.out.println(quizinfomap.getQuizmap().get(room_no).toString());
+			 for(String tmp :quizinfomap.getQuizmap().get(room_no).getTeammember().keySet()) {
+				 for(Map<String, String> tmpmap : quizinfomap.getQuizmap().get(room_no).getTeammember().get(tmp)) {
+					 if(tmpmap.get("id").equals(member_id)) {
+						 	removemap = tmpmap;
+						 	break;
+					 }
+				 }
+				 if(removemap != null) {
+					 quizinfomap.getQuizmap().get(room_no).getTeammember().get(tmp).remove(removemap);
+					 break;
+				 }
+			 }
+			 String removestr = null;
+			 for(String tmp :quizinfomap.getQuizmap().get(room_no).getPersonalscore().keySet()) {
+				 if(tmp.equals(member_id)) {
+					 removestr = tmp;
+				 }
+			 }
+			 if(removestr != null) {
+				 quizinfomap.getQuizmap().get(room_no).getPersonalscore().remove(removestr);
+			 }
+			 quizinfomap.getQuizmap().get(room_no).getIdnicknamemap().remove(member_id);
+			 System.out.println(quizinfomap.getQuizmap().get(room_no).toString());
+		 } 
+	 }
 }

@@ -1,11 +1,18 @@
 import React, { useState, useEffect, Component } from 'react';
 import { Link } from "react-router-dom"
 import cookie from 'react-cookies';
+import axios from 'axios';
 var nickname = ''
-
+var beforeid =''
 class SetNick extends Component {
 
     goGame = (e) => {
+        if (cookie.load('ID') !== undefined) {
+            beforeid = cookie.load('ID');
+            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/isbefore`, { params: { no: cookie.load('code'),  id : cookie.load('ID') } }).then(res => {
+                console.log(res);
+            });
+        }
         if (nickname) {
             cookie.save('ID', "", {
                 path: '/',
@@ -23,7 +30,8 @@ class SetNick extends Component {
                 pathname: '/game/PlayQuiz',
                 state: {
                     nickname: nickname,
-                    code: this.props.location.state.code
+                    code: this.props.location.state.code,
+                    beforeid : beforeid
                 }
             });
             console.log(this.props.history);
