@@ -38,6 +38,9 @@ class FindPW extends Component {
         var pwReg = /^(?=.*[A-Za-z])(?=.*[$@$!%*#^?&])[A-Za-z\d$@$!%*^#?&]{8,15}$/g;
         var pwSReg = /^(?=.*[$@$!%*#^?&])[A-Za-z\d$@$!%*^#?&]{8,15}$/g;
         if (!pwReg.test(pw)) {
+            this.setState({
+                checkPW: false
+            })
             document.getElementById("avalidPW").setAttribute('style', 'color:#f91c37');
             if (pw.length < 8) {
                 document.getElementById("avalidPW").innerText = "비밀번호는 8~15의 길이여야 합니다.";
@@ -55,6 +58,8 @@ class FindPW extends Component {
             })
             document.getElementById("avalidPW").setAttribute('style', 'color:#73a1ff');
             document.getElementById("avalidPW").innerText = "사용가능한 비밀번호입니다.";
+            document.getElementById('userCPW').value = "";
+            this.checkCPW();
         }
     }
 
@@ -63,8 +68,17 @@ class FindPW extends Component {
         var cpw = document.getElementById('userCPW').value;
 
         if (pw !== cpw) {
+            this.setState({
+                checkCPW: false
+            })
             document.getElementById("avalidCPW").setAttribute('style', 'color:#f91c37');
             document.getElementById("avalidCPW").innerText = "앞의 비밀번호와 동일한 비밀번호를 입력해주세요.";
+        } else if (!cpw) {
+            this.setState({
+                checkCPW: false
+            })
+            document.getElementById("avalidCPW").setAttribute('style', 'color:#f91c37');
+            document.getElementById("avalidCPW").innerText = "비밀번호를 입력해주세요.";
         } else {
             this.setState({
                 checkCPW: true
@@ -75,35 +89,39 @@ class FindPW extends Component {
     }
 
     findPW = () => {
-        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/member/find-pw`, {
-            params: {
-                id: this.state.id,
-                email: this.state.email,
-            }
-        }).then(res => {
-            // console.log(res);
-            if (res.data.conclusion === "SUCCESS") {
-                // alert('성공')
-                this.setState({
-                    checkIDnEmail: true,
-                    nick: res.data.nick,
-                    no: res.data.member_no * 1,
-                    resultMessage: `사용할 비밀번호를 입력해주세요.`,
-                    isCorrectIDnEmail: true,
-                })
-            } else {
-                this.setState({
-                    checkIDnEmail: true,
-                    resultMessage: `정보와 일치하는 결과가 존재하지 않습니다. 아이디 찾기나 회원가입을 이용해주세요.`,
-                    isCorrectIDnEmail: false,
-                })
-                // alert("정보와 일치하는 결과가 존재하지 않습니다.")
-            }
-        }).catch(err => {
-            console.log(err);
-            alert("알 수 없는 오류가 발생했습니다.");
-            window.location.replace("/");
-        })
+        if (this.state.id && this.state.email) {
+            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/member/find-pw`, {
+                params: {
+                    id: this.state.id,
+                    email: this.state.email,
+                }
+            }).then(res => {
+                // console.log(res);
+                if (res.data.conclusion === "SUCCESS") {
+                    // alert('성공')
+                    this.setState({
+                        checkIDnEmail: true,
+                        nick: res.data.nick,
+                        no: res.data.member_no * 1,
+                        resultMessage: `사용할 비밀번호를 입력해주세요.`,
+                        isCorrectIDnEmail: true,
+                    })
+                } else {
+                    this.setState({
+                        checkIDnEmail: true,
+                        resultMessage: `정보와 일치하는 결과가 존재하지 않습니다. 아이디 찾기나 회원가입을 이용해주세요.`,
+                        isCorrectIDnEmail: false,
+                    })
+                    // alert("정보와 일치하는 결과가 존재하지 않습니다.")
+                }
+            }).catch(err => {
+                // console.log(err);
+                alert("알 수 없는 오류가 발생했습니다.");
+                window.location.replace("/");
+            })
+        } else {
+            alert('주어진 양식에 맞게 입력을 완료해 주세요!')
+        }
     }
 
     updatePW = () => {
@@ -123,7 +141,8 @@ class FindPW extends Component {
                 alert("알 수 없는 오류가 발생했습니다.");
                 window.location.replace("/");
             })
-
+        } else {
+            alert("주어진 양식에 맞게 입력을 완료해 주세요!")
         }
     }
 
@@ -139,16 +158,18 @@ class FindPW extends Component {
                     </div>
                     {this.state.checkIDnEmail ?
                         <div className="input">
-                            <p>{this.state.resultMessage}</p>
+                            <p style={{ marginBottom: "20px" }}>{this.state.resultMessage}</p>
                             {this.state.isCorrectIDnEmail ?
-                                <div>
+                                <div className="reInput">
                                     <label htmlFor="userPW">PASSWORD</label><br />
-                                    <input type="password" id="userPW" onBlur={this.checkPW} placeholder="비밀번호를 입력하세요." />
-                                    <div className="availd" id="avalidPW"></div>
+                                    <input type="password" id="userPW" onBlur={this.checkPW} placeholder="비밀번호를 입력하세요." style={{ marginBottom: "10px" }}/>
+                                    <div className="availd" id="avalidPW" style={{ display: "none" }}></div>
+                                    <div style={{ marginBottom: "20px" }}></div>
 
                                     <label htmlFor="userCPW">Check PASSWORD</label><br />
-                                    <input type="password" id="userCPW" onBlur={this.checkCPW} placeholder="다시 비밀번호를 입력하세요." />
-                                    <div className="availd" id="avalidCPW"></div>
+                                    <input type="password" id="userCPW" onBlur={this.checkCPW} placeholder="다시 비밀번호를 입력하세요." style={{ marginBottom: "10px" }}/>
+                                    <div className="availd" id="avalidCPW" style={{ display: "none",  }}></div>
+                                    <div style={{ marginBottom: "20px" }}></div>
 
                                     <input type="button" onClick={this.updatePW} value="비밀번호 수정" />
                                 </div>

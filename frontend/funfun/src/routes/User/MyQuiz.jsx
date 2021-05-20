@@ -16,11 +16,19 @@ class MyQuiz extends Component {
         }
     }
 
+    componentDidMount() {
+        if (!sessionStorage.getItem('id')) {
+            window.location.replace("/login");
+        } else {
+            this.getUserByID(sessionStorage.getItem('id'))
+        }
+    }
+
     getUserByID = (member_id) => {
         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/member/byid/${member_id}`, {
             id: member_id
         }).then(res => {
-            console.log(res)
+            // console.log(res)
             this.setState({
                 no: res.data.member_no,
                 id: res.data.id,
@@ -37,15 +45,16 @@ class MyQuiz extends Component {
                 no: member_no,
             }
         }).then(res => {
-            console.log(res)
+            // console.log(res)
             this.setState({ myRooms: res.data })
         }).catch(err => {
-            console.log(err)
+            // console.log(err)
         })
     }
 
-    componentDidMount() {
-        this.getUserByID(sessionStorage.getItem('id'));
+    logout = () => {
+        window.sessionStorage.clear();
+        window.location.replace("/");
     }
 
     render() {
@@ -60,7 +69,7 @@ class MyQuiz extends Component {
                             <span>Go Game</span>
                         </Link>
                         {sessionStorage.getItem('id') ?
-                            <a onClick={this.logout} className="btn login" href="">로그아웃</a>
+                            <a onClick={this.logout} className="btn login" style={{ cursor: "pointer" }}>로그아웃</a>
                             :
                             <Link to="/login" className="btn login">
                                 로그인
@@ -98,6 +107,7 @@ class MyQuiz extends Component {
                                                 nickname: this.state.nick,
                                             }
                                         }}>
+                                            {room.quiz_cnt ?
                                             <div className="quizLists" >
                                                 <div className="quizData">
                                                     <div className="quizTitle">
@@ -110,6 +120,8 @@ class MyQuiz extends Component {
                                                     </div>
                                                 </div>
                                             </div>
+                                            : null
+                                            }
                                         </Link>
                                     ))
                                 )}

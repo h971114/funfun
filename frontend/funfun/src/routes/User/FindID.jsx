@@ -22,34 +22,38 @@ class FindID extends Component {
     }
 
     findID = () => {
-        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/member/find-id`, {
-            params: {
-                email: this.state.email,
-            },
-        }).then(res => {
-            console.log(res);
-            if (res.data) {
-                // console.log(res.data)
-                this.setState({
-                    checkEmail: true,
-                    id: res.data,
-                    resultMessage: `이메일 ${this.state.email}로 가입된 아이디는 다음과 같습니다.`
-                });
-            } else {
+        if (this.state.email) {
+            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/member/find-id`, {
+                params: {
+                    email: this.state.email,
+                },
+            }).then(res => {
+                // console.log(res);
+                if (res.data) {
+                    // console.log(res.data)
+                    this.setState({
+                        checkEmail: true,
+                        id: res.data,
+                        resultMessage: `이메일 ${this.state.email}로 가입된 아이디는 다음과 같습니다.`
+                    });
+                } else {
+                    this.setState({
+                        checkEmail: true,
+                        resultMessage: `이메일 ${this.state.email}로 가입된 아이디가 존재하지 않습니다.`
+                    })
+                }
+            }).catch(err => {
+                // console.log(err);
                 this.setState({
                     checkEmail: true,
                     resultMessage: `이메일 ${this.state.email}로 가입된 아이디가 존재하지 않습니다.`
                 })
-            }
-        }).catch(err => {
-            console.log(err);
-            this.setState({
-                checkEmail: true,
-                resultMessage: `이메일 ${this.state.email}로 가입된 아이디가 존재하지 않습니다.`
+                // alert("알 수 없는 오류가 발생했습니다.");
+                // window.location.replace("/");
             })
-            // alert("알 수 없는 오류가 발생했습니다.");
-            // window.location.replace("/");
-        })
+        } else {
+            alert('주어진 양식에 맞게 입력을 완료해 주세요!')
+        }
     }
 
     render() {

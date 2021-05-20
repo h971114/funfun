@@ -10,8 +10,8 @@ class MyPage extends Component {
         this.state = {
             checkPW: false,
             checkCPW: false,
-            checkNN: false,
-            checkEM: false,
+            checkNN: true,
+            checkEM: true,
             no: "",
             id: "",
             nick: "",
@@ -20,14 +20,18 @@ class MyPage extends Component {
     }
 
     componentDidMount() {
-        this.getUserByID(sessionStorage.getItem('id'))
+        if (!sessionStorage.getItem('id')) {
+            window.location.replace("/login");
+        } else {
+            this.getUserByID(sessionStorage.getItem('id'))
+        }
     }
 
     getUserByID = (member_id) => {
         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/member/byid/${member_id}`, {
             id: member_id
         }).then(res => {
-            console.log(res)
+            // console.log(res)
             this.setState({
                 no: res.data.member_no,
                 id: res.data.id,
@@ -43,6 +47,9 @@ class MyPage extends Component {
         var pwReg = /^(?=.*[A-Za-z])(?=.*[$@$!%*#^?&])[A-Za-z\d$@$!%*^#?&]{8,15}$/g;
         var pwSReg = /^(?=.*[$@$!%*#^?&])[A-Za-z\d$@$!%*^#?&]{8,15}$/g;
         if (!pwReg.test(pw)) {
+            this.setState({
+                checkPW: false
+            })
             document.getElementById("avalidPW").setAttribute('style', 'color:#f91c37');
             if (pw.length < 8) {
                 document.getElementById("avalidPW").innerText = "비밀번호는 8~15의 길이여야 합니다.";
@@ -60,6 +67,8 @@ class MyPage extends Component {
             })
             document.getElementById("avalidPW").setAttribute('style', 'color:#73a1ff');
             document.getElementById("avalidPW").innerText = "사용가능한 비밀번호입니다.";
+            document.getElementById('userCPW').value = "";
+            this.checkCPW();
         }
     }
 
@@ -68,14 +77,23 @@ class MyPage extends Component {
         var cpw = document.getElementById('userCPW').value;
 
         if (pw !== cpw) {
+            this.setState({
+                checkCPW: false
+            })
             document.getElementById("avalidCPW").setAttribute('style', 'color:#f91c37');
             document.getElementById("avalidCPW").innerText = "앞의 비밀번호와 동일한 비밀번호를 입력해주세요.";
+        } else if (!cpw) {
+            this.setState({
+                checkCPW: false
+            })
+            document.getElementById("avalidCPW").setAttribute('style', 'color:#f91c37');
+            document.getElementById("avalidCPW").innerText = "비밀번호를 입력해주세요.";
         } else {
             this.setState({
                 checkCPW: true
             })
             document.getElementById("avalidCPW").setAttribute('style', 'color:#73a1ff');
-            document.getElementById("avalidCPW").innerText = "일치하는 비밀번호가 입력되었습니다.";
+            document.getElementById("avalidCPW").innerText = "사용가능한 비밀번호입니다.";
         }
     }
 
@@ -83,12 +101,17 @@ class MyPage extends Component {
         var nickname = document.getElementById('userNN').value;
 
         // 중복 닉네임 여부 확인하기
-
+        if (!nickname) {
+            this.setState({ checkNN: false })
+            document.getElementById("avalidNN").setAttribute('style', 'color:#f91c37');
+            document.getElementById("avalidNN").innerText = "닉네임은 반드시 입력해야 합니다.";            
+        } else {
+            document.getElementById("avalidNN").style.display = 'none';
+            this.setState({
+                checkNN: true
+            })
+        }
         // 맞을 때
-
-        this.setState({
-            checkNN: true
-        })
         // document.getElementById("avalidNN").setAttribute('style', 'color:#f91c37');
         // document.getElementById("avalidNN").innerText = "사용할 수 없는 닉네임입니다.";
 
@@ -103,6 +126,7 @@ class MyPage extends Component {
         var emailReg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/g;
 
         if (!emailReg.test(email)) {
+            this.setState({ checkEM: false })
             document.getElementById("avalidEM").setAttribute('style', 'color:#f91c37');
             document.getElementById("avalidEM").innerText = "양식에 맞게 이메일을 입력해주세요.";
         }
@@ -132,7 +156,8 @@ class MyPage extends Component {
                 alert("알 수 없는 오류가 발생했습니다.");
                 // window.location.replace("/");
             })
-
+        } else {
+            alert("입력한 정보를 다시 한 번 확인해주시기 바랍니다.");
         }
     }
 
@@ -153,7 +178,7 @@ class MyPage extends Component {
                             <span>Go Game</span>
                         </Link>
                         {sessionStorage.getItem('id') ?
-                            <a onClick={this.logout} className="btn login" href="">로그아웃</a>
+                            <a onClick={this.logout} className="btn login" style={{ cursor: "pointer" }}>로그아웃</a>
                             :
                             <Link to="/login" className="btn login">
                                 로그인

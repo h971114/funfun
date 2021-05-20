@@ -20,7 +20,7 @@ class Login extends Component {
                 alert("아이디와 비밀번호를 확인해주세요.")
             }
         }).catch(err => {
-            console.log(err);
+            // console.log(err);
             alert("알 수 없는 오류가 발생했습니다.\n잠시후 다시 시도해주세요.");
         })
     }
