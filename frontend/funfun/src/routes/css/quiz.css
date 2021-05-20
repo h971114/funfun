@@ -74,6 +74,10 @@
   background-size: cover;
   /* background-color: lightgray; */
 }
+.quiz_contents .quiz_parts.gameplaying {
+  background: url(../../img/bg.png);
+  background-size: cover;
+}
 .quiz_contents .quiz_parts .quiz_wrap {
   width: 78%;
   height: 78%;
@@ -109,6 +113,27 @@
   left: 50px;
 
   width: 70%;
+}
+.quiz_contents .quiz_parts .quiz_wrap .quiz_tit.myScore {
+  width: calc(100% - 100px);
+  text-align: center;
+  top: 50px !important;
+}
+.quiz_contents .quiz_parts .quiz_wrap .quiz_tit.myScore .preMyImgWrap{
+  display: inline-block;
+  height: 120px;
+  overflow: hidden;
+  margin-top: 30px;
+}
+.quiz_contents .quiz_parts .quiz_wrap .quiz_tit.myScore .preMyDataWrap{
+  padding-top: 10px;
+  display: inline-block;
+  height: 110px;
+  overflow: hidden;
+}
+.quiz_contents .quiz_parts .quiz_wrap .quiz_tit.myScore .preMyDataWrap span{
+  color: #ffa600;
+  font-size: 50px;
 }
 .quiz_contents .quiz_parts .quiz_wrap .quiz_etc {
   position: absolute;
@@ -168,6 +193,41 @@
   margin-left: 5%;
   height: 300px;
   /* background-color: teal; */
+}
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap.allteamScore{
+  top: 280px !important;
+}
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap li{
+  height: 60px;
+  margin-bottom: 10px;
+  list-style: none;
+  line-height: 60px;
+}
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap.allteamScore li img{
+  /* width: 30px; */
+  height: 50px;
+  margin-right: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow: hidden;
+}
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap.allteamScore li .medalImg4,
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap.allteamScore li .medalImg5{
+  width: 30px;
+  height: 0px;
+}
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap.allteamScore li p{
+  display: inline-block;
+  overflow: hidden;
+  height: 60px;
+  line-height: 60px;
+  font-size: 25px;
+}
+.quiz_contents .quiz_parts .quiz_wrap .answer_wrap.allteamScore li p span{
+  font-size: 30px;
+  font-weight: 800;
+  color: #ffa600;
+  margin-left: 20px;
 }
 .quiz_contents .quiz_parts .quiz_wrap .answer_wrap .choice{
   border: none;

@@ -26,9 +26,11 @@ var answer = ''
 var alive = 'alive';
 var isresult = 1;
 var yourstate = ''
+var yourTstate = ''
+var teamnum = 1;
 var leftstate = ''
 var currentcheck = ''
-var perteam ;
+var perteam;
 var sendanswer;
 var teammember = [];
 var memberview;
@@ -189,7 +191,7 @@ function PlayQuiz(props) {
                                 if (perteam === 0) {
                                     perteam = 1;
                                 }
-                                
+
                                 if (res.data.fromteam == "yes") {
                                     axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
                                         quiz = res.data;
@@ -403,7 +405,7 @@ function PlayQuiz(props) {
                         });
                     }
                 });
-                
+
             }
             teammember = []
             console.log(team)
@@ -420,9 +422,9 @@ function PlayQuiz(props) {
                 } else {
                 }
             }).catch(err => {
-        })
+            })
             message.content = message.sender + ' joined!';
-            
+
         } else if (message.type === 'LEAVE') {
             messageElement.classList.add('event-message');
             message.content = message.sender + ' left!';
@@ -536,41 +538,53 @@ function PlayQuiz(props) {
                         break;
                     case 1:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
-                            yourstate = "내 점수 : " + res.data;
+                            yourstate = res.data;
+                            yourTstate = "내 점수";
                         }); // 개인전 자기 자신 점수
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
-                            leftstate = res.data.map((obj) =>
-                                <li>{JSON.stringify(obj)}</li>
+                            leftstate = res.data.map((obj, key) =>
+                                <li><img src={"medal" + (key + 1) + ".png"} /> {JSON.stringify(obj)}</li>
                             );
                         }); // 개인전 상위 5명 점수
                         break;
                     case 2:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
-                            yourstate = "우리 팀 점수 : " + res.data;
+                            yourstate = res.data;
+                            yourTstate = "우리 팀 점수";
+                            teamnum = team;
                         }); // 팀전 자기 팀 점수
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
-                            leftstate = res.data.map((obj) =>
-                                <li>{JSON.stringify(obj)}</li>
+                            leftstate = res.data.map((obj, key) =>
+                                <li><img src={"/img/medal" + (key + 1) + ".png"} className={"medalImg" + (key + 1)} />
+                                    <img src={"/img/team" + (key + 1) + ".png"} className={"profileImg" + (key + 1)} />
+                                    <p>Team {JSON.stringify(obj).substr(6, 1)}<span>{(JSON.stringify(obj).split(":"))[1].substr(0, (JSON.stringify(obj).split(":"))[1].length - 1)}점</span></p>
+                                </li>
                             );
                         }); // 팀전 상위 5팀 점수
                         break;
                     case 3:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
-                            yourstate = "내 점수 : " + res.data;
+                            yourstate = res.data;
+                            yourTstate = "내 점수";
                         }); // 개인전 자기 자신 점수
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
-                            leftstate = res.data.map((obj) =>
-                                <li>{JSON.stringify(obj)}</li>
+                            leftstate = res.data.map((obj, key) =>
+                                <li><img src={"medal" + (key + 1) + ".png"} /> {JSON.stringify(obj)}</li>
                             );
                         }); // 개인전 상위 5명 점수
                         break;
                     case 4:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
-                            yourstate = "우리 팀 점수 : " + res.data;
+                            yourstate = res.data;
+                            yourTstate = "우리 팀 점수";
+                            teamnum = team;
                         }); // 팀전 자기 팀 점수
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
-                            leftstate = res.data.map((obj) =>
-                                <li>{JSON.stringify(obj)}</li>
+                            leftstate = res.data.map((obj, key) =>
+                                <li><img src={"/img/medal" + (key + 1) + ".png"} className={"medalImg" + (key + 1)} />
+                                    <img src={"/img/team" + (key + 1) + ".png"} className={"profileImg" + (key + 1)} />
+                                    <p>Team {JSON.stringify(obj).substr(6, 1)}<span>{(JSON.stringify(obj).split(":"))[1].substr(0, (JSON.stringify(obj).split(":"))[1].length - 1)}점</span></p>
+                                </li>
                             );
                         }); // 팀전 상위 5팀 점수
                         break;
@@ -612,7 +626,7 @@ function PlayQuiz(props) {
                 sendanswer = false;
                 turn = '당신의 팀 차례입니다.'
             }
-            else if(quiz.type === 2  || quiz.type === 4) {
+            else if (quiz.type === 2 || quiz.type === 4) {
                 turn = '다른 팀의 차례입니다.'
                 sendanswer = true;
             }
@@ -796,7 +810,7 @@ function PlayQuiz(props) {
         }
         return (
             <div className="quiz_contents">
-                <div className="quiz_parts">
+                <div className="quiz_parts gameplaying">
                     <div id="cloudArea">
 
                         <div className="cloud_wrap">
@@ -805,16 +819,29 @@ function PlayQuiz(props) {
                         </div>
                     </div>
                     <div className="quiz_wrap">
-                        <div className="quiz_tit">
-                            {yourstate}
+                        <div className="quiz_tit myScore">
+                            {/* {yourstate} */}
+                            <div className={(quiz.type != 0 ? 'myteamScore' : 'hidden')}>
+                                <p>{yourTstate}</p>
+                                <div className="preMyScore">
+                                    <div className="preMyImgWrap">
+                                        <img src={"/img/team" + teamnum + ".png"} />
+                                    </div>
+                                    <div className="preMyDataWrap">
+                                        Team {teamnum}<br />
+                                        <span>{yourstate}점</span>
+                                    </div>
+                                </div>
 
+                            </div>
                         </div>
                         <div className="quiz_etc">
                             {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
                             {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
                         </div>
-                        <div className="answer_wrap">
+                        <div className={"answer_wrap" + (quiz.type != 0 ? ' allteamScore' : '')}>
                             {left_member}
+                            <div ></div>
                             {leftstate}
                         </div>
                     </div>
@@ -848,7 +875,7 @@ function PlayQuiz(props) {
     }
     return (
         <div className="quiz_contents">
-            <div className="quiz_parts">
+            <div className="quiz_parts gameplaying">
                 <div id="cloudArea">
 
                     <div className="cloud_wrap">
