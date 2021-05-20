@@ -146,6 +146,7 @@ function PlayQuiz(props) {
         isstart = 0;
         index = 0;
         answer = ""
+        memberview = ""
         stompClient.connect(
             {},
             frame => {
@@ -636,19 +637,19 @@ function PlayQuiz(props) {
         passbutton = ""
     }
     else if (quiz.type === 1) {
-        answerbutton1 = <button onClick={() => onclick1()}>{1. + quiz.exam1}</button>
-        answerbutton2 = <button onClick={() => onclick2()}>{2. + quiz.exam2}</button>
-        answerbutton3 = <button onClick={() => onclick3()}>{3. + quiz.exam3}</button>
-        answerbutton4 = <button onClick={() => onclick4()}>{4. + quiz.exam4}</button>
-        answerbutton5 = <button onClick={() => onclick5()}>{5. + quiz.exam5}</button>
+        answerbutton1 = <button onClick={() => onclick1()}>{"1. " + quiz.exam1}</button>
+        answerbutton2 = <button onClick={() => onclick2()}>{"2. " + quiz.exam2}</button>
+        answerbutton3 = <button onClick={() => onclick3()}>{"3. " + quiz.exam3}</button>
+        answerbutton4 = <button onClick={() => onclick4()}>{"4. " + quiz.exam4}</button>
+        answerbutton5 = <button onClick={() => onclick5()}>{"5. " + quiz.exam5}</button>
         passbutton = ""
     }
     else if (quiz.type === 2) {
-        answerbutton1 = <button onClick={() => onclick1()}>{1. + quiz.exam1}</button>
-        answerbutton2 = <button onClick={() => onclick2()}>{2. + quiz.exam2}</button>
-        answerbutton3 = <button onClick={() => onclick3()}>{3. + quiz.exam3}</button>
-        answerbutton4 = <button onClick={() => onclick4()}>{4. + quiz.exam4}</button>
-        answerbutton5 = <button onClick={() => onclick5()}>{5. + quiz.exam5}</button>
+        answerbutton1 = <button onClick={() => onclick1()}>{"1. " + quiz.exam1}</button>
+        answerbutton2 = <button onClick={() => onclick2()}>{"2. " + quiz.exam2}</button>
+        answerbutton3 = <button onClick={() => onclick3()}>{"3. " + quiz.exam3}</button>
+        answerbutton4 = <button onClick={() => onclick4()}>{"4. " + quiz.exam4}</button>
+        answerbutton5 = <button onClick={() => onclick5()}>{"5. " + quiz.exam5}</button>
         passbutton = <input type="button" className="passBtn" onClick={() => onclicknext()} />
     }
     else if (quiz.type === 3) {
@@ -765,7 +766,6 @@ function PlayQuiz(props) {
                         <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
                     </div>
                     <div className="teamPlayer_btn">
-                        {passbutton}
                     </div>
                 </div>
                 <div className="allChat">
