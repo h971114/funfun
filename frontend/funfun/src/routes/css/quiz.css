@@ -214,6 +214,12 @@
 
   overflow-y: scroll;
 }
+.quiz_contents .communication .chat #messageArea .chat-message span{
+  font-weight: 800;
+}
+.quiz_contents .communication .chat #messageArea .chat-message p{
+  display: inline-block;
+}
 .quiz_contents .communication .waitingChat {
   height: 65% !important;
 }

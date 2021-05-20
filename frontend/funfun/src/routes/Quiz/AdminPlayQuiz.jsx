@@ -98,7 +98,7 @@ function AdminPlayQuiz(props) {
         let send_message = msg;
         if (stompClient && stompClient.connected) {
             const cloud = { type: 'CHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team: team };
-            stompClient.send("/app/chat", JSON.stringify(cloud), {});
+            stompClient.send("/app/chat", JSON.stringify(구름), {});
         }
         console.log(stompClient)
         console.log(stompClient.connected)
@@ -107,7 +107,7 @@ function AdminPlayQuiz(props) {
     const send = (props, msg) => {
         let send_message = msg;
         if (stompClient && stompClient.connected) {
-            const msg = { type: 'CHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname };
+            const msg = { type: 'TEAMCHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team: team };
             stompClient.send("/app/chat", JSON.stringify(msg), {});
         }
         console.log(stompClient)
@@ -141,7 +141,7 @@ function AdminPlayQuiz(props) {
 
     }
     const connect = (props) => {
-        socket = new SockJS(`${process.env.REACT_APP_SERVER_BASE_URL}/ws`);
+        socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
         stompClient = Stomp.over(socket);
         isstart = 0;
         ID = ''
@@ -219,7 +219,7 @@ function AdminPlayQuiz(props) {
         if (message.type === 'JOIN') {
             messageElement.classList.add('event-message');
             if (message.sender === nickname && ID === '') {
-                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/${code}`).then(res => {
+                axios.get(`http://127.0.0.1:8080/myapp/team/${code}`).then(res => {
                     if (res.data) {
                         initialBoard.columns.map(obj => {
                             if (obj.id === 0) {
@@ -270,7 +270,7 @@ function AdminPlayQuiz(props) {
                 })
                 ID = message.id;
                 console.log(initialBoard)
-                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quizsize`, { params: { no: code } }).then(res => {
+                axios.get(`http://127.0.0.1:8080/myapp/team/quizsize`, { params: { no: code } }).then(res => {
                     console.log(res.data);
                     quizsize = parseInt(res.data);
                 });
@@ -326,6 +326,14 @@ function AdminPlayQuiz(props) {
                 var usernameText = document.createTextNode(message.sender);
                 usernameElement.appendChild(usernameText);
                 messageElement.appendChild(usernameElement);
+                var textElement = document.createElement('p');
+                var messageText = document.createTextNode(message.content);
+                textElement.appendChild(messageText);
+
+                messageElement.appendChild(textElement);
+
+                messageArea.appendChild(messageElement);
+                messageArea.scrollTop = messageArea.scrollHeight;
             }
         }
         else if (message.type === 'START') {
@@ -334,7 +342,7 @@ function AdminPlayQuiz(props) {
             isresult = perteam;
             console.log(isresult)
             console.log(perteam)
-            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
+            axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
                 console.log(res.data);
                 quiz = res.data;
                 index += 1;
@@ -367,17 +375,17 @@ function AdminPlayQuiz(props) {
                 nextteamchat = ''
                 switch (quiz.type) {
                     case 0:
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OX`, { params: { no: code } }).then(res => {
+                        axios.get(`http://127.0.0.1:8080/myapp/team/OX`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = "남은인원 : " + res.data;
                         })
                         break;
                     case 1:
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
+                        axios.get(`http://127.0.0.1:8080/myapp/team/personal`, { params: { no: code, ID: ID } }).then(res => {
                             console.log(res.data);
                             yourstate = "내 점수 : " + res.data;
                         }); // 개인전 자기 자신 점수
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
+                        axios.get(`http://127.0.0.1:8080/myapp/team/personal5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
@@ -386,11 +394,11 @@ function AdminPlayQuiz(props) {
                         }); // 개인전 상위 5명 점수
                         break;
                     case 2:
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
+                        axios.get(`http://127.0.0.1:8080/myapp/team/team`, { params: { no: code, team: team } }).then(res => {
                             console.log(res.data);
                             yourstate = "우리 팀 점수 : " + res.data;
                         }); // 팀전 자기 팀 점수
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
+                        axios.get(`http://127.0.0.1:8080/myapp/team/team5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
@@ -398,11 +406,11 @@ function AdminPlayQuiz(props) {
                         }); // 팀전 상위 5팀 점수
                         break;
                     case 3:
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
+                        axios.get(`http://127.0.0.1:8080/myapp/team/personal`, { params: { no: code, ID: ID } }).then(res => {
                             console.log(res.data);
                             yourstate = "내 점수 : " + res.data;
                         }); // 개인전 자기 자신 점수
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
+                        axios.get(`http://127.0.0.1:8080/myapp/team/personal5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
@@ -410,11 +418,11 @@ function AdminPlayQuiz(props) {
                         }); // 개인전 상위 5명 점수
                         break;
                     case 4:
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
+                        axios.get(`http://127.0.0.1:8080/myapp/team/team`, { params: { no: code, team: team } }).then(res => {
                             console.log(res.data);
                             yourstate = "우리 팀 점수 : " + res.data;
                         }); // 팀전 자기 팀 점수
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
+                        axios.get(`http://127.0.0.1:8080/myapp/team/team5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
@@ -430,7 +438,8 @@ function AdminPlayQuiz(props) {
 
             else {
                 sendanswer = false;
-                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
+                console.log(isresult)
+                axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
                     console.log(res.data);
                     quiz = res.data;
                     index += 1;
@@ -514,9 +523,7 @@ function AdminPlayQuiz(props) {
     const startGame = () => {
         document.getElementsByClassName('gameStart')[0].setAttribute('style', 'display:none');
         start();
-        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: 0 } }).then(res => {
-            console.log(res.data);
-        });
+
         //게임 시작 부 소스 ★
     }
 
@@ -702,11 +709,10 @@ function AdminPlayQuiz(props) {
                     <div className="send_wrap">
                         <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
                         <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
-                        <input type="text" className="chatsend" placeholder="다음을 풀 팀 입력." onChange={event => setTeam(event.target.value)}></input>
-                        <button onClick={() => sendTeam(nextteam)}>다음 팀 버튼</button>
+                        <input type="text" className="chatsend teamNum" placeholder="다음을 풀 팀 입력" onChange={event => setTeam(event.target.value)}></input>
+                            <button className="nextBtn" onClick={() => sendTeam(nextteam)}>다음 팀</button>
                     </div>
                     <div className="admin_btn">
-                        <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
                         <input type="button" className="nextGame" value="결 과" onClick={next}></input>
                     </div>
                 </div>
@@ -789,7 +795,6 @@ function AdminPlayQuiz(props) {
                     <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
                 </div>
                 <div className="admin_btn">
-                    <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
                     <input type="button" className="nextGame" value="결 과" onClick={next}></input>
                 </div>
             </div>

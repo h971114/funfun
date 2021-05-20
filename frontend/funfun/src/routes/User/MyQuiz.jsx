@@ -95,7 +95,7 @@ class MyQuiz extends Component {
                                             pathname: `./admin/game/playQuiz`,
                                             state: {
                                                 code: room.code,
-                                                nick: this.state.nick,
+                                                nickname: this.state.nick,
                                             }
                                         }}>
                                             <div className="quizLists" >
