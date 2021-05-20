@@ -38,7 +38,7 @@ function WaitingRoom(props) {
         memberArea.appendChild(infoElement);
     }
     const connect = (props) => {
-        socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
+        socket = new SockJS('${process.env.REACT_APP_SERVER_BASE_URL}/ws');
         stompClient = Stomp.over(socket);
         stompClient.connect(
             {},
@@ -115,7 +115,7 @@ function WaitingRoom(props) {
             console.log(message)
             if (message.id === ID) {
                 team = message.toteam
-                axios.get(`http://127.0.0.1:8080/myapp/team`, { params: { no: code, team: message.toteam } }).then(res => {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team`, { params: { no: code, team: message.toteam } }).then(res => {
                     // console.log(res);
                     if (res.data) {
                         res.data.map(obj => {

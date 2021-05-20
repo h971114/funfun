@@ -42,7 +42,7 @@ function MakeQuiz({ history }) {
 
     useEffect(() => {
         var memberid = sessionStorage.getItem('id');
-        axios.post(`http://127.0.0.1:8080/myapp/room/make/quiz/temp`, {
+        axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/room/make/quiz/temp`, {
             memberid: memberid,
             quiz_title: roomtit
         }).then(res => {
@@ -478,7 +478,7 @@ function MakeQuiz({ history }) {
         var memberid = sessionStorage.getItem('id');
         var memberno = 13;
 
-        axios.get(`http://127.0.0.1:8080/myapp/member/byid/${memberid}`, {
+        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/member/byid/${memberid}`, {
             id: memberid
         }).then(res => {
             setMemberNo(res.data.member_no);
@@ -499,7 +499,7 @@ function MakeQuiz({ history }) {
                 alert("완성되지 않은 문제가 있습니다. 확인해주세요");
             }
             else {
-                axios.post(`http://127.0.0.1:8080/myapp/quiz`, {
+                axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/quiz`, {
                     memberno: memberno,
                     order: nowpage - 1,
                     content: quiztit,
@@ -560,7 +560,7 @@ function MakeQuiz({ history }) {
             }
 
             if (go) {
-                axios.put(`http://127.0.0.1:8080/myapp/room/`, {
+                axios.put(`${process.env.REACT_APP_SERVER_BASE_URL}/room/`, {
                     // memberid: memberid,
                     code: roomcode,
                     quiz_cnt: quizset.length,
@@ -579,7 +579,7 @@ function MakeQuiz({ history }) {
                     var sc5 = quizset[i].SC5;
                     var answers = quizset[i].SAnswer;
 
-                    axios.post(`http://127.0.0.1:8080/myapp/quiz`, {
+                    axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/quiz`, {
                         memberno: memberno,
                         order: sorder,
                         content: tit,

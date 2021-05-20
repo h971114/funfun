@@ -94,7 +94,7 @@ function PlayQuiz(props) {
         memberArea.appendChild(infoElement);
     }
     const connect = (props) => {
-        socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
+        socket = new SockJS(`${process.env.REACT_APP_SERVER_BASE_URL}/ws`);
         stompClient = Stomp.over(socket);
         isstart = 0;
         stompClient.connect(
@@ -125,7 +125,7 @@ function PlayQuiz(props) {
                 else {
                     const msg = { type: 'REJOIN', content: "", roomnumber: code, sender: "" , id: ID };
                     stompClient.send("/app/chat", JSON.stringify(msg), {});
-                        axios.get(`http://127.0.0.1:8080/myapp/team/rejoin`, { params: { no: code, id : ID } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/rejoin`, { params: { no: code, id : ID } }).then(res => {
                             console.log(res.data);
                             index = parseInt(res.data.title)
                             team = res.data.team
@@ -336,7 +336,7 @@ function PlayQuiz(props) {
             isstart = 1;
             setSeconds(15);
             isresult = perteam;
-            axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index, isresult : isresult } }).then(res => {
+            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult : isresult } }).then(res => {
                 console.log(res.data);
                 quiz = res.data;
                 index += 1;
@@ -368,11 +368,11 @@ function PlayQuiz(props) {
             if (index === isresult) {
                 switch (quiz.type) {
                     case 0:
-                        axios.get(`http://127.0.0.1:8080/myapp/team/OX`, { params: { no: code } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OX`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             left_member = "남은인원 : "+res.data;
                         })
-                        axios.get(`http://127.0.0.1:8080/myapp/team/OXmembers`, { params: { no: code } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OXmembers`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
@@ -380,11 +380,11 @@ function PlayQuiz(props) {
                         })
                         break;
                     case 1:
-                        axios.get(`http://127.0.0.1:8080/myapp/team/personal`, { params: { no: code, ID: ID } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
                             console.log(res.data);
                             yourstate = "내 점수 : " + res.data;
                         }); // 개인전 자기 자신 점수
-                        axios.get(`http://127.0.0.1:8080/myapp/team/personal5`, { params: { no: code } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
@@ -393,11 +393,11 @@ function PlayQuiz(props) {
                         }); // 개인전 상위 5명 점수
                         break;
                     case 2:
-                        axios.get(`http://127.0.0.1:8080/myapp/team/team`, { params: { no: code, team: team } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
                             console.log(res.data);
                             yourstate ="우리 팀 점수 : " + res.data;
                         }); // 팀전 자기 팀 점수
-                        axios.get(`http://127.0.0.1:8080/myapp/team/team5`, { params: { no: code } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                             <li>{JSON.stringify(obj)}</li>
@@ -405,11 +405,11 @@ function PlayQuiz(props) {
                         }); // 팀전 상위 5팀 점수
                         break;
                     case 3:
-                        axios.get(`http://127.0.0.1:8080/myapp/team/personal`, { params: { no: code, ID: ID } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
                             console.log(res.data);
                             yourstate = "내 점수 : " + res.data;
                         }); // 개인전 자기 자신 점수
-                        axios.get(`http://127.0.0.1:8080/myapp/team/personal5`, { params: { no: code } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                             <li>{JSON.stringify(obj)}</li>
@@ -417,11 +417,11 @@ function PlayQuiz(props) {
                         }); // 개인전 상위 5명 점수
                         break;
                     case 4:
-                        axios.get(`http://127.0.0.1:8080/myapp/team/team`, { params: { no: code, team: team } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
                             console.log(res.data);
                             yourstate = "우리 팀 점수 : "+res.data;
                         }); // 팀전 자기 팀 점수
-                        axios.get(`http://127.0.0.1:8080/myapp/team/team5`, { params: { no: code } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                             <li>{JSON.stringify(obj)}</li>
@@ -443,7 +443,7 @@ function PlayQuiz(props) {
                 else {
                     sendanswer = false;
                 }
-                axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index, isresult : isresult} }).then(res => {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult : isresult} }).then(res => {
                     console.log(res.data);
                     quiz = res.data;
                     index += 1;
@@ -484,7 +484,7 @@ function PlayQuiz(props) {
                 team = message.toteam
                 teammember = []
                 console.log(team)
-                axios.get(`http://127.0.0.1:8080/myapp/team/getteammember`, { params: { no: code, team: message.toteam } }).then(res => {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/getteammember`, { params: { no: code, team: message.toteam } }).then(res => {
                     // console.log(res);
                     if (res.data) {
                         res.data.map(obj => {
@@ -510,7 +510,7 @@ function PlayQuiz(props) {
             }
             else if (message.fromteam === team) {
                 teammember = []
-                axios.get(`http://127.0.0.1:8080/myapp/team/getteammember`, { params: { no: code, team: message.fromteam } }).then(res => {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/getteammember`, { params: { no: code, team: message.fromteam } }).then(res => {
                     // console.log(res);
                     if (res.data) {
                         res.data.map(obj => {

@@ -17,7 +17,7 @@ class MyQuiz extends Component {
     }
 
     getUserByID = (member_id) => {
-        axios.get(`http://127.0.0.1:8080/myapp/member/byid/${member_id}`, {
+        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/member/byid/${member_id}`, {
             id: member_id
         }).then(res => {
             console.log(res)
@@ -32,7 +32,7 @@ class MyQuiz extends Component {
     }
 
     getRoomsByMemberNo(member_no) {
-        axios.get(`http://127.0.0.1:8080/myapp/room/room_memberno`, {
+        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/room/room_memberno`, {
             params: {
                 no: member_no,
             }

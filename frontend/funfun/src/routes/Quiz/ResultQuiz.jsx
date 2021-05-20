@@ -7,16 +7,16 @@ import axios from 'axios';
 function ResultQuiz(props) {
 
     // const result = () => {
-    //     axios.get(`http://127.0.0.1:8080/myapp/team/personal`, { params: { no: code, id: ID } }).then(res => {
+    //     axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, id: ID } }).then(res => {
     //         console.log(res.data);
     //     }); // 개인전 자기 자신 점수
-    //     axios.get(`http://127.0.0.1:8080/myapp/team/personal5`, { params: { no: code } }).then(res => {
+    //     axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
     //         console.log(res.data);
     //     }); // 개인전 상위 5명 점수
-    //     axios.get(`http://127.0.0.1:8080/myapp/team/team`, { params: { no: code, team: team } }).then(res => {
+    //     axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
     //         console.log(res.data);
     //     }); // 팀전 자기 팀 점수
-    //     axios.get(`http://127.0.0.1:8080/myapp/team/team5`, { params: { no: code } }).then(res => {
+    //     axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
     //         console.log(res.data);
     //     }); // 팀전 상위 5팀 점수
     // }
