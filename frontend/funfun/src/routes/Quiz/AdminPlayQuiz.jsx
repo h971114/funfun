@@ -440,26 +440,22 @@ function AdminPlayQuiz(props) {
                         }); // 팀전 상위 5팀 점수
                         break;
                 }
-                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult +perteam } }).then(res => {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult + perteam } }).then(res => {
                     isresult += perteam
-                });
+                    quiz = res.data;
+                })
                 currentcheck = ''
                 isstart = 2;
                 
             }
 
             else {
-                console.log(isresult)
                 sendanswer = false;
                 axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
-                    console.log(res.data);
                     quiz = res.data;
                     index += 1;
-                    console.log(index);
                 });
                 isstart = 1;
-                console.log(index)
-                console.log(isresult - perteam)
                 if (index === isresult - perteam) {
                     setSeconds(15);
                     setProgress(15 * 1000);
@@ -469,7 +465,6 @@ function AdminPlayQuiz(props) {
                     }
                 }
             }
-            console.log(isstart);
         }
         else if (message.type === 'PERTEAM') {
             perteam = parseInt(message.content);
@@ -499,7 +494,7 @@ function AdminPlayQuiz(props) {
     }
     useEffect(() => {
         const countdown = setInterval(() => {
-            if (parseInt(seconds) > -2) {
+            if (parseInt(seconds) > -2000) {
                 setSeconds(parseInt(seconds) - 1);
             }
             if (parseInt(seconds) === 1) {
@@ -509,11 +504,8 @@ function AdminPlayQuiz(props) {
                     stompClient.send("/app/chat", JSON.stringify(msg), {});
                 }
             }
-            if (parseInt(seconds) === -1) {
-                // if (stompClient && stompClient.connected) {
-                //     const msg = { type: 'NEXT', content: '', roomnumber: code, sender: nickname, team: team , id : ID};
-                //     stompClient.send("/app/chat", JSON.stringify(msg), {});
-                // }
+            if (parseInt(seconds) <= 0) {
+                setSeconds(0);
             }
         }, 1000);
         return () => clearInterval(countdown);

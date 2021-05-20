@@ -687,6 +687,9 @@ function PlayQuiz(props) {
             if (parseInt(seconds) > -2000) {
                 setSeconds(parseInt(seconds) - 1);
             }
+            if (parseInt(seconds) <= 0) {
+                setSeconds(0);
+            }
         }, 1000);
         return () => clearInterval(countdown);
 
