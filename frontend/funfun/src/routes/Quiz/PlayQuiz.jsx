@@ -883,7 +883,7 @@ function PlayQuiz(props) {
                     </ul>
                 </div>
                 <div className="send_wrap">
-                    <input type="text" className="chatsend" id="chatMsg3" placeholder="채팅을 입력하세요." onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
+                    <input type="text" className="chatsend" id="sendMsg3" placeholder="채팅을 입력하세요." onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
                     <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
                 </div>
                 <div className="teamPlayer_btn">
