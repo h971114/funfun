@@ -51,16 +51,42 @@ function PlayQuiz(props) {
         return '#fff';
     }
 
+    // const sendCloud = (props, msg) => {
+    //     var cloudsendArr = document.getElementsByClassName("cloudsend");
+    //     let send_message = msg;
+    //     if (stompClient && stompClient.connected) {
+    //         const cloud = { type: 'CHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team: team };
+    //         stompClient.send("/app/chat", JSON.stringify(cloud), {});
+    //     }
+    //     for (let i = 0; i < cloudsendArr.length; i++) {
+    //         cloudsendArr[i].value = '';
+    //     }
+    //     setCloud('');
+    //     console.log(stompClient);
+    //     console.log(stompClient.connected);
+    //     console.log("send");
+    // }
     const sendCloud = (props, msg) => {
         var cloudsendArr = document.getElementsByClassName("cloudsend");
         let send_message = msg;
-        if (stompClient && stompClient.connected) {
+        if (quiz !== '' && (quiz.type === 3 || quiz.type === 4) && sendanswer === false) {
+            console.log("in")
+            if (msg === quiz.answer) {
+                if (stompClient && stompClient.connected) {
+                    const msg = { type: 'ANSWER', content: "alive", roomnumber: code, sender: nickname, id: ID, team: team };
+                    stompClient.send("/app/chat", JSON.stringify(msg), {});
+                }
+                sendanswer = true;
+            }
+        }
+        else if (stompClient && stompClient.connected) {
             const cloud = { type: 'CHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team: team };
             stompClient.send("/app/chat", JSON.stringify(cloud), {});
         }
         for (let i = 0; i < cloudsendArr.length; i++) {
             cloudsendArr[i].value = '';
         }
+        setCloud('');
         console.log(stompClient);
         console.log(stompClient.connected);
         console.log("send");
@@ -86,6 +112,7 @@ function PlayQuiz(props) {
         for (let i = 0; i < chatsendArr.length; i++) {
             chatsendArr[i].value = '';
         }
+        setMsg('');
         console.log(stompClient)
         console.log(stompClient.connected)
         console.log("send");
@@ -357,6 +384,7 @@ function PlayQuiz(props) {
         else if (message.type === 'START') {
             isstart = 1;
             setSeconds(15);
+            setProgress(15 * 1000);
             isresult = perteam;
 
             // 채팅 변환 알림 출력
@@ -382,6 +410,7 @@ function PlayQuiz(props) {
                 console.log(index);
                 if (quiz.type === 2 || quiz.type === 4) {
                     setSeconds(60);
+                    setProgress(60 * 1000);
                 }
             });
 
@@ -410,7 +439,7 @@ function PlayQuiz(props) {
                         console.log(answer)
                         console.log(alive)
                         if (alive === 'die') {
-                            answer ="";
+                            answer = "";
                         }
                         else if (answer === "") {
                             answer = "die"
@@ -423,7 +452,7 @@ function PlayQuiz(props) {
                             alive = 'die';
                         }
 
-                            // result 호출
+                        // result 호출
                         answer = "";
                         break;
                     case 1:
@@ -499,8 +528,10 @@ function PlayQuiz(props) {
 
                 if (index === isresult - perteam) {
                     setSeconds(15);
+                    setProgress(15 * 1000);
                     if (quiz.type === 2 || quiz.type === 4) {
                         setSeconds(60);
+                        setProgress(60 * 1000);
                     }
                 }
             }
@@ -703,7 +734,7 @@ function PlayQuiz(props) {
                     <div className="quiz_wrap">
                         <div className="quiz_tit">
                             {yourstate}
-                            
+
                         </div>
                         <div className="quiz_etc">
                             {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
@@ -743,76 +774,76 @@ function PlayQuiz(props) {
             </div>
         )
     }
-            return (
-                <div className="quiz_contents">
-                    <div className="quiz_parts">
-                        <div id="cloudArea">
+    return (
+        <div className="quiz_contents">
+            <div className="quiz_parts">
+                <div id="cloudArea">
 
-                            <div className="cloud_wrap">
-                                <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg3" onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
-                                <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
-                            </div>
+                    <div className="cloud_wrap">
+                        <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg3" onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
+                        <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
+                    </div>
+                </div>
+                <div className="quiz_wrap">
+                    <div className="quiz_tit">
+                        {quiz.content}
+                    </div>
+                    <div className="quiz_etc">
+                        {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
+                        {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
+                    </div>
+                    <div className="quiz_progress">
+                        <ProgressBar duration={progress} />
+                        <div className="left_time">
+                            {seconds}
                         </div>
-                        <div className="quiz_wrap">
-                            <div className="quiz_tit">
-                                {quiz.content}
-                            </div>
-                            <div className="quiz_etc">
-                                {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
-                                {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
-                            </div>
-                            <div className="quiz_progress">
-                                <ProgressBar duration={progress} />
-                                <div className="left_time">
-                                    {seconds}
-                                </div>
-                            </div>
-                            <div className="answer_wrap">
-                                {answerbutton1}
-                                {answerbutton2}
-                                {answerbutton3}
-                                {answerbutton4}
-                                {answerbutton5}
-                                <br />
+                    </div>
+                    <div className="answer_wrap">
+                        {answerbutton1}
+                        {answerbutton2}
+                        {answerbutton3}
+                        {answerbutton4}
+                        {answerbutton5}
+                        <br />
                                     현재선택 : {currentcheck}
-                                <br />
+                        <br />
                                     당신은 : team{team} 입니다
                                     <br />
-                                {turn}
-                                <br />
+                        {turn}
+                        <br />
                                     총 {perteam} 문제입니다.
 
                                 </div>
-                        </div>
-                    </div>
-                    <div className="communication">
-                        <h3>팀 원 목 록 😎</h3>
-
-                        <div className="members">
-
-                            <ul id="memberArea">
-                                {memberview}
-                            </ul>
-                        </div>
-                        <h3>팀 원 채 팅 🤩</h3>
-                        <div className="chat">
-                            <ul id="messageArea">
-
-                            </ul>
-                        </div>
-                        <div className="send_wrap">
-                            <input type="text" className="chatsend" id="chatMsg3" placeholder="채팅을 입력하세요." onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
-                            <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
-                        </div>
-                        <div className="teamPlayer_btn">
-                            {passbutton}
-                        </div>
-                    </div>
-                    <div className="allChat">
-
-                    </div>
                 </div>
-        );
-    }
+            </div>
+            <div className="communication">
+                <h3>팀 원 목 록 😎</h3>
+
+                <div className="members">
+
+                    <ul id="memberArea">
+                        {memberview}
+                    </ul>
+                </div>
+                <h3>팀 원 채 팅 🤩</h3>
+                <div className="chat">
+                    <ul id="messageArea">
+
+                    </ul>
+                </div>
+                <div className="send_wrap">
+                    <input type="text" className="chatsend" id="chatMsg3" placeholder="채팅을 입력하세요." onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
+                    <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
+                </div>
+                <div className="teamPlayer_btn">
+                    {passbutton}
+                </div>
+            </div>
+            <div className="allChat">
+
+            </div>
+        </div>
+    );
+}
 
 export default PlayQuiz;

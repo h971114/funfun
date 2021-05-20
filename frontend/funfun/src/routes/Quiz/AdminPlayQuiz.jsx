@@ -146,7 +146,6 @@ function AdminPlayQuiz(props) {
         stompClient = Stomp.over(socket);
         isstart = 0;
         ID = ''
-        index = 0;
         stompClient.connect(
             {},
             frame => {
@@ -372,9 +371,11 @@ function AdminPlayQuiz(props) {
                 switch (quiz.type) {
                     case 0:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OX`, { params: { no: code } }).then(res => {
-                            left_member = "남은인원 : " + res.data;
+                            console.log(res.data);
+                            leftstate = "남은인원 : " + res.data;
                         })
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OXmembers`, { params: { no: code } }).then(res => {
+                            console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
                             );
