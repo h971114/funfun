@@ -81,15 +81,21 @@ class MyPage extends Component {
 
     checkNN = () => {
         var nickname = document.getElementById('userNN').value;
+        console.log(nickname)
 
         // 중복 닉네임 여부 확인하기
-
+        if (!nickname) {
+            document.getElementById("avalidNN").setAttribute('style', 'color:#f91c37');
+            document.getElementById("avalidNN").innerText = "닉네임은 반드시 입력해야 합니다.";            
+        } else {
+            document.getElementById("avalidNN").style.display = 'none';
+        }
         // 맞을 때
 
         this.setState({
             checkNN: true
         })
-        // document.getElementById("avalidNN").setAttribute('style', 'color:#f91c37');
+        // document.getElementById("ava lidNN").setAttribute('style', 'color:#f91c37');
         // document.getElementById("avalidNN").innerText = "사용할 수 없는 닉네임입니다.";
 
         // 틀릴 때

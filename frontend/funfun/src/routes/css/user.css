@@ -109,8 +109,13 @@
 
 
 .joinWrap{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
     margin-top: 130px;
-    height: 700px;
+    margin-bottom: 20px;
+    /* height: 700px; */
     border: 1px solid #000;
     border-radius: 10px;
     position: static;
@@ -118,7 +123,7 @@
 
 .joinWrap .title{
     display: inline-block;
-    height: 690px;
+    /* height: 690px; */
     width: 30%;
 
     border-right: 1px solid #000;
@@ -145,10 +150,12 @@
 .joinWrap .input{
     display: inline-block;
     /* height: 650px; */
+    justify-content: center;
+    align-items: center;
     width: 480px;
     position: relative;
 
-    margin-left:10px;
+    margin-top: 20px;
     margin-bottom: 20px;
 
     padding: 0px 25px 0px 25px;

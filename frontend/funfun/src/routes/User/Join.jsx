@@ -78,7 +78,7 @@ class Join extends Component {
                 checkCPW: true
             })
             document.getElementById("avalidCPW").setAttribute('style', 'color:#73a1ff');
-            document.getElementById("avalidCPW").innerText = "일치하는 비밀번호가 입력되었습니다.";
+            document.getElementById("avalidCPW").innerText = "사용가능한 비밀번호입니다.";
         }
     }
 
@@ -86,7 +86,12 @@ class Join extends Component {
         var nickname = document.getElementById('userNN').value;
 
         // 중복 닉네임 여부 확인하기
-
+        if (!nickname) {
+            document.getElementById("avalidNN").setAttribute('style', 'color:#f91c37');
+            document.getElementById("avalidNN").innerText = "닉네임은 반드시 입력해야 합니다.";            
+        } else {
+            document.getElementById("avalidNN").style.display = 'none';
+        }
         // 맞을 때
 
         this.setState({
@@ -157,23 +162,28 @@ class Join extends Component {
                     <div className="input">
                         <label htmlFor="userID">USERID</label><br />
                         <input type="text" id="userID" onBlur={this.checkID} placeholder="아이디를 입력하세요." />
-                        <div className="availd" id="avalidID"></div>
+                        <div className="availd" id="avalidID" style={{ display: "none" }}></div>
+                        <div style={{ marginTop: "20px" }}></div>
 
                         <label htmlFor="userPW">PASSWORD</label><br />
                         <input type="password" id="userPW" onBlur={this.checkPW} placeholder="비밀번호를 입력하세요." />
-                        <div className="availd" id="avalidPW"></div>
+                        <div className="availd" id="avalidPW" style={{ display: "none" }}></div>
+                        <div style={{ marginTop: "20px" }}></div>
 
                         <label htmlFor="userCPW">Check PASSWORD</label><br />
                         <input type="password" id="userCPW" onBlur={this.checkCPW} placeholder="다시 비밀번호를 입력하세요." />
-                        <div className="availd" id="avalidCPW"></div>
+                        <div className="availd" id="avalidCPW" style={{ display: "none" }}></div>
+                        <div style={{ marginTop: "20px" }}></div>
 
                         <label htmlFor="userNN">NICKNAME</label><br />
                         <input type="text" id="userNN" onBlur={this.checkNN} placeholder="별명을 입력하세요." />
-                        <div className="availd" id="avalidNN"></div>
+                        <div className="availd" id="avalidNN" style={{ display: "none" }}></div>
+                        <div style={{ marginTop: "20px" }}></div>
 
                         <label htmlFor="userEM">USER E-MAIL</label><br />
                         <input type="text" id="userEM" onBlur={this.checkEM} placeholder="이메일을 입력하세요." />
-                        <div className="availd" id="avalidEM"></div>
+                        <div className="availd" id="avalidEM" style={{ display: "none" }}></div>
+                        <div style={{ marginTop: "20px" }}></div>
 
                         <input type="button" onClick={this.join} value="회 원 가 입" />
                     </div>
