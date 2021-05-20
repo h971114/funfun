@@ -32,6 +32,7 @@ var perteam = 1;
 var sendanswer = false;
 var quizsize = 0;
 var nextteamchat = ''
+var left_member = ''
 function AdminPlayQuiz(props) {
     const [seconds, setSeconds] = useState(10);
     const [progress, setProgress] = useState(seconds * 1000);
@@ -141,7 +142,7 @@ function AdminPlayQuiz(props) {
 
     }
     const connect = (props) => {
-        socket = new SockJS('${process.env.REACT_APP_SERVER_BASE_URL}/ws');
+        socket = new SockJS(`${process.env.REACT_APP_SERVER_BASE_URL}/ws`);
         stompClient = Stomp.over(socket);
         isstart = 0;
         ID = ''
@@ -369,7 +370,13 @@ function AdminPlayQuiz(props) {
                     case 0:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OX`, { params: { no: code } }).then(res => {
                             console.log(res.data);
-                            leftstate = "남은인원 : " + res.data;
+                            left_member = "남은인원 : "+res.data;
+                        })
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OXmembers`, { params: { no: code } }).then(res => {
+                            console.log(res.data);
+                            leftstate = res.data.map((obj) =>
+                                <li>{JSON.stringify(obj)}</li>
+                            );
                         })
                         break;
                     case 1:
@@ -686,6 +693,7 @@ function AdminPlayQuiz(props) {
                             {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
                         </div>
                         <div className="answer_wrap">
+                        {left_member}
                             {leftstate}
                         </div>
                     </div>
@@ -709,10 +717,11 @@ function AdminPlayQuiz(props) {
                     <div className="send_wrap">
                         <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
                         <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
-                        <input type="text" className="chatsend" placeholder="다음을 풀 팀 입력." onChange={event => setTeam(event.target.value)}></input>
-                        <button onClick={() => sendTeam(nextteam)}>다음 팀 버튼</button>
+                        <input type="text" className="chatsend teamNum" placeholder="다음을 풀 팀 입력" onChange={event => setTeam(event.target.value)}></input>
+                            <button className="nextBtn" onClick={() => sendTeam(nextteam)}>다음 팀</button>
                     </div>
                     <div className="admin_btn">
+                        <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
                         <input type="button" className="nextGame" value="결 과" onClick={next}></input>
                     </div>
                 </div>
@@ -797,6 +806,7 @@ function AdminPlayQuiz(props) {
                     <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
                 </div>
                 <div className="admin_btn">
+                    <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
                     <input type="button" className="nextGame" value="결 과" onClick={next}></input>
                 </div>
             </div>

@@ -23,7 +23,7 @@ var answerbutton4 = ''
 var answerbutton5 = ''
 var passbutton = ''
 var answer = ''
-var alive = 'alive';
+var alive = 'die';
 var isresult = 1;
 var yourstate = ''
 var leftstate = ''
@@ -82,10 +82,11 @@ function PlayQuiz(props) {
         console.log(stompClient.connected)
         console.log("send");
     }
-    const appKeyPress = (e) => {
+    const appKeyPress = (e, msg) => {
         console.log(e.target.id);
+        console.log(e)
         if (e.key === 'Enter') {
-            send(props, msg);
+            sendCloud(props, msg)
             document.getElementById(e.target.id).value = null;
         }
     }
@@ -101,7 +102,7 @@ function PlayQuiz(props) {
         memberArea.appendChild(infoElement);
     }
     const connect = (props) => {
-        socket = new SockJS('${process.env.REACT_APP_SERVER_BASE_URL}/ws');
+        socket = new SockJS(`${process.env.REACT_APP_SERVER_BASE_URL}/ws`);
         stompClient = Stomp.over(socket);
         isstart = 0;
         stompClient.connect(
@@ -622,7 +623,7 @@ function PlayQuiz(props) {
             <div id="cloudArea">
             
             <div className="cloud_wrap">
-                <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg1" onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
+                <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg1" onKeyPress={e => appKeyPress(e, cloud)} onChange={event => setCloud(event.target.value)}></input>
                 <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
             </div>
         </div>
@@ -678,7 +679,7 @@ function PlayQuiz(props) {
                 <div id="cloudArea">
             
             <div className="cloud_wrap">
-                <input type="text" className="cloudsend" placeholder="채팅을 입력하세요."  id="cloudMsg1" onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
+                <input type="text" className="cloudsend" placeholder="채팅을 입력하세요."  id="cloudMsg1" onKeyPress={e => appKeyPress(e, cloud)} onChange={event => setCloud(event.target.value)}></input>
                 <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
             </div>
         </div>
@@ -711,7 +712,7 @@ function PlayQuiz(props) {
                     </ul>
                 </div>
                 <div className="send_wrap">
-                    <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
+                    <input type="text" className="chatsend" placeholder="채팅을 입력하세요."  onChange={event => setMsg(event.target.value)}></input>
                     <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
                 </div>
                 <div className="teamPlayer_btn">
@@ -730,7 +731,7 @@ function PlayQuiz(props) {
                 <div id="cloudArea">
             
             <div className="cloud_wrap">
-                <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg1" onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
+                <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg1" onKeyPress={e => appKeyPress(e, cloud)} onChange={event => setCloud(event.target.value)}></input>
                 <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
             </div>
         </div>
