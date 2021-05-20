@@ -115,7 +115,7 @@ class FindPW extends Component {
                     // alert("정보와 일치하는 결과가 존재하지 않습니다.")
                 }
             }).catch(err => {
-                console.log(err);
+                // console.log(err);
                 alert("알 수 없는 오류가 발생했습니다.");
                 window.location.replace("/");
             })

@@ -165,7 +165,7 @@ class Join extends Component {
                 alert("회원가입이 완료되었습니다.\n 로그인 페이지로 이동합니다.");
                 window.location.replace("/login");
             }).catch(err => {
-                console.log(err);
+                // console.log(err);
                 alert("알 수 없는 오류가 발생했습니다.");
                 // window.location.replace("/");
             })

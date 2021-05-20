@@ -28,7 +28,7 @@ class FindID extends Component {
                     email: this.state.email,
                 },
             }).then(res => {
-                console.log(res);
+                // console.log(res);
                 if (res.data) {
                     // console.log(res.data)
                     this.setState({
@@ -43,7 +43,7 @@ class FindID extends Component {
                     })
                 }
             }).catch(err => {
-                console.log(err);
+                // console.log(err);
                 this.setState({
                     checkEmail: true,
                     resultMessage: `이메일 ${this.state.email}로 가입된 아이디가 존재하지 않습니다.`
