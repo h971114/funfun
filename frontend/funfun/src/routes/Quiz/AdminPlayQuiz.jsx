@@ -31,8 +31,8 @@ var currentcheck = ''
 var perteam = 1;
 var sendanswer = false;
 var quizsize = 0;
-var nextteamchat = ''
-var left_member = ''
+var nextteamchat = '';
+var left_member = '';
 function AdminPlayQuiz(props) {
     const [seconds, setSeconds] = useState(10);
     const [progress, setProgress] = useState(seconds * 1000);
@@ -92,7 +92,7 @@ function AdminPlayQuiz(props) {
         return Math.random() * (max - min) + min;
     }
     function getRandomColor() {
-        return '#' + ('00000' + (Math.random() * 16777216 << 0).toString(16)).substr(-6);
+        return '#fff';
     }
 
     const sendCloud = (props, msg) => {
@@ -324,7 +324,7 @@ function AdminPlayQuiz(props) {
             if (message.team === team) {
                 messageElement.classList.add('chat-message');
                 var usernameElement = document.createElement('span');
-                var usernameText = document.createTextNode(message.sender);
+                var usernameText = document.createTextNode(message.sender + " : ");
                 usernameElement.appendChild(usernameText);
                 messageElement.appendChild(usernameElement);
             }
@@ -332,6 +332,7 @@ function AdminPlayQuiz(props) {
         else if (message.type === 'START') {
             isstart = 1;
             setSeconds(15);
+            setProgress(15 * 1000);
             isresult = perteam;
             console.log(isresult)
             console.log(perteam)
@@ -342,6 +343,7 @@ function AdminPlayQuiz(props) {
                 console.log(index);
                 if (quiz.type === 2 || quiz.type === 4) {
                     setSeconds(60);
+                    setProgress(60 * 1000);
                 }
             });
 
@@ -370,7 +372,7 @@ function AdminPlayQuiz(props) {
                     case 0:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OX`, { params: { no: code } }).then(res => {
                             console.log(res.data);
-                            left_member = "남은인원 : "+res.data;
+                            leftstate = "남은인원 : " + res.data;
                         })
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OXmembers`, { params: { no: code } }).then(res => {
                             console.log(res.data);
@@ -448,8 +450,10 @@ function AdminPlayQuiz(props) {
                 console.log(isresult - perteam)
                 if (index === isresult - perteam) {
                     setSeconds(15);
+                    setProgress(15 * 1000);
                     if (quiz.type === 2 || quiz.type === 4) {
                         setSeconds(60);
+                        setProgress(60 * 1000);
                     }
                 }
             }
@@ -521,6 +525,7 @@ function AdminPlayQuiz(props) {
     const startGame = () => {
         document.getElementsByClassName('gameStart')[0].setAttribute('style', 'display:none');
         start();
+
         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: 0 } }).then(res => {
             console.log(res.data);
         });
@@ -539,12 +544,17 @@ function AdminPlayQuiz(props) {
     }
 
     const appKeyPress = (e) => {
-        console.log(e.target.id);
+        // console.log(e.target.id.charAt(0, 1));
         if (e.key === 'Enter') {
-            send(props, msg);
+            if (e.target.id.charAt(0, 1) == "s") {
+                send(props, msg);
+            } else if (e.target.id.charAt(0, 1) == "c") {
+                sendCloud(props, cloud);
+            }
             document.getElementById(e.target.id).value = null;
         }
     }
+
     const openModal = () => {
         setModalOpen(true);
         console.log('asdf');
@@ -594,20 +604,9 @@ function AdminPlayQuiz(props) {
                     <div id="cloudArea">
 
                         <div className="cloud_wrap">
-                            <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg1" onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
-                            <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
+                            <input type="text" className="cloudsend" id="clodMsg1" onKeyPress={appKeyPress} placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                            <button type="button" className="cloudsendbtn" id="clodBtn1" onClick={() => sendCloud(props, cloud)}></button>
                         </div>
-                    </div>
-                    <label className="waiting">대기중입니다!</label>
-                    <div className="loading dot">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
                     </div>
                 </div>
                 <div className="communication">
@@ -627,8 +626,8 @@ function AdminPlayQuiz(props) {
                         </ul>
                     </div>
                     <div className="send_wrap">
-                        <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
-                        <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
+                        <input type="text" className="chatsend" placeholder="채팅을 입력하세요." id="sendMsg1" onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
+                        <input type="button" className="chatsendbtn" id="chatBtn1" onClick={() => send(props, msg)}></input>
                         <div className="nextQuizWrap">
                             <input type="text" className="chatsend teamQuizCnt" placeholder="팀당 문제 수 입력" onChange={event => setQuiz(event.target.value)}></input>
                             <button className="nextBtn" onClick={() => sendQuiz(perteamset)}>다음 문제</button>
@@ -680,8 +679,8 @@ function AdminPlayQuiz(props) {
                     <div id="cloudArea">
 
                         <div className="cloud_wrap">
-                            <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg1" onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
-                            <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
+                            <input type="text" className="cloudsend" id="clodMsg2" onKeyPress={appKeyPress} placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                            <button type="button" className="cloudsendbtn" id="clodBtn2" onClick={() => sendCloud(props, cloud)}></button>
                         </div>
                     </div>
                     <div className="quiz_wrap">
@@ -693,7 +692,7 @@ function AdminPlayQuiz(props) {
                             {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
                         </div>
                         <div className="answer_wrap">
-                        {left_member}
+                            {left_member}
                             {leftstate}
                         </div>
                     </div>
@@ -715,10 +714,10 @@ function AdminPlayQuiz(props) {
                         </ul>
                     </div>
                     <div className="send_wrap">
-                        <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
-                        <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
+                        <input type="text" className="chatsend" placeholder="채팅을 입력하세요." id="sendMsg2" onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
+                        <input type="button" className="chatsendbtn" id="chatBtn2" onClick={() => send(props, msg)}></input>
                         <input type="text" className="chatsend teamNum" placeholder="다음을 풀 팀 입력" onChange={event => setTeam(event.target.value)}></input>
-                            <button className="nextBtn" onClick={() => sendTeam(nextteam)}>다음 팀</button>
+                        <button className="nextBtn" onClick={() => sendTeam(nextteam)}>다음 팀</button>
                     </div>
                     <div className="admin_btn">
                         <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
@@ -754,17 +753,13 @@ function AdminPlayQuiz(props) {
                 <div id="cloudArea">
 
                     <div className="cloud_wrap">
-                        <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg1" onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
-                        <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
+                        <input type="text" className="cloudsend" id="clodMsg3" onKeyPress={appKeyPress} placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                        <button type="button" className="cloudsendbtn" id="clodBtn3" onClick={() => sendCloud(props, cloud)}></button>
                     </div>
                 </div>
                 <div className="quiz_wrap">
                     <div className="quiz_tit">
                         {quiz.content}
-                    </div>
-                    <div className="quiz_etc">
-                        {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
-                        {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
                     </div>
                     <div className="quiz_progress">
                         <ProgressBar duration={progress} />
@@ -788,7 +783,8 @@ function AdminPlayQuiz(props) {
             <div className="communication">
                 <h3>전 체 목 록 😎</h3>
                 <input type="text" className="copycode" value={copycode} ref={textInput} disabled />
-                    <input type="button" className="copy" value="방 코드 복사" onClick={copyCode}></input>
+                <input type="button" className="copy" value="방 코드 복사" onClick={copyCode}></input>
+
                 <div className="members_admin">
                     <ul id="memberArea">
 
@@ -802,8 +798,8 @@ function AdminPlayQuiz(props) {
                     </ul>
                 </div>
                 <div className="send_wrap">
-                    <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
-                    <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
+                    <input type="text" className="chatsend" id="sendMsg3" onKeyPress={appKeyPress} placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
+                    <input type="button" className="chatsendbtn" id="sendBtn3" onClick={() => send(props, msg)}></input>
                 </div>
                 <div className="admin_btn">
                     <input type="button" className="gameStart" value="Start" onClick={startGame}></input>

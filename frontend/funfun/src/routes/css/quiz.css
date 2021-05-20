@@ -49,7 +49,9 @@
   height: 100%;
   z-index: 1001;
 
-  background-color: lightgray;
+  background: url(../../img/waiting_bg.png);
+  background-size: cover;
+  /* background-color: lightgray; */
 }
 .quiz_contents .quiz_parts .quiz_wrap {
   width: 78%;
@@ -214,9 +216,11 @@
 
   overflow-y: scroll;
 }
+.quiz_contents .communication .chat_admin #messageArea .chat-message span,
 .quiz_contents .communication .chat #messageArea .chat-message span{
   font-weight: 800;
 }
+.quiz_contents .communication .chat_admin #messageArea .chat-message p,
 .quiz_contents .communication .chat #messageArea .chat-message p{
   display: inline-block;
 }
@@ -674,7 +678,7 @@
   top: 50px;
   left: 50px;
 
-  width: 50%;
+  width: 80%;
 }
 .quiz_contents
   .wrapContent
@@ -756,7 +760,7 @@
   .progress {
   position: absolute;
 
-  width: 40%;
+  width: 80%;
   height: 30px;
 
   left: 50px;
@@ -776,7 +780,7 @@
 
   height: 30px;
 
-  left: calc(40% + 60px);
+  left: calc(80% + 60px);
   top: 200px;
 
   font-size: 25px;
@@ -1125,10 +1129,10 @@
   margin-right: 10px;
   margin-bottom: 20px;
 }
-.quiz_contents .wrapContent .quiz_attr .TWrap .TradioWrap #TradioTeamC {
+.quiz_contents .wrapContent .quiz_attr .TWrap .TradioWrap #TradioTeamCT {
   margin-left: 30px;
 }
-.quiz_contents .wrapContent .quiz_attr .TWrap .TradioWrap #TradioTeamA {
+.quiz_contents .wrapContent .quiz_attr .TWrap .TradioWrap #TradioTeamAT {
   margin-left: 30px;
 }
 
