@@ -188,6 +188,10 @@ function AdminPlayQuiz(props) {
             if (nextteamchat === '') {
                 alert("문제를 풀 팀을 적어주세요!")
             }
+            else if (stompClient && stompClient.connected) {
+                const msg = { type: 'START', content: "", roomnumber: code };
+                stompClient.send("/app/chat", JSON.stringify(msg), {});
+            }
         }
         else if (stompClient && stompClient.connected) {
             const msg = { type: 'START', content: "", roomnumber: code };
@@ -220,6 +224,9 @@ function AdminPlayQuiz(props) {
         if (message.type === 'JOIN') {
             messageElement.classList.add('event-message');
             if (message.sender === nickname && ID === '') {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
+                    quiz = res.data;
+                });
                 axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/${code}`).then(res => {
                     if (res.data) {
                         initialBoard.columns.map(obj => {
@@ -525,6 +532,7 @@ function AdminPlayQuiz(props) {
     const startGame = () => {
         document.getElementsByClassName('gameStart')[0].setAttribute('style', 'display:none');
         start();
+        console.log("start")
         //게임 시작 부 소스 ★
     }
 

@@ -38,7 +38,6 @@ public class ChatController {
     
     @MessageMapping("/chat")
     public void sendMessage(@Payload ChatMessage chatMessage , SimpMessageHeaderAccessor headerAccessor) {
-    	System.out.println(headerAccessor.getSessionId());
     	boolean issend = true;
     	String ID = headerAccessor.getSessionId();
     	if(MessageType.REJOIN.equals(chatMessage.getType())) {
@@ -49,7 +48,6 @@ public class ChatController {
     		headerAccessor.getSessionAttributes().put("roomnumber", chatMessage.getRoomnumber());
     		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setUsernumber(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getUsernumber()+1);
     	}
-    	System.out.println(chatMessage);
     	if(MessageType.JOIN.equals(chatMessage.getType())) {
     		chatMessage.setContent(chatMessage.getSender()+"님이 입장하셨습니다.");
     		headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
@@ -129,17 +127,14 @@ public class ChatController {
     		}
     	}
     	if(MessageType.ADMIN.equals(chatMessage.getType())) { // 팀 변경.
-    		System.out.println("in");
     		String fromteam = chatMessage.getFromteam();
     		String toteam = chatMessage.getToteam();
     		String id = chatMessage.getId();
-    		System.out.println(fromteam+" "+toteam+" "+id);
     		QuizInfo quiz = quizinfomap.getQuizmap().get(chatMessage.getRoomnumber());
     		Map<String, LinkedList<Map<String, String>>> teammap =  quiz.getTeammember();
     		Map<String, String> removemap = null;
     		for(Map<String, String> tempmap :teammap.get("team"+fromteam)) {
-    			System.out.println(tempmap);
-    			System.out.println(id+" "+tempmap.get("id"));
+
     			if(id.equals(tempmap.get("id"))) {
     				removemap = tempmap;
     				System.out.println("in");
@@ -147,7 +142,6 @@ public class ChatController {
     				break;
     			}
     		}
-    		System.out.println(removemap);
     		teammap.get("team"+fromteam).remove(removemap);
     		teammap.get("team"+toteam).add(removemap);
     	}
@@ -158,8 +152,6 @@ public class ChatController {
     		else {
     			quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setIndex(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex()+1);
     		}
-    		System.out.println(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex());
-    		System.out.println(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIsresult());
     		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setLeftmember(3);
     		if(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getType() == 0) {
     			quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setAlivemembers(new LinkedList<String>());
@@ -197,7 +189,6 @@ public class ChatController {
         				issend = true;
         				chatMessage.setType(MessageType.NEXT);
         			}
-        			System.out.println(quiz.getLeftmember());
     			}
     			else {
     				
@@ -267,8 +258,6 @@ public class ChatController {
     	if(MessageType.PERTEAM.equals(chatMessage.getType())) {
     		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setPerteam(Integer.parseInt(chatMessage.getContent()));
     	}
-    	System.out.println(chatMessage);
-    	System.out.println(quizinfomap.getQuizmap().toString());
     	if(issend) {
     		messagingTemplate.convertAndSend("/topic/"+chatMessage.getRoomnumber(), chatMessage);
     	}

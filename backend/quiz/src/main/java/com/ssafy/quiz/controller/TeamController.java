@@ -35,20 +35,17 @@ public class TeamController {
 	private QuizInfoMap quizinfomap;
 	 @GetMapping("/{no}")
 	public ResponseEntity<Map> getTeam(@PathVariable(value = "no") String room_no, HttpServletRequest req){
-		 System.out.println(room_no);
-		 System.out.println(quizinfomap.toString());
+
 		return new ResponseEntity<Map>(quizinfomap.getQuizmap().get(room_no).getTeammember(), HttpStatus.ACCEPTED);
 	}
 	 @GetMapping("/getteammember")
 		public ResponseEntity<List<Map<String, String>>> getTeammember(@RequestParam("no") String room_no, @RequestParam("team") String team_no, HttpServletRequest req){
-			 System.out.println(room_no);
-			 System.out.println(quizinfomap.toString());
+
 			return new ResponseEntity<List<Map<String, String>>>(quizinfomap.getQuizmap().get(room_no).getTeammember().get("team"+team_no), HttpStatus.ACCEPTED);
 		}
 	 @GetMapping("/quiz")
 		public ResponseEntity<Quiz> getQuiz(@RequestParam("no") String room_no, @RequestParam("index") int index, @RequestParam("isresult") int isresult, HttpServletRequest req){
-			 System.out.println(room_no);
-			 System.out.println(quizinfomap.toString());
+
 			 quizinfomap.getQuizmap().get(room_no).setIsresult(isresult);
 			return new ResponseEntity<Quiz>(quizinfomap.getQuizmap().get(room_no).getQuizlist().get(index), HttpStatus.ACCEPTED);
 		}
@@ -59,21 +56,17 @@ public class TeamController {
 		}
 	 @GetMapping("/personal")
 		public ResponseEntity<Integer> getPscore(@RequestParam("no") String room_no, @RequestParam("ID") String ID, HttpServletRequest req){
-			 System.out.println(room_no);
-			 System.out.println(quizinfomap.toString());
+
 			 //List<Entry<String, Integer>> list = new ArrayList<>(quizinfomap.getQuizmap().get(room_no).getPersonalscore().entrySet());
 			return new ResponseEntity<Integer>(quizinfomap.getQuizmap().get(room_no).getPersonalscore().get(ID), HttpStatus.ACCEPTED);
 		}
 	 @GetMapping("/team")
 	 public ResponseEntity<Integer> getTscore(@RequestParam("no") String room_no, @RequestParam("team") String team , HttpServletRequest req){
-		 System.out.println(room_no);
-		 System.out.println(quizinfomap.toString());
+
 		return new ResponseEntity<Integer>(quizinfomap.getQuizmap().get(room_no).getTeamscore().get("team"+team), HttpStatus.ACCEPTED);
 	}
 	 @GetMapping("/personal5")
 		public ResponseEntity<List> getPscore5(@RequestParam("no") String room_no, HttpServletRequest req){
-			 System.out.println(room_no);
-			 System.out.println(quizinfomap.toString());
 			 List<Entry<String, Integer>> list = new ArrayList<>(quizinfomap.getQuizmap().get(room_no).getPersonalscore().entrySet());
 			 list.sort(Entry.comparingByValue(new Comparator<Integer>() {
 
@@ -100,8 +93,6 @@ public class TeamController {
 		}
 	 @GetMapping("/team5")
 		public ResponseEntity<List> getTscore5(@RequestParam("no") String room_no, HttpServletRequest req){
-			 System.out.println(room_no);
-			 System.out.println(quizinfomap.toString());
 			 List<Entry<String, Integer>> list = new ArrayList<>(quizinfomap.getQuizmap().get(room_no).getTeamscore().entrySet());
 			 list.sort(Entry.comparingByValue(new Comparator<Integer>() {
 
@@ -137,25 +128,33 @@ public class TeamController {
 	 @GetMapping("/rejoin")
 	 public ResponseEntity<ChatMessage> getleftparams(@RequestParam("no") String room_no, @RequestParam("id") String member_id, HttpServletRequest req){
 		 ChatMessage returninfo = new ChatMessage();
-		 System.out.println("here");
 		 returninfo.setSender(quizinfomap.getQuizmap().get(room_no).getIdnicknamemap().get(member_id));
-		 System.out.println(returninfo.toString());
-		 System.out.println("here");
 		 String team = null;
 		 for(String tmp :quizinfomap.getQuizmap().get(room_no).getTeammember().keySet()) {
 			 for(Map<String, String> tmpmap : quizinfomap.getQuizmap().get(room_no).getTeammember().get(tmp)) {
 				 if(tmpmap.get("id").equals(member_id)) {
 					 team = tmp.substring(4);
+					 
 				 }
 			 }
 		 }
-		 System.out.println(team);
 		 returninfo.setTeam(team);
 		 returninfo.setToteam(Integer.toString(quizinfomap.getQuizmap().get(room_no).getPerteam()));
 		 returninfo.setTitle(Integer.toString(quizinfomap.getQuizmap().get(room_no).getIndex()));
 		 returninfo.setContent(Integer.toString(quizinfomap.getQuizmap().get(room_no).getIsresult()));
 		return new ResponseEntity<ChatMessage>(returninfo, HttpStatus.ACCEPTED);
 		 
+	 }
+	 @GetMapping("/isquiz")
+	 public ResponseEntity<String> getquizroom(@RequestParam("no") String room_no, HttpServletRequest req){
+		 String returninfo = "";
+		 if(quizinfomap.getQuizmap().containsKey(room_no)) {
+			 returninfo = "ison";
+		 }
+		 else {
+			 returninfo = "noton";
+		 }
+		 return new ResponseEntity<String>(returninfo, HttpStatus.ACCEPTED);
 	 }
 
 }
