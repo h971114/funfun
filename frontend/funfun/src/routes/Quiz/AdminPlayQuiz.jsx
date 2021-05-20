@@ -384,16 +384,7 @@ function AdminPlayQuiz(props) {
                 nextteamchat = ''
                 switch (quiz.type) {
                     case 0:
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OX`, { params: { no: code } }).then(res => {
-                            console.log(res.data);
-                            leftstate = "남은인원 : " + res.data;
-                        })
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OXmembers`, { params: { no: code } }).then(res => {
-                            console.log(res.data);
-                            leftstate = res.data.map((obj) =>
-                                <li>{JSON.stringify(obj)}</li>
-                            );
-                        })
+                        
                         break;
                     case 1:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
@@ -679,11 +670,19 @@ function AdminPlayQuiz(props) {
     if (isstart === 2) {
         if (quiz.type === 0) {
             if (alive === 'alive') {
-                yourstate = "당신은 살아남았습니다."
+                yourstate = "당신은 관리자입니다."
             }
             else {
                 yourstate = "당신은 죽었습니다."
             }
+            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OX`, { params: { no: code } }).then(res => {
+                left_member = "남은인원 : " + res.data;
+            })
+            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OXmembers`, { params: { no: code } }).then(res => {
+                leftstate = res.data.map((obj) =>
+                    <li>{JSON.stringify(obj)}</li>
+                );
+            })
         }
         return (
             <div className="quiz_contents">
