@@ -41,6 +41,7 @@ function PlayQuiz(props) {
     const [progress, setProgress] = useState(seconds * 1000);
     const [msg, setMsg] = useState('');
     const [cloud, setCloud] = useState('');
+    const [inputanswer, setInputAnswer] = useState('');
     // const [cloudIdx, setCloudIdx] = useState(9);
     let clouds = [];
 
@@ -66,9 +67,9 @@ function PlayQuiz(props) {
     //     console.log(stompClient.connected);
     //     console.log("send");
     // }
-    const sendCloud = (props, msg) => {
-        var cloudsendArr = document.getElementsByClassName("cloudsend");
-        let send_message = msg;
+    const sendAnswer = (props, msg) => {
+        console.log(quiz);
+        console.log(msg);
         if (quiz !== '' && (quiz.type === 3 || quiz.type === 4) && sendanswer === false) {
             if (msg === quiz.answer) {
                 if (stompClient && stompClient.connected) {
@@ -78,7 +79,21 @@ function PlayQuiz(props) {
                 sendanswer = true;
             }
         }
-        else if (stompClient && stompClient.connected) {
+    }
+    const sendCloud = (props, msg) => {
+        var cloudsendArr = document.getElementsByClassName("cloudsend");
+        let send_message = msg;
+        // if (quiz !== '' && (quiz.type === 3 || quiz.type === 4) && sendanswer === false) {
+        //     if (msg === quiz.answer) {
+        //         if (stompClient && stompClient.connected) {
+        //             const msg = { type: 'ANSWER', content: "alive", roomnumber: code, sender: nickname, id: ID, team: team };
+        //             stompClient.send("/app/chat", JSON.stringify(msg), {});
+        //         }
+        //         sendanswer = true;
+        //     }
+        // }
+        // else
+        if (stompClient && stompClient.connected) {
             const cloud = { type: 'CHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team: team };
             stompClient.send("/app/chat", JSON.stringify(cloud), {});
         }
@@ -200,7 +215,9 @@ function PlayQuiz(props) {
                         else {
                             const msg = { type: 'JOIN', content: "", roomnumber: code, sender: nickname };
                             stompClient.send("/app/chat", JSON.stringify(msg), {});
-                            }
+                            nickname = props.location.state.nickname;
+                            code = props.location.state.code;
+                        }
                     })
                     // const msg = { type: 'REJOIN', content: "", roomnumber: code, sender: "", id: ID };
                     // stompClient.send("/app/chat", JSON.stringify(msg), {});
@@ -640,40 +657,40 @@ function PlayQuiz(props) {
         }
     }, []);
     if (quiz.type === 0) {
-        answerbutton1 = <input type="button" className="O" onClick={() => onclick1()}></input>
-        answerbutton2 = <input type="button" className="X" onClick={() => onclick2()}></input>
+        answerbutton1 = <input type="button" className={"O" + (currentcheck == "O" ? ' on' : '')} onClick={() => onclick1()}></input>
+        answerbutton2 = <input type="button" className={"X" + (currentcheck == "X" ? ' on' : '')} onClick={() => onclick2()}></input>
         answerbutton3 = ""
         answerbutton4 = ""
         answerbutton5 = ""
         passbutton = ""
     }
     else if (quiz.type === 1) {
-        answerbutton1 = <button onClick={() => onclick1()}>{"1. " + quiz.exam1}</button>
-        answerbutton2 = <button onClick={() => onclick2()}>{"2. " + quiz.exam2}</button>
-        answerbutton3 = <button onClick={() => onclick3()}>{"3. " + quiz.exam3}</button>
-        answerbutton4 = <button onClick={() => onclick4()}>{"4. " + quiz.exam4}</button>
-        answerbutton5 = <button onClick={() => onclick5()}>{"5. " + quiz.exam5}</button>
+        answerbutton1 = <button className="choice" onClick={() => onclick1()}>{"1. " + quiz.exam1}</button>
+        answerbutton2 = <button className="choice" onClick={() => onclick2()}>{"2. " + quiz.exam2}</button>
+        answerbutton3 = <button className="choice" onClick={() => onclick3()}>{"3. " + quiz.exam3}</button>
+        answerbutton4 = <button className="choice" onClick={() => onclick4()}>{"4. " + quiz.exam4}</button>
+        answerbutton5 = <button className="choice" onClick={() => onclick5()}>{"5. " + quiz.exam5}</button>
         passbutton = ""
     }
     else if (quiz.type === 2) {
-        answerbutton1 = <button onClick={() => onclick1()}>{"1. " + quiz.exam1}</button>
-        answerbutton2 = <button onClick={() => onclick2()}>{"2. " + quiz.exam2}</button>
-        answerbutton3 = <button onClick={() => onclick3()}>{"3. " + quiz.exam3}</button>
-        answerbutton4 = <button onClick={() => onclick4()}>{"4. " + quiz.exam4}</button>
-        answerbutton5 = <button onClick={() => onclick5()}>{"5. " + quiz.exam5}</button>
+        answerbutton1 = <button className="choice" onClick={() => onclick1()}>{"1. " + quiz.exam1}</button>
+        answerbutton2 = <button className="choice" onClick={() => onclick2()}>{"2. " + quiz.exam2}</button>
+        answerbutton3 = <button className="choice" onClick={() => onclick3()}>{"3. " + quiz.exam3}</button>
+        answerbutton4 = <button className="choice" onClick={() => onclick4()}>{"4. " + quiz.exam4}</button>
+        answerbutton5 = <button className="choice" onClick={() => onclick5()}>{"5. " + quiz.exam5}</button>
         passbutton = <input type="button" className="passBtn" onClick={() => onclicknext()} />
     }
     else if (quiz.type === 3) {
-        answerbutton1 = ""
-        answerbutton2 = ""
+        answerbutton1 = <input type="text" className="answerSend" placeholder="정답을 입력해주세요." id="answerMsg1" onChange={event => setInputAnswer(event.target.value)} />
+        answerbutton2 = <button type="button" className="answersendBtn" value="전송" onClick={() => sendAnswer(props, answer)} />
         answerbutton3 = ""
         answerbutton4 = ""
         answerbutton5 = ""
         passbutton = ""
     }
     else if (quiz.type === 4) {
-        answerbutton1 = ""
-        answerbutton2 = ""
+        answerbutton1 = <input type="text" className="answerSend" placeholder="정답을 입력해주세요." id="answerMsg1" onChange={event => setInputAnswer(event.target.value)} />
+        answerbutton2 = <button type="button" className="answersendBtn" onClick={() => sendAnswer(props, inputanswer)} >전송</button>
         answerbutton3 = ""
         answerbutton4 = ""
         answerbutton5 = ""
@@ -796,10 +813,14 @@ function PlayQuiz(props) {
                     </div>
                 </div>
                 <div className="quiz_wrap">
+                    <div className="quiz_num">
+                        <p className={(perteam == 1 ? 'hidden' : '')}>총 {perteam}문제</p>
+                    </div>
                     <div className="quiz_tit">
-                        {quiz.content}
+                        Q{index}. {quiz.content}
                     </div>
                     <div className="quiz_etc">
+                        <img src="/img/progressbar.gif" />
                         {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
                         {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
                     </div>
@@ -812,19 +833,19 @@ function PlayQuiz(props) {
                     <div className="answer_wrap">
                         {answerbutton1}
                         {answerbutton2}
-                        {answerbutton3}
+                        {answerbutton3}<br />
                         {answerbutton4}
                         {answerbutton5}
-                        <br />
-                                    현재선택 : {currentcheck}
-                        <br />
+                        {/* <br />
+                                    현재선택 : {currentcheck} */}
+                        {/* <br />
                                     당신은 : team{team} 입니다
                                     <br />
                         {turn}
                         <br />
-                                    총 {perteam} 문제입니다.
+                                    총 {perteam} 문제입니다. */}
 
-                                </div>
+                    </div>
                 </div>
             </div>
             <div className="communication">

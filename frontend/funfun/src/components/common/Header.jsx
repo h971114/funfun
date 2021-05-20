@@ -21,7 +21,7 @@ class Header extends Component {
                 </Link>
                 {sessionStorage.getItem('id') ?
                     <div className="loginWraps">
-                        <a onClick={this.logout} className="btn login" href="">로그아웃</a>
+                        <a onClick={this.logout} className="btn login">로그아웃</a>
                         <Link to="/mypage" className="btn login">
                             마이 페이지
                         </Link>
@@ -32,16 +32,16 @@ class Header extends Component {
                     </Link>
                 }
                 {cookie.load('ID') !== undefined ?
-                    <div className = "loginWraps">
-                    <Link to="/game/PlayQuiz" className="btn login">
-                        이전 퀴즈로 접속
+                    <div className="loginWraps">
+                        <Link to="/game/PlayQuiz" className="btn login">
+                            이전 퀴즈로 접속
                     </Link>
-                        </div>
+                    </div>
                     :
-                    
+
                     <div>
-                    
-                </div>
+
+                    </div>
                 }
             </div>
         );
