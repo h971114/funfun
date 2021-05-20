@@ -38,7 +38,7 @@ function WaitingRoom(props) {
         memberArea.appendChild(infoElement);
     }
     const connect = (props) => {
-        socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
+        socket = new SockJS(`${process.env.REACT_APP_SERVER_BASE_URL}/ws`);
         stompClient = Stomp.over(socket);
         stompClient.connect(
             {},
