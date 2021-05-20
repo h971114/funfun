@@ -6,26 +6,30 @@ var nickname = ''
 class SetNick extends Component {
 
     goGame = (e) => {
-        cookie.save('ID', "", {
-            path: '/',
-            expires: new Date(Date.now()),
-        });
-        cookie.save('code', "", {
-            path: '/',
-            expires: new Date(Date.now()),
-        });
-        cookie.save('nickname', "", {
-            path: '/',
-            expires: new Date(Date.now()),
-        });
-        this.props.history.push({
-            pathname: '/game/PlayQuiz',
-            state: {
-                nickname: nickname,
-                code: this.props.location.state.code
-            }
-        });
-        console.log(this.props.history);
+        if (nickname) {
+            cookie.save('ID', "", {
+                path: '/',
+                expires: new Date(Date.now()),
+            });
+            cookie.save('code', "", {
+                path: '/',
+                expires: new Date(Date.now()),
+            });
+            cookie.save('nickname', "", {
+                path: '/',
+                expires: new Date(Date.now()),
+            });
+            this.props.history.push({
+                pathname: '/game/PlayQuiz',
+                state: {
+                    nickname: nickname,
+                    code: this.props.location.state.code
+                }
+            });
+            console.log(this.props.history);
+        } else {
+            alert("닉네임을 입력하세요.")
+        }
     }
     goAdmin = (e) => {
         this.props.history.push({
