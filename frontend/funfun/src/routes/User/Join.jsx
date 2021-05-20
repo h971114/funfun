@@ -78,7 +78,7 @@ class Join extends Component {
                 checkCPW: true
             })
             document.getElementById("avalidCPW").setAttribute('style', 'color:#73a1ff');
-            document.getElementById("avalidCPW").innerText = "사용가능한 비밀번호입니다.";
+            document.getElementById("avalidCPW").innerText = "일치하는 비밀번호가 입력되었습니다.";
         }
     }
 
