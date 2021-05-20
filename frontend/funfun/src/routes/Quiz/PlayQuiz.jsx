@@ -155,6 +155,7 @@ function PlayQuiz(props) {
         answer = ""
         memberview = ""
         alive = "alive"
+        team = '0'
         stompClient.connect(
             {},
             frame => {
@@ -390,7 +391,25 @@ function PlayQuiz(props) {
                     expires,
                 })
             }
+            if (message.id === ID) {
+                teammember = []
+                console.log(team)
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/getteammember`, { params: { no: code, team: team } }).then(res => {
+                    // console.log(res);
+                    if (res.data) {
+                        res.data.map(obj => {
+                            // addmember(obj.title);
+                            teammember.push(obj.title);
+                        })
+                        memberview = teammember.map((obj) =>
+                            <li>{obj}</li>
+                        )
+                    } else {
+                    }
+                }).catch(err => {
+                })
 
+            }
             message.content = message.sender + ' joined!';
         } else if (message.type === 'LEAVE') {
             messageElement.classList.add('event-message');
