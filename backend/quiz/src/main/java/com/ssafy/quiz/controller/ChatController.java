@@ -66,8 +66,8 @@ public class ChatController {
     			switch(quiz.getType()) {
     			case 0:
     				quiz.getPersonalscore().put(ID, 0);
-    				quiz.getAlivemembers().add(ID);
     				quiz.setAlivemember(quiz.getAlivemember()+1);
+    				
     				break;
     			case 1:
     				quiz.getPersonalscore().put(ID, 0);
@@ -101,7 +101,6 @@ public class ChatController {
     			switch(quiz.getType()) {
     			case 0:
     				quiz.getPersonalscore().put(ID, 0);
-    				quiz.getAlivemembers().add(ID);
     				quiz.setAlivemember(quiz.getAlivemember()+1);
     				break;
     			case 1:
@@ -162,6 +161,9 @@ public class ChatController {
     		System.out.println(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex());
     		System.out.println(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIsresult());
     		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setLeftmember(3);
+    		if(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getType() == 0) {
+    			quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setAlivemembers(new LinkedList<String>());
+    		}
     	}
     	if(MessageType.ANSWER.equals(chatMessage.getType())) {
     		QuizInfo quiz = quizinfomap.getQuizmap().get(chatMessage.getRoomnumber());
@@ -169,8 +171,9 @@ public class ChatController {
     		case 0:
     			if("alive".equals(chatMessage.getContent())) {
     				//정답
+    				quiz.getAlivemembers().add(chatMessage.getId());
     			}
-    			else {
+    			else if("die".equals(chatMessage.getContent())) {
     				quiz.setAlivemember(quiz.getAlivemember()-1);
     				quiz.getAlivemembers().remove(chatMessage.getId());
     				//탈락
@@ -256,6 +259,9 @@ public class ChatController {
     	}
     	if(MessageType.START.equals(chatMessage.getType())) {
     		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setIndex(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex()+1);;
+    		if(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getType() == 0) {
+    			quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setAlivemember(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getAlivemember()-1);
+    		}
     	}
     	
     	if(MessageType.PERTEAM.equals(chatMessage.getType())) {
