@@ -200,8 +200,6 @@ function PlayQuiz(props) {
                         else {
                             const msg = { type: 'JOIN', content: "", roomnumber: code, sender: nickname };
                             stompClient.send("/app/chat", JSON.stringify(msg), {});
-                            nickname = props.location.state.nickname;
-                            code = props.location.state.code;
                             }
                     })
                     // const msg = { type: 'REJOIN', content: "", roomnumber: code, sender: "", id: ID };
