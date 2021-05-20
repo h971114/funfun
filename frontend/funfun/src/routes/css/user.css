@@ -72,6 +72,9 @@
 .loginWrap .input #userPW{
     margin-bottom: 40px;
 }
+.loginWrap .input #userPassWord{
+    margin-bottom: 20px;
+}
 .loginWrap .input #userEmail{
     margin-bottom: 40px;
 }
