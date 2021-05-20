@@ -70,7 +70,6 @@ function PlayQuiz(props) {
         var cloudsendArr = document.getElementsByClassName("cloudsend");
         let send_message = msg;
         if (quiz !== '' && (quiz.type === 3 || quiz.type === 4) && sendanswer === false) {
-            console.log("in")
             if (msg === quiz.answer) {
                 if (stompClient && stompClient.connected) {
                     const msg = { type: 'ANSWER', content: "alive", roomnumber: code, sender: nickname, id: ID, team: team };
@@ -87,9 +86,6 @@ function PlayQuiz(props) {
             cloudsendArr[i].value = '';
         }
         setCloud('');
-        console.log(stompClient);
-        console.log(stompClient.connected);
-        console.log("send");
     }
     const send = (props, msg) => {
         var chatsendArr = document.getElementsByClassName("chatsend");
@@ -98,7 +94,6 @@ function PlayQuiz(props) {
             const msg = { type: 'TEAMCHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team: team };
             stompClient.send("/app/chat", JSON.stringify(msg), {});
         }
-        console.log(quiz)
         if (quiz !== '' && (quiz.type === 3 || quiz.type === 4) && sendanswer === false) {
             console.log("in")
             if (msg === quiz.answer) {
@@ -113,9 +108,6 @@ function PlayQuiz(props) {
             chatsendArr[i].value = '';
         }
         setMsg('');
-        console.log(stompClient)
-        console.log(stompClient.connected)
-        console.log("send");
     }
 
     const appKeyPress = (e) => {
@@ -154,6 +146,7 @@ function PlayQuiz(props) {
                 ID = cookie.load('ID')
                 code = cookie.load('code')
                 nickname = cookie.load('nickname')
+                console.log(cookie.load('ID'))
                 if (code === undefined) {
                     code = props.location.state.code
                 }
@@ -164,8 +157,6 @@ function PlayQuiz(props) {
                     //   tick => {
                     //   }
                 );
-                console.log(cookie.load('ID'));
-                console.log(cookie.loadAll())
                 if (ID === undefined) {
                     const msg = { type: 'JOIN', content: "", roomnumber: props.location.state.code, sender: props.location.state.nickname };
                     stompClient.send("/app/chat", JSON.stringify(msg), {});
@@ -173,32 +164,66 @@ function PlayQuiz(props) {
                     code = props.location.state.code;
                 }
                 else {
-                    const msg = { type: 'REJOIN', content: "", roomnumber: code, sender: "", id: ID };
-                    stompClient.send("/app/chat", JSON.stringify(msg), {});
-                    axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/rejoin`, { params: { no: code, id: ID } }).then(res => {
-                        console.log(res.data);
-                        index = parseInt(res.data.title)
-                        team = res.data.team
-                        nickname = res.data.sender
-                        isresult = parseInt(res.data.content)
-                        perteam = parseInt(res.data.toteam)
-                        console.log(isresult)
-                        console.log(index)
-                        if (perteam === 0) {
-                            perteam = 1;
+                    axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/isquiz`, { params: { no: code } }).then(res => {
+                        if (res.data === "ison") {
+                            const msg = { type: 'REJOIN', content: "", roomnumber: code, sender: "", id: ID };
+                            stompClient.send("/app/chat", JSON.stringify(msg), {});
+                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/rejoin`, { params: { no: code, id: ID } }).then(res => {
+                                index = parseInt(res.data.title)
+                                team = res.data.team
+                                nickname = res.data.sender
+                                isresult = parseInt(res.data.content)
+                                perteam = parseInt(res.data.toteam)
+                                if (perteam === 0) {
+                                    perteam = 1;
+                                }
+                                if (index === isresult) {
+                                    isresult += perteam
+                                }
+                                teammember = []
+                                console.log(team)
+                                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/getteammember`, { params: { no: code, team: team } }).then(res => {
+                                    if (res.data) {
+                                        res.data.map(obj => {
+                                            // addmember(obj.title);
+                                            teammember.push(obj.title);
+                                        })
+                                        memberview = teammember.map((obj) =>
+                                            <li>{obj}</li>
+                                        )
+                                    } else {
+                                    }
+                                }).catch(err => {
+                                })
+                            });
                         }
-                        if (index === isresult) {
-                            isresult += perteam
-                        }
+                        else {
+                            const msg = { type: 'JOIN', content: "", roomnumber: code, sender: nickname };
+                            stompClient.send("/app/chat", JSON.stringify(msg), {});
+                            }
+                    })
+                    // const msg = { type: 'REJOIN', content: "", roomnumber: code, sender: "", id: ID };
+                    // stompClient.send("/app/chat", JSON.stringify(msg), {});
+                    // axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/rejoin`, { params: { no: code, id: ID } }).then(res => {
+                    //     index = parseInt(res.data.title)
+                    //     team = res.data.team
+                    //     nickname = res.data.sender
+                    //     isresult = parseInt(res.data.content)
+                    //     perteam = parseInt(res.data.toteam)
+                    //     if (perteam === 0) {
+                    //         perteam = 1;
+                    //     }
+                    //     if (index === isresult) {
+                    //         isresult += perteam
+                    //     }
 
-                    });
+                    // });
 
                 }
 
 
             },
             error => {
-                console.log(error);
                 connected = false;
             }
         );
@@ -347,8 +372,7 @@ function PlayQuiz(props) {
                     expires,
                 })
             }
-            console.log(cookie.loadAll());
-            console.log(cookie.load('ID'))
+
             message.content = message.sender + ' joined!';
         } else if (message.type === 'LEAVE') {
             messageElement.classList.add('event-message');
@@ -405,10 +429,8 @@ function PlayQuiz(props) {
             // 채팅 변환 알림 출력 끝
 
             axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
-                console.log(res.data);
                 quiz = res.data;
                 index += 1;
-                console.log(index);
                 if (quiz.type === 2 || quiz.type === 4) {
                     setSeconds(60);
                     setProgress(60 * 1000);
@@ -437,8 +459,6 @@ function PlayQuiz(props) {
             if (index === isresult) {
                 switch (quiz.type) {
                     case 0:
-                        console.log(answer)
-                        console.log(alive)
                         if (alive === 'die') {
                             answer = "";
                         }
@@ -458,24 +478,19 @@ function PlayQuiz(props) {
                         break;
                     case 1:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
-                            console.log(res.data);
                             yourstate = "내 점수 : " + res.data;
                         }); // 개인전 자기 자신 점수
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
-                            console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
                             );
-                            console.log(leftstate)
                         }); // 개인전 상위 5명 점수
                         break;
                     case 2:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
-                            console.log(res.data);
                             yourstate = "우리 팀 점수 : " + res.data;
                         }); // 팀전 자기 팀 점수
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
-                            console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
                             );
@@ -483,11 +498,9 @@ function PlayQuiz(props) {
                         break;
                     case 3:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
-                            console.log(res.data);
                             yourstate = "내 점수 : " + res.data;
                         }); // 개인전 자기 자신 점수
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
-                            console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
                             );
@@ -495,11 +508,9 @@ function PlayQuiz(props) {
                         break;
                     case 4:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
-                            console.log(res.data);
                             yourstate = "우리 팀 점수 : " + res.data;
                         }); // 팀전 자기 팀 점수
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
-                            console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
                             );
@@ -520,10 +531,8 @@ function PlayQuiz(props) {
                     sendanswer = false;
                 }
                 axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
-                    console.log(res.data);
                     quiz = res.data;
                     index += 1;
-                    console.log(index);
                 });
                 isstart = 1;
 
@@ -536,7 +545,6 @@ function PlayQuiz(props) {
                     }
                 }
             }
-            console.log(isstart);
         }
         else if (message.type === 'PERTEAM') {
             perteam = parseInt(message.content);
@@ -557,7 +565,6 @@ function PlayQuiz(props) {
         }
         else if (message.type === 'ADMIN') {
             messageElement.classList.add('event-message');
-            console.log(message)
             if (message.id === ID) {
                 team = message.toteam
                 teammember = []
@@ -575,7 +582,6 @@ function PlayQuiz(props) {
                     } else {
                     }
                 }).catch(err => {
-                    console.log(err);
                 })
 
             }
@@ -595,7 +601,6 @@ function PlayQuiz(props) {
                     } else {
                     }
                 }).catch(err => {
-                    console.log(err);
                 })
             }
             else if (message.fromteam === team) {
@@ -613,11 +618,9 @@ function PlayQuiz(props) {
                     } else {
                     }
                 }).catch(err => {
-                    console.log(err);
                 })
             }
 
-            console.log(memberview)
         }
 
     }
@@ -632,11 +635,8 @@ function PlayQuiz(props) {
     }, [seconds]);
     useEffect(() => {
         connect(props);
-        console.log("연결");
-        console.log(stompClient);
         return () => {
             disconnect(props);
-            console.log("완료");
         }
     }, []);
     if (quiz.type === 0) {

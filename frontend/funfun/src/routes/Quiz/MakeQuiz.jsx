@@ -84,6 +84,7 @@ function MakeQuiz({ history }) {
     var QInputArr = document.getElementsByClassName("QInput");
     var ChoiceArr = document.getElementsByClassName("ChoiceInput");
     var radioBtnArr = document.getElementsByClassName("radioBtn");
+    var AInputArr = document.getElementsByClassName("AanswerWrap");
 
     const selectOX = () => {
         setQuiztype(0);
@@ -105,10 +106,14 @@ function MakeQuiz({ history }) {
         for (var i = 0; i < radioBtnArr.length; i++) {
             radioBtnArr[i].checked = false;
         }
+        for (var i = 0; i < AInputArr.length; i++) {
+            AInputArr[i].value = "";
+        }
         // quizset[nowpage].Squiztype = 1;
         // console.log("nowpage : " + nowpage);
         console.log("quiztype : " + quiztype);
         document.getElementById("quizType_" + nowpage).innerHTML = "[OX퀴즈]";
+        document.getElementById("quizContents_" + nowpage).innerHTML = "문제를 입력해주세요.";
     }
 
     const selectChoice = () => {
@@ -128,6 +133,7 @@ function MakeQuiz({ history }) {
         }
         console.log("quiztype : " + quiztype);
         document.getElementById("quizType_" + nowpage).innerHTML = "[객관식]";
+        document.getElementById("quizContents_" + nowpage).innerHTML = "문제를 입력해주세요.";
     }
 
     const selectAnswer = () => {
@@ -152,6 +158,7 @@ function MakeQuiz({ history }) {
         }
         console.log("quiztype : " + quiztype);
         document.getElementById("quizType_" + nowpage).innerHTML = "[주관식]";
+        document.getElementById("quizContents_" + nowpage).innerHTML = "문제를 입력해주세요.";
     }
 
     const logout = () => {
@@ -161,6 +168,7 @@ function MakeQuiz({ history }) {
 
     const addPages = () => {
         console.log("quiztype : " + quiztype);
+        document.getElementById("AanswerInput").innerHTML = '';
         var quiz = {
             Sorder: Number(nowpage),
             Squiztitle: quiztit,
@@ -192,7 +200,7 @@ function MakeQuiz({ history }) {
         // console.log(nowpage);
         var quiz = {
             Sorder: quizset.length,
-            Squiztitle: quiztit,
+            Squiztitle: "문제를 입력해주세요.",
             Squiztype: 99,
             SC1: c1,
             SC2: c2,
@@ -200,7 +208,7 @@ function MakeQuiz({ history }) {
             SC4: c4,
             SC5: c5,
             SChoice: null,
-            SAnswer: answer,
+            SAnswer: "",
             Sromm: roomcode
         }
         // quizs = quizs.concat(quiz);
@@ -208,12 +216,17 @@ function MakeQuiz({ history }) {
         console.log(quizset);
         console.log(quiz);
 
+        for (var i = 0; i < QInputArr.length; i++) {
+            QInputArr[i].value = "";
+        }
+        for (var i = 0; i < ChoiceArr.length; i++) {
+            ChoiceArr[i].value = "";
+        }
         for (var i = 0; i < radioBtnArr.length; i++) {
             radioBtnArr[i].checked = false;
         }
-
-        for (let i = 0; i < quizset.length; i++) {
-            // console.log("[추가] " + i + " : " + quizset[i].Squiztype);
+        for (var i = 0; i < AInputArr.length; i++) {
+            AInputArr[i].value = "";
         }
         console.log("----------");
     }
@@ -321,6 +334,7 @@ function MakeQuiz({ history }) {
         if (nowpage == order) {
         }
         else {
+            document.getElementById("AanswerInput").innerHTML = '';
             quizset[nowpage] = quiz;
             var type = quizset[nowpage].Squiztype;
             if (type == 0) {
@@ -345,6 +359,13 @@ function MakeQuiz({ history }) {
             var typeTxt = "";
             // console.log(order + " : " + type);
             setQuiztype(type);
+            setAnswer(SAnswer);
+            setQuiztit(Squiztitle);
+            setC1(SC1);
+            setC2(SC2);
+            setC3(SC3);
+            setC4(SC4);
+            setC5(SC5);
             console.log("order : " + order + " :: type : " + type);
             if (type == 0) {
                 setOXon(true);
@@ -382,6 +403,7 @@ function MakeQuiz({ history }) {
                 setChoiceon(false);
                 setAnsweron(true);
                 document.getElementById("answerQInput").value = Squiztitle;
+                document.getElementById("AanswerInput").value = SAnswer;
             } else {
                 setOXon(false);
                 setChoiceon(false);
@@ -392,44 +414,7 @@ function MakeQuiz({ history }) {
             console.log("[다른거 클릭] " + i + " : " + quizset[i].Squiztype);
         }
         console.log("----------");
-
-        // console.log("order : " + order);
-        // console.log("quiztit : " + quiztit);
-        // console.log("quiztype : " + quiztype);
-        // console.log("c1 : " + c1);
-        // console.log("c2 : " + c2);
-        // console.log("c3 : " + c3);
-        // console.log("c4 : " + c4);
-        // console.log("c5 : " + c5);
-        // console.log("answer : " + answer);
-        // console.log("roomcode : " + roomcode);
-
-
-
-        // quizs = quizs.concat(quiz);
-        // setQuizset(quizs.concat(quiz));
-
-        // // setQuizset(quizs.concat(quiz));
-
-        // // console.log(quiz);
     }
-
-
-    // @Id @GeneratedValue
-    // @Column(name = "room_no")
-    // private int room_no;
-    // @Column(name = "room_code")
-    // private String code;
-    // @Column(name = "room_member_no")
-    // private int member_no;
-    // @Column(name = "room_team_cnt")
-    // private int team_cnt;
-    // @Column(name ="room_quiz_cnt")
-    // private int quiz_cnt;
-    // @Column(name ="quiz_title")
-    // private String quiz_title;
-    // @Column(name ="quiz_date")
-    // private String quiz_date;
 
     const OXRadio = (e) => {
         setAnswer("");
@@ -448,7 +433,7 @@ function MakeQuiz({ history }) {
     }
 
     const AnswerChange = (e) => {
-        setAnswer("");
+        // setAnswer("");
         // // console.log(e.target.value);
         setAnswer(e.target.value);
     }
@@ -488,6 +473,7 @@ function MakeQuiz({ history }) {
 
         var answerCnt = 0;
         var typeCnt = 0;
+        var titleCnt = 0;
         var go = false;
 
         if (page == 1) {
@@ -526,44 +512,75 @@ function MakeQuiz({ history }) {
                 if (quizset[i].Squiztype == 99) {
                     typeCnt++;
                 }
+                if (quizset[i].Squiztitle == "문제를 입력해주세요.") {
+                    titleCnt++;
+                }
             }
 
             if (typeCnt == 1) {
-                console.log(nowpage);
-                quizset[nowpage].Sorder = nowpage;
-                quizset[nowpage].Squiztitle = quiztit;
-                quizset[nowpage].Squiztype = quiztype;
-                quizset[nowpage].SC1 = c1;
-                quizset[nowpage].SC2 = c2;
-                quizset[nowpage].SC3 = c3;
-                quizset[nowpage].SC4 = c4;
-                quizset[nowpage].SC5 = c5;
-                quizset[nowpage].SAnswer = answer;
-                go = true;
+                // console.log(nowpage);
+                if (quiztype == 99) {
+                    alert("완성되지 않은 문제가 있습니다. 확인해주세요");
+                }
+                else {
+                    quizset[nowpage].Sorder = nowpage;
+                    quizset[nowpage].Squiztitle = quiztit;
+                    quizset[nowpage].Squiztype = quiztype;
+                    quizset[nowpage].SC1 = c1;
+                    quizset[nowpage].SC2 = c2;
+                    quizset[nowpage].SC3 = c3;
+                    quizset[nowpage].SC4 = c4;
+                    quizset[nowpage].SC5 = c5;
+                    quizset[nowpage].SAnswer = answer;
+                    go = true;
+                }
             }
-            else if (typeCnt >= 1) {
+            else if (typeCnt > 1) {
                 alert("완성되지 않은 문제가 있습니다. 확인해주세요");
             }
             else if (answerCnt > 1) {
                 alert("정답을 입력하지 않은 문제가 있습니다. 확인해주세요");
             } else if (answerCnt == 1) {
-                quizset[nowpage].Sorder = nowpage;
-                quizset[nowpage].Squiztitle = quiztit;
-                quizset[nowpage].Squiztype = quiztype;
-                quizset[nowpage].SC1 = c1;
-                quizset[nowpage].SC2 = c2;
-                quizset[nowpage].SC3 = c3;
-                quizset[nowpage].SC4 = c4;
-                quizset[nowpage].SC5 = c5;
-                quizset[nowpage].SAnswer = answer;
-                go = true;
+                if (answer == "") {
+                    alert("정답을 입력하지 않은 문제가 있습니다. 확인해주세요");
+                }
+                else {
+                    quizset[nowpage].Sorder = nowpage;
+                    quizset[nowpage].Squiztitle = quiztit;
+                    quizset[nowpage].Squiztype = quiztype;
+                    quizset[nowpage].SC1 = c1;
+                    quizset[nowpage].SC2 = c2;
+                    quizset[nowpage].SC3 = c3;
+                    quizset[nowpage].SC4 = c4;
+                    quizset[nowpage].SC5 = c5;
+                    quizset[nowpage].SAnswer = answer;
+                    go = true;
+                }
+            } else if (titleCnt > 1) {
+                alert("완성되지 않은 문제가 있습니다. 확인해주세요");
+            } else if (titleCnt == 1) {
+                if (quiztit == "문제를 입력해주세요.") {
+                    alert("완성되지 않은 문제가 있습니다. 확인해주세요");
+                }
+                else {
+                    quizset[nowpage].Sorder = nowpage;
+                    quizset[nowpage].Squiztitle = quiztit;
+                    quizset[nowpage].Squiztype = quiztype;
+                    quizset[nowpage].SC1 = c1;
+                    quizset[nowpage].SC2 = c2;
+                    quizset[nowpage].SC3 = c3;
+                    quizset[nowpage].SC4 = c4;
+                    quizset[nowpage].SC5 = c5;
+                    quizset[nowpage].SAnswer = answer;
+                    go = true;
+                }
             }
 
             if (go) {
                 axios.put(`${process.env.REACT_APP_SERVER_BASE_URL}/room/`, {
                     // memberid: memberid,
                     code: roomcode,
-                    quiz_cnt: quizset.length,
+                    quiz_cnt: quizset.length - 1,
                     quiz_title: roomtit
                 }).then(res => {
                     console.log("asdf");
@@ -827,7 +844,7 @@ function MakeQuiz({ history }) {
                                 Answer
                             </div>
                             <div className="AradioWrap">
-                                <input className="AanswerWrap" type="text" placeholder="정답을 입력해주세요." onChange={AnswerChange}></input>
+                                <input className="AanswerWrap" type="text" id="AanswerInput" placeholder="정답을 입력해주세요." onChange={AnswerChange}></input>
                             </div>
                         </div>
                         <div className="TWrap">

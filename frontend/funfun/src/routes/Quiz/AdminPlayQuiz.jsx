@@ -146,6 +146,7 @@ function AdminPlayQuiz(props) {
         stompClient = Stomp.over(socket);
         isstart = 0;
         ID = ''
+        index = 0;
         stompClient.connect(
             {},
             frame => {
@@ -184,14 +185,25 @@ function AdminPlayQuiz(props) {
         memberArea.appendChild(infoElement);
     }
     const start = () => {
-        if (quiz.type === 2 || quiz.type === 4) {
-            if (nextteamchat === '') {
-                alert("문제를 풀 팀을 적어주세요!")
-            }
+        console.log(quizsize);
+        console.log(perteam)
+        if (quizsize % perteam !== 0) {
+            alert(`총 퀴즈 문제수가 팀당 문제수로 나누어지지 않습니다. 총 문제 수는 ${quizsize} 문제입니다.`)
         }
-        else if (stompClient && stompClient.connected) {
-            const msg = { type: 'START', content: "", roomnumber: code };
-            stompClient.send("/app/chat", JSON.stringify(msg), {});
+        else {
+            if (quiz.type === 2 || quiz.type === 4) {
+                if (nextteamchat === '') {
+                    alert("문제를 풀 팀을 적어주세요!")
+                }
+                else if (stompClient && stompClient.connected) {
+                    const msg = { type: 'START', content: "", roomnumber: code };
+                    stompClient.send("/app/chat", JSON.stringify(msg), {});
+                }
+            }
+            else if (stompClient && stompClient.connected) {
+                const msg = { type: 'START', content: "", roomnumber: code };
+                stompClient.send("/app/chat", JSON.stringify(msg), {});
+            }
         }
     }
     const next = () => {
@@ -220,6 +232,9 @@ function AdminPlayQuiz(props) {
         if (message.type === 'JOIN') {
             messageElement.classList.add('event-message');
             if (message.sender === nickname && ID === '') {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
+                    quiz = res.data;
+                });
                 axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/${code}`).then(res => {
                     if (res.data) {
                         initialBoard.columns.map(obj => {
@@ -272,7 +287,6 @@ function AdminPlayQuiz(props) {
                 ID = message.id;
                 console.log(initialBoard)
                 axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quizsize`, { params: { no: code } }).then(res => {
-                    console.log(res.data);
                     quizsize = parseInt(res.data);
                 });
             }
@@ -522,9 +536,11 @@ function AdminPlayQuiz(props) {
         changeteam(props, "", card, source, destination);
     }
 
-    const startGame = () => {
-        document.getElementsByClassName('gameStart')[0].setAttribute('style', 'display:none');
+    const startGame = (e, g) => {
+        sendQuiz(e);
+        sendTeam(g);
         start();
+        console.log("start")
         //게임 시작 부 소스 ★
     }
 
@@ -566,18 +582,18 @@ function AdminPlayQuiz(props) {
         answerbutton5 = ""
     }
     else if (quiz.type === 1) {
-        answerbutton1 = <button >{1. + quiz.exam1}</button>
-        answerbutton2 = <button >{2. + quiz.exam2}</button>
-        answerbutton3 = <button >{3. + quiz.exam3}</button>
-        answerbutton4 = <button >{4. + quiz.exam4}</button>
-        answerbutton5 = <button >{5. + quiz.exam5}</button>
+        answerbutton1 = <button >{"1. " + quiz.exam1}</button>
+        answerbutton2 = <button >{"2. " + quiz.exam2}</button>
+        answerbutton3 = <button >{"3. " + quiz.exam3}</button>
+        answerbutton4 = <button >{"4. " + quiz.exam4}</button>
+        answerbutton5 = <button >{"5. " + quiz.exam5}</button>
     }
     else if (quiz.type === 2) {
-        answerbutton1 = <button >{1. + quiz.exam1}</button>
-        answerbutton2 = <button >{2. + quiz.exam2}</button>
-        answerbutton3 = <button >{3. + quiz.exam3}</button>
-        answerbutton4 = <button >{4. + quiz.exam4}</button>
-        answerbutton5 = <button >{5. + quiz.exam5}</button>
+        answerbutton1 = <button >{"1. " + quiz.exam1}</button>
+        answerbutton2 = <button >{"2. " + quiz.exam2}</button>
+        answerbutton3 = <button >{"3. " + quiz.exam3}</button>
+        answerbutton4 = <button >{"4. " + quiz.exam4}</button>
+        answerbutton5 = <button >{"5. " + quiz.exam5}</button>
     }
     else if (quiz.type === 3) {
         answerbutton1 = ""
@@ -634,7 +650,7 @@ function AdminPlayQuiz(props) {
                         </div>
                     </div>
                     <div className="admin_btn">
-                        <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
+                        <input type="button" className="gameStart" value="Start" onClick={() => startGame(perteamset, nextteam)}></input>
                     </div>
                 </div>
                 <div className="allChat">
@@ -716,7 +732,6 @@ function AdminPlayQuiz(props) {
                         <button className="nextBtn" onClick={() => sendTeam(nextteam)}>다음 팀</button>
                     </div>
                     <div className="admin_btn">
-                        <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
                         <input type="button" className="nextGame" value="결 과" onClick={next}></input>
                     </div>
                 </div>
@@ -798,7 +813,6 @@ function AdminPlayQuiz(props) {
                     <input type="button" className="chatsendbtn" id="sendBtn3" onClick={() => send(props, msg)}></input>
                 </div>
                 <div className="admin_btn">
-                    <input type="button" className="gameStart" value="Start" onClick={startGame}></input>
                     <input type="button" className="nextGame" value="결 과" onClick={next}></input>
                 </div>
             </div>
