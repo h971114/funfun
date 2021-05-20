@@ -482,7 +482,7 @@ function PlayQuiz(props) {
                         else if (answer === "") {
                             answer = "die"
                         }
-                        if (stompClient && stompClient.connected) {
+                        else if (stompClient && stompClient.connected) {
                             const msg = { type: 'ANSWER', content: answer, roomnumber: code, sender: nickname, team: team, id: ID };
                             stompClient.send("/app/chat", JSON.stringify(msg), {});
                         }

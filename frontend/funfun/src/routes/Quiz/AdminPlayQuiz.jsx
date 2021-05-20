@@ -504,7 +504,7 @@ function AdminPlayQuiz(props) {
             if (parseInt(seconds) > -2) {
                 setSeconds(parseInt(seconds) - 1);
             }
-            if (parseInt(seconds) === 0) {
+            if (parseInt(seconds) === 1) {
                 clearInterval(countdown)
                 if (stompClient && stompClient.connected && isstart === 1) {
                     const msg = { type: 'TOINDEX', content: isresult, roomnumber: props.location.state.code, sender: props.location.state.nickname };
