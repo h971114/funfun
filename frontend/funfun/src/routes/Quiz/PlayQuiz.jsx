@@ -581,10 +581,22 @@ function PlayQuiz(props) {
             }
             else if (message.toteam === team) {
                 // addmember(message.title)
-                teammember.push(message.title);
-                memberview = teammember.map((obj) =>
-                    <li>{obj}</li>
-                )
+                teammember = []
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/getteammember`, { params: { no: code, team: message.toteam } }).then(res => {
+                    // console.log(res);
+                    if (res.data) {
+                        res.data.map(obj => {
+                            // addmember(obj.title);
+                            teammember.push(obj.title);
+                        })
+                        memberview = teammember.map((obj) =>
+                            <li>{obj}</li>
+                        )
+                    } else {
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
             }
             else if (message.fromteam === team) {
                 teammember = []
@@ -594,7 +606,6 @@ function PlayQuiz(props) {
                         res.data.map(obj => {
                             // addmember(obj.title);
                             teammember.push(obj.title);
-
                         })
                         memberview = teammember.map((obj) =>
                             <li>{obj}</li>
