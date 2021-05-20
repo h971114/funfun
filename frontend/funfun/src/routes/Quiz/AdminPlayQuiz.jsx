@@ -98,7 +98,7 @@ function AdminPlayQuiz(props) {
         let send_message = msg;
         if (stompClient && stompClient.connected) {
             const cloud = { type: 'CHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team: team };
-            stompClient.send("/app/chat", JSON.stringify(구름), {});
+            stompClient.send("/app/chat", JSON.stringify(cloud), {});
         }
         console.log(stompClient)
         console.log(stompClient.connected)
@@ -219,7 +219,7 @@ function AdminPlayQuiz(props) {
         if (message.type === 'JOIN') {
             messageElement.classList.add('event-message');
             if (message.sender === nickname && ID === '') {
-                axios.get(`http://127.0.0.1:8080/myapp/team/${code}`).then(res => {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/${code}`).then(res => {
                     if (res.data) {
                         initialBoard.columns.map(obj => {
                             if (obj.id === 0) {
@@ -270,7 +270,7 @@ function AdminPlayQuiz(props) {
                 })
                 ID = message.id;
                 console.log(initialBoard)
-                axios.get(`http://127.0.0.1:8080/myapp/team/quizsize`, { params: { no: code } }).then(res => {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quizsize`, { params: { no: code } }).then(res => {
                     console.log(res.data);
                     quizsize = parseInt(res.data);
                 });
@@ -342,7 +342,7 @@ function AdminPlayQuiz(props) {
             isresult = perteam;
             console.log(isresult)
             console.log(perteam)
-            axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
+            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
                 console.log(res.data);
                 quiz = res.data;
                 index += 1;
@@ -375,17 +375,17 @@ function AdminPlayQuiz(props) {
                 nextteamchat = ''
                 switch (quiz.type) {
                     case 0:
-                        axios.get(`http://127.0.0.1:8080/myapp/team/OX`, { params: { no: code } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OX`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = "남은인원 : " + res.data;
                         })
                         break;
                     case 1:
-                        axios.get(`http://127.0.0.1:8080/myapp/team/personal`, { params: { no: code, ID: ID } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
                             console.log(res.data);
                             yourstate = "내 점수 : " + res.data;
                         }); // 개인전 자기 자신 점수
-                        axios.get(`http://127.0.0.1:8080/myapp/team/personal5`, { params: { no: code } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
@@ -394,11 +394,11 @@ function AdminPlayQuiz(props) {
                         }); // 개인전 상위 5명 점수
                         break;
                     case 2:
-                        axios.get(`http://127.0.0.1:8080/myapp/team/team`, { params: { no: code, team: team } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
                             console.log(res.data);
                             yourstate = "우리 팀 점수 : " + res.data;
                         }); // 팀전 자기 팀 점수
-                        axios.get(`http://127.0.0.1:8080/myapp/team/team5`, { params: { no: code } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
@@ -406,11 +406,11 @@ function AdminPlayQuiz(props) {
                         }); // 팀전 상위 5팀 점수
                         break;
                     case 3:
-                        axios.get(`http://127.0.0.1:8080/myapp/team/personal`, { params: { no: code, ID: ID } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
                             console.log(res.data);
                             yourstate = "내 점수 : " + res.data;
                         }); // 개인전 자기 자신 점수
-                        axios.get(`http://127.0.0.1:8080/myapp/team/personal5`, { params: { no: code } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
@@ -418,11 +418,11 @@ function AdminPlayQuiz(props) {
                         }); // 개인전 상위 5명 점수
                         break;
                     case 4:
-                        axios.get(`http://127.0.0.1:8080/myapp/team/team`, { params: { no: code, team: team } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
                             console.log(res.data);
                             yourstate = "우리 팀 점수 : " + res.data;
                         }); // 팀전 자기 팀 점수
-                        axios.get(`http://127.0.0.1:8080/myapp/team/team5`, { params: { no: code } }).then(res => {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
                             console.log(res.data);
                             leftstate = res.data.map((obj) =>
                                 <li>{JSON.stringify(obj)}</li>
@@ -439,7 +439,7 @@ function AdminPlayQuiz(props) {
             else {
                 sendanswer = false;
                 console.log(isresult)
-                axios.get(`http://127.0.0.1:8080/myapp/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
                     console.log(res.data);
                     quiz = res.data;
                     index += 1;
@@ -537,7 +537,13 @@ function AdminPlayQuiz(props) {
         document.body.removeChild(dummy);
         alert("방코드가 복사 되었습니다.");
     }
-
+    const appKeyPress = (e) => {
+        console.log(e.target.id);
+        if (e.key === 'Enter') {
+            send(props, msg);
+            document.getElementById(e.target.id).value = null;
+        }
+    }
 
     const openModal = () => {
         setModalOpen(true);
@@ -588,7 +594,7 @@ function AdminPlayQuiz(props) {
                     <div id="cloudArea">
 
                         <div className="cloud_wrap">
-                            <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                            <input type="text" className="cloudsend" id="clodMsg1" onKeyPress={appKeyPress} placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
                             <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
                         </div>
                     </div>
@@ -621,7 +627,7 @@ function AdminPlayQuiz(props) {
                         </ul>
                     </div>
                     <div className="send_wrap">
-                        <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
+                        <input type="text" className="chatsend" placeholder="채팅을 입력하세요." id="sendMsg1" onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
                         <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
                         <div className="nextQuizWrap">
                             <input type="text" className="chatsend teamQuizCnt" placeholder="팀당 문제 수 입력" onChange={event => setQuiz(event.target.value)}></input>
@@ -675,7 +681,7 @@ function AdminPlayQuiz(props) {
                     <div id="cloudArea">
 
                         <div className="cloud_wrap">
-                            <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                            <input type="text" className="cloudsend" id="clodMsg2" onKeyPress={appKeyPress} placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
                             <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
                         </div>
                     </div>
@@ -694,6 +700,8 @@ function AdminPlayQuiz(props) {
                 </div>
                 <div className="communication">
                     <h3>전 체 목 록 😎</h3>
+                    <input type="text" className="copycode" value={copycode} ref={textInput} disabled />
+                    <input type="button" className="copy" value="방 코드 복사" onClick={copyCode}></input>
                     <div className="members_admin">
                         <ul id="memberArea">
 
@@ -707,10 +715,10 @@ function AdminPlayQuiz(props) {
                         </ul>
                     </div>
                     <div className="send_wrap">
-                        <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
+                        <input type="text" className="chatsend" placeholder="채팅을 입력하세요." id="sendMsg2" onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
                         <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
                         <input type="text" className="chatsend teamNum" placeholder="다음을 풀 팀 입력" onChange={event => setTeam(event.target.value)}></input>
-                            <button className="nextBtn" onClick={() => sendTeam(nextteam)}>다음 팀</button>
+                        <button className="nextBtn" onClick={() => sendTeam(nextteam)}>다음 팀</button>
                     </div>
                     <div className="admin_btn">
                         <input type="button" className="nextGame" value="결 과" onClick={next}></input>
@@ -745,7 +753,7 @@ function AdminPlayQuiz(props) {
                 <div id="cloudArea">
 
                     <div className="cloud_wrap">
-                        <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                        <input type="text" className="cloudsend" id="clodMsg3" onKeyPress={appKeyPress} placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
                         <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
                     </div>
                 </div>
@@ -778,6 +786,9 @@ function AdminPlayQuiz(props) {
             </div>
             <div className="communication">
                 <h3>전 체 목 록 😎</h3>
+                <input type="text" className="copycode" value={copycode} ref={textInput} disabled />
+                <input type="button" className="copy" value="방 코드 복사" onClick={copyCode}></input>
+
                 <div className="members_admin">
                     <ul id="memberArea">
 
@@ -791,7 +802,7 @@ function AdminPlayQuiz(props) {
                     </ul>
                 </div>
                 <div className="send_wrap">
-                    <input type="text" className="chatsend" placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
+                    <input type="text" className="chatsend" id="sendMsg3" onKeyPress={appKeyPress} placeholder="채팅을 입력하세요." onChange={event => setMsg(event.target.value)}></input>
                     <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
                 </div>
                 <div className="admin_btn">

@@ -55,7 +55,7 @@ function PlayQuiz(props) {
         let send_message = msg;
         if (stompClient && stompClient.connected) {
             const cloud = { type: 'CHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team: team };
-            stompClient.send("/app/chat", JSON.stringify(구름), {});
+            stompClient.send("/app/chat", JSON.stringify(cloud), {});
         }
         console.log(stompClient);
         console.log(stompClient.connected);
@@ -101,7 +101,7 @@ function PlayQuiz(props) {
         memberArea.appendChild(infoElement);
     }
     const connect = (props) => {
-        socket = new SockJS(`${process.env.REACT_APP_SERVER_BASE_URL}/ws`);
+        socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
         stompClient = Stomp.over(socket);
         isstart = 0;
         stompClient.connect(
@@ -621,7 +621,7 @@ function PlayQuiz(props) {
                     <div id="cloudArea">
 
                         <div className="cloud_wrap">
-                            <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                            <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg1" onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
                             <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
                         </div>
                     </div>
@@ -677,7 +677,7 @@ function PlayQuiz(props) {
                     <div id="cloudArea">
 
                         <div className="cloud_wrap">
-                            <input type="text" className="cloudsend" id="chatMsg2" placeholder="채팅을 입력하세요." onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
+                            <input type="text" className="cloudsend" id="cloudMsg2" onKeyPress={appKeyPress} placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
                             <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
                         </div>
                     </div>
@@ -710,7 +710,7 @@ function PlayQuiz(props) {
                         </ul>
                     </div>
                     <div className="send_wrap">
-                        <input type="text" className="chatsend" id="chatMsg3" placeholder="채팅을 입력하세요." onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
+                        <input type="text" className="chatsend" id="chatMsg2" placeholder="채팅을 입력하세요." onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
                         <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
                     </div>
                     <div className="teamPlayer_btn">
@@ -729,7 +729,7 @@ function PlayQuiz(props) {
                 <div id="cloudArea">
 
                     <div className="cloud_wrap">
-                        <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." onChange={event => setCloud(event.target.value)}></input>
+                        <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg3" onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
                         <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
                     </div>
                 </div>
@@ -781,7 +781,7 @@ function PlayQuiz(props) {
                     </ul>
                 </div>
                 <div className="send_wrap">
-                    <input type="text" className="chatsend" id="chatMsg4" placeholder="채팅을 입력하세요." onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
+                    <input type="text" className="chatsend" id="chatMsg3" placeholder="채팅을 입력하세요." onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
                     <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
                 </div>
                 <div className="teamPlayer_btn">

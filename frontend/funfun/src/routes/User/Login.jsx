@@ -7,23 +7,22 @@ class Login extends Component {
 
     login = () => {
         axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/member/login`, {
-                id: document.getElementById("userID").value,
-                pw: document.getElementById("userPW").value,
-            }).then(res => {
-                // console.log(res);
-                if (res.data.conclusion === "SUCCESS") {
-                    sessionStorage.setItem("id", res.data.id);
-                    sessionStorage.setItem("nick", res.data.nick);
-                    sessionStorage.setItem("token", res.data.token);
-                    window.location.replace("/");
-                } else {
-                    alert("아이디와 비밀번호를 확인해주세요.")
-                }
-            }).catch(err => {
-                console.log(err);
-                alert("알 수 없는 오류가 발생했습니다.");
+            id: document.getElementById("userID").value,
+            pw: document.getElementById("userPW").value,
+        }).then(res => {
+            // console.log(res);
+            if (res.data.conclusion === "SUCCESS") {
+                sessionStorage.setItem("id", res.data.id);
+                sessionStorage.setItem("nick", res.data.nick);
+                sessionStorage.setItem("token", res.data.token);
                 window.location.replace("/");
-            })
+            } else {
+                alert("아이디와 비밀번호를 확인해주세요.")
+            }
+        }).catch(err => {
+            console.log(err);
+            alert("알 수 없는 오류가 발생했습니다.\n잠시후 다시 시도해주세요.");
+        })
     }
 
     render() {
@@ -38,10 +37,18 @@ class Login extends Component {
                     </div>
                     <div className="input">
                         <label htmlFor="userID">USERID</label><br />
-                        <input type="text" id="userID" placeholder="아이디를 입력하세요." />
+                        <input type="text" id="userID" placeholder="아이디를 입력하세요." onKeyPress={(e) => {
+                            if (e.key === "Enter") {
+                                { this.login() }
+                            }
+                        }} />
 
                         <label htmlFor="userPW">PASSWORD</label><br />
-                        <input type="password" id="userPW" placeholder="비밀번호를 입력하세요." />
+                        <input type="password" id="userPW" placeholder="비밀번호를 입력하세요." onKeyPress={(e) => {
+                            if (e.key === "Enter") {
+                                { this.login() }
+                            }
+                        }} />
 
                         <input type="button" onClick={this.login} value="로 그 인" />
 

@@ -80,30 +80,30 @@ class FindPW extends Component {
                 id: this.state.id,
                 email: this.state.email,
             }
-            }).then(res => {
-                // console.log(res);
-                if (res.data.conclusion === "SUCCESS") {
-                    // alert('성공')
-                    this.setState({
-                        checkIDnEmail: true,
-                        nick: res.data.nick,
-                        no: res.data.member_no * 1,
-                        resultMessage: `사용할 비밀번호를 입력해주세요.`,
-                        isCorrectIDnEmail: true,
-                    })
-                } else {
-                    this.setState({
-                        checkIDnEmail: true,
-                        resultMessage: `정보와 일치하는 결과가 존재하지 않습니다. 아이디 찾기나 회원가입을 이용해주세요.`,
-                        isCorrectIDnEmail: false,
-                    })
-                    // alert("정보와 일치하는 결과가 존재하지 않습니다.")
-                }
-            }).catch(err => {
-                console.log(err);
-                alert("알 수 없는 오류가 발생했습니다.");
-                window.location.replace("/");
-            })
+        }).then(res => {
+            // console.log(res);
+            if (res.data.conclusion === "SUCCESS") {
+                // alert('성공')
+                this.setState({
+                    checkIDnEmail: true,
+                    nick: res.data.nick,
+                    no: res.data.member_no * 1,
+                    resultMessage: `사용할 비밀번호를 입력해주세요.`,
+                    isCorrectIDnEmail: true,
+                })
+            } else {
+                this.setState({
+                    checkIDnEmail: true,
+                    resultMessage: `정보와 일치하는 결과가 존재하지 않습니다. 아이디 찾기나 회원가입을 이용해주세요.`,
+                    isCorrectIDnEmail: false,
+                })
+                // alert("정보와 일치하는 결과가 존재하지 않습니다.")
+            }
+        }).catch(err => {
+            console.log(err);
+            alert("알 수 없는 오류가 발생했습니다.");
+            window.location.replace("/");
+        })
     }
 
     updatePW = () => {
@@ -127,32 +127,32 @@ class FindPW extends Component {
         }
     }
 
-    render () {
+    render() {
         return (
             <div className="userContent">
                 <div className="wid800 loginWrap">
                     <div className="title">
-                            <img className="loginImg" src="/img/login.png" alt="로그인 이미지"/>
-                            <br />
-                            <span>비밀번호 찾기</span>
-                            <img className="loginBar" src="/img/loginbar.png" alt="로그인바 이미지"/>
+                        <img className="loginImg" src="/img/login.png" alt="로그인 이미지" />
+                        <br />
+                        <span>비밀번호 찾기</span>
+                        <img className="loginBar" src="/img/loginbar.png" alt="로그인바 이미지" />
                     </div>
-                    {this.state.checkIDnEmail ? 
+                    {this.state.checkIDnEmail ?
                         <div className="input">
                             <p>{this.state.resultMessage}</p>
-                            {this.state.isCorrectIDnEmail ? 
-                            <div>
-                                <label htmlFor="userPW">PASSWORD</label><br />
-                                <input type="password" id="userPW" onBlur={this.checkPW} placeholder="비밀번호를 입력하세요." />
-                                <div className="availd" id="avalidPW"></div>
-        
-                                <label htmlFor="userCPW">Check PASSWORD</label><br />
-                                <input type="password" id="userCPW" onBlur={this.checkCPW} placeholder="다시 비밀번호를 입력하세요." />
-                                <div className="availd" id="avalidCPW"></div>
-    
-                                <input type="button" onClick={this.updatePW} value="비밀번호 수정" />
-                            </div>
-                            : null} 
+                            {this.state.isCorrectIDnEmail ?
+                                <div>
+                                    <label htmlFor="userPW">PASSWORD</label><br />
+                                    <input type="password" id="userPW" onBlur={this.checkPW} placeholder="비밀번호를 입력하세요." />
+                                    <div className="availd" id="avalidPW"></div>
+
+                                    <label htmlFor="userCPW">Check PASSWORD</label><br />
+                                    <input type="password" id="userCPW" onBlur={this.checkCPW} placeholder="다시 비밀번호를 입력하세요." />
+                                    <div className="availd" id="avalidCPW"></div>
+
+                                    <input type="button" onClick={this.updatePW} value="비밀번호 수정" />
+                                </div>
+                                : null}
                             <ul>
                                 <li>
                                     <Link to="/login">
@@ -173,7 +173,7 @@ class FindPW extends Component {
                                 </li>
                             </ul>
                         </div>
-                    :
+                        :
                         <div className="input">
                             <label htmlFor="userID">USERID</label><br />
                             <input type="text" id="userID" placeholder="아이디를 입력하세요." onChange={this.idChange} />

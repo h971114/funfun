@@ -38,7 +38,7 @@ function WaitingRoom(props) {
         memberArea.appendChild(infoElement);
     }
     const connect = (props) => {
-        socket = new SockJS('${process.env.REACT_APP_SERVER_BASE_URL}/ws');
+        socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
         stompClient = Stomp.over(socket);
         stompClient.connect(
             {},
@@ -75,7 +75,7 @@ function WaitingRoom(props) {
             pathname: '/game/PlayQuiz',
             state: {
                 nickname: "nickname",
-                code : this.props.location.state.code
+                code: this.props.location.state.code
             }
         });
         console.log(this.props.history);
@@ -105,7 +105,7 @@ function WaitingRoom(props) {
             if (message.team === team) {
                 messageElement.classList.add('chat-message');
                 var usernameElement = document.createElement('span');
-                var usernameText = document.createTextNode(message.sender);
+                var usernameText = document.createTextNode(message.sender + " : ");
                 usernameElement.appendChild(usernameText);
                 messageElement.appendChild(usernameElement);
             }
