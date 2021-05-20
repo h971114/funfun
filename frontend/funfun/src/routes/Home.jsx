@@ -37,7 +37,7 @@ class Home extends Component {
                     </div>
                 </div>
                 <div className="right_side">
-                    <iframe className="youtube" src="https://www.youtube.com/embed/9AXSRadgDps?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe className="youtube" src="https://www.youtube.com/embed/2_1kIEgSWsw?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 {/* <div className="slick_slider">
                     <div className="main_visual">

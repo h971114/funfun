@@ -1,5 +1,6 @@
 import './App.css';
 import React, {Component} from 'react';
+import { HashRouter } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Link } from "react-router-dom";
 
@@ -33,7 +34,7 @@ import './routes/css/quiz.css';
 
 function App() {
   return (
-    <Router>
+    <HashRouter>
       <ScrolltoTop />
       <div className="wrapper">
       <Header/>
@@ -57,7 +58,7 @@ function App() {
           <Route path="/myresult" exact={true} component={MyResult}/>
         </Switch>
       </div>
-    </Router>
+    </HashRouter>
   );
 }
 
