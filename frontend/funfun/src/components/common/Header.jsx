@@ -21,7 +21,7 @@ class Header extends Component {
                 </Link>
                 {sessionStorage.getItem('id') ?
                     <div className="loginWraps">
-                        <a onClick={this.logout} className="btn login" href="">로그아웃</a>
+                        <a onClick={this.logout} className="btn login" style={{ cursor: "pointer" }}>로그아웃</a>
                         <Link to="/mypage" className="btn login">
                             마이 페이지
                         </Link>

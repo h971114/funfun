@@ -60,7 +60,7 @@ class MyQuiz extends Component {
                             <span>Go Game</span>
                         </Link>
                         {sessionStorage.getItem('id') ?
-                            <a onClick={this.logout} className="btn login" href="">로그아웃</a>
+                            <a onClick={this.logout} className="btn login" style={{ cursor: "pointer" }}>로그아웃</a>
                             :
                             <Link to="/login" className="btn login">
                                 로그인
