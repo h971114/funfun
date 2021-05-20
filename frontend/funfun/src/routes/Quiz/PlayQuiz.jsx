@@ -117,6 +117,8 @@ function PlayQuiz(props) {
         socket = new SockJS('http://127.0.0.1:8080/myapp/ws');
         stompClient = Stomp.over(socket);
         isstart = 0;
+        index = 0;
+        answer = ""
         stompClient.connect(
             {},
             frame => {
@@ -405,16 +407,24 @@ function PlayQuiz(props) {
             if (index === isresult) {
                 switch (quiz.type) {
                     case 0:
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OX`, { params: { no: code } }).then(res => {
-                            console.log(res.data);
-                            left_member = "남은인원 : " + res.data;
-                        })
-                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OXmembers`, { params: { no: code } }).then(res => {
-                            console.log(res.data);
-                            leftstate = res.data.map((obj) =>
-                                <li>{JSON.stringify(obj)}</li>
-                            );
-                        })
+                        console.log(answer)
+                        console.log(alive)
+                        if (alive === 'die') {
+                            answer ="";
+                        }
+                        else if (answer === "") {
+                            answer = "die"
+                        }
+                        if (stompClient && stompClient.connected) {
+                            const msg = { type: 'ANSWER', content: answer, roomnumber: code, sender: nickname, team: team, id: ID };
+                            stompClient.send("/app/chat", JSON.stringify(msg), {});
+                        }
+                        if ((answer === 'die' || answer === '') && alive === 'alive') {
+                            alive = 'die';
+                        }
+
+                            // result 호출
+                        answer = "";
                         break;
                     case 1:
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
@@ -573,24 +583,6 @@ function PlayQuiz(props) {
             if (parseInt(seconds) > -2000) {
                 setSeconds(parseInt(seconds) - 1);
             }
-            if (parseInt(seconds) === 1) {
-                if (quiz.type === 0) { // ox퀴즈
-                    if (stompClient && stompClient.connected) {
-                        const msg = { type: 'ANSWER', content: answer, roomnumber: code, sender: nickname, team: team, id: ID };
-                        stompClient.send("/app/chat", JSON.stringify(msg), {});
-                    }
-                    if (answer === 'die' && alive === 'alive') {
-                        alive = 'die';
-                    }
-                    // result 호출
-                }
-                else if (quiz.type === '2') { // 객관식 팀전
-                    // result 호출
-                }
-                else if (quiz.type === '4') { // 주관식 팀전
-                    // result 호출
-                }
-            }
         }, 1000);
         return () => clearInterval(countdown);
 
@@ -689,6 +681,14 @@ function PlayQuiz(props) {
             else {
                 yourstate = "당신은 죽었습니다."
             }
+            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OX`, { params: { no: code } }).then(res => {
+                left_member = "남은인원 : " + res.data;
+            })
+            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/OXmembers`, { params: { no: code } }).then(res => {
+                leftstate = res.data.map((obj) =>
+                    <li>{JSON.stringify(obj)}</li>
+                );
+            })
         }
         return (
             <div className="quiz_contents">
@@ -702,34 +702,16 @@ function PlayQuiz(props) {
                     </div>
                     <div className="quiz_wrap">
                         <div className="quiz_tit">
-                            {/* {yourstate} */}
-                            {quiz.content}
+                            {yourstate}
+                            
                         </div>
                         <div className="quiz_etc">
                             {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
                             {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
                         </div>
-                        <div className="quiz_progress">
-                            <ProgressBar duration={progress} />
-                            <div className="left_time">
-                                {seconds}
-                            </div>
-                        </div>
                         <div className="answer_wrap">
-                            {answerbutton1}
-                            {answerbutton2}
-                            {answerbutton3}
-                            {answerbutton4}
-                            {answerbutton5}
-                            <br />
-                            현재선택 : {currentcheck}
-                            <br />
-                            당신은 : team{team} 입니다
-                            <br />
-                            {turn}
-                            <br />
-                            총 {perteam} 문제입니다.
-
+                            {left_member}
+                            {leftstate}
                         </div>
                     </div>
                 </div>
@@ -759,79 +741,78 @@ function PlayQuiz(props) {
 
                 </div>
             </div>
-            //     )
-            // }
-            // return (
-            //     <div className="quiz_contents">
-            //         <div className="quiz_parts">
-            //             <div id="cloudArea">
+        )
+    }
+            return (
+                <div className="quiz_contents">
+                    <div className="quiz_parts">
+                        <div id="cloudArea">
 
-            //                 <div className="cloud_wrap">
-            //                     <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg3" onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
-            //                     <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
-            //                 </div>
-            //             </div>
-            //             <div className="quiz_wrap">
-            //                 <div className="quiz_tit">
-            //                     {quiz.content}
-            //                 </div>
-            //                 <div className="quiz_etc">
-            //                     {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
-            //                     {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
-            //                 </div>
-            //                 <div className="quiz_progress">
-            //                     <ProgressBar duration={progress} />
-            //                     <div className="left_time">
-            //                         {seconds}
-            //                     </div>
-            //                 </div>
-            //                 <div className="answer_wrap">
-            //                     {answerbutton1}
-            //                     {answerbutton2}
-            //                     {answerbutton3}
-            //                     {answerbutton4}
-            //                     {answerbutton5}
-            //                     <br />
-            //                         현재선택 : {currentcheck}
-            //                     <br />
-            //                         당신은 : team{team} 입니다
-            //                         <br />
-            //                     {turn}
-            //                     <br />
-            //                         총 {perteam} 문제입니다.
+                            <div className="cloud_wrap">
+                                <input type="text" className="cloudsend" placeholder="채팅을 입력하세요." id="cloudMsg3" onKeyPress={appKeyPress} onChange={event => setCloud(event.target.value)}></input>
+                                <button type="button" className="cloudsendbtn" onClick={() => sendCloud(props, cloud)}></button>
+                            </div>
+                        </div>
+                        <div className="quiz_wrap">
+                            <div className="quiz_tit">
+                                {quiz.content}
+                            </div>
+                            <div className="quiz_etc">
+                                {/* <iframe className="quiz_video" src="https://www.youtube.com/embed/F69_yzzCKpA?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
+                                {/*<iframe className="quiz_video" src="https://www.youtube.com/embed/7j2KMMadI8M?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/}
+                            </div>
+                            <div className="quiz_progress">
+                                <ProgressBar duration={progress} />
+                                <div className="left_time">
+                                    {seconds}
+                                </div>
+                            </div>
+                            <div className="answer_wrap">
+                                {answerbutton1}
+                                {answerbutton2}
+                                {answerbutton3}
+                                {answerbutton4}
+                                {answerbutton5}
+                                <br />
+                                    현재선택 : {currentcheck}
+                                <br />
+                                    당신은 : team{team} 입니다
+                                    <br />
+                                {turn}
+                                <br />
+                                    총 {perteam} 문제입니다.
 
-            //                     </div>
-            //             </div>
-            //         </div>
-            //         <div className="communication">
-            //             <h3>팀 원 목 록 😎</h3>
+                                </div>
+                        </div>
+                    </div>
+                    <div className="communication">
+                        <h3>팀 원 목 록 😎</h3>
 
-            //             <div className="members">
+                        <div className="members">
 
-            //                 <ul id="memberArea">
-            //                     {memberview}
-            //                 </ul>
-            //             </div>
-            //             <h3>팀 원 채 팅 🤩</h3>
-            //             <div className="chat">
-            //                 <ul id="messageArea">
+                            <ul id="memberArea">
+                                {memberview}
+                            </ul>
+                        </div>
+                        <h3>팀 원 채 팅 🤩</h3>
+                        <div className="chat">
+                            <ul id="messageArea">
 
-            //                 </ul>
-            //             </div>
-            //             <div className="send_wrap">
-            //                 <input type="text" className="chatsend" id="chatMsg3" placeholder="채팅을 입력하세요." onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
-            //                 <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
-            //             </div>
-            //             <div className="teamPlayer_btn">
-            //                 {passbutton}
-            //             </div>
-            //         </div>
-            //         <div className="allChat">
+                            </ul>
+                        </div>
+                        <div className="send_wrap">
+                            <input type="text" className="chatsend" id="chatMsg3" placeholder="채팅을 입력하세요." onKeyPress={appKeyPress} onChange={event => setMsg(event.target.value)}></input>
+                            <input type="button" className="chatsendbtn" onClick={() => send(props, msg)}></input>
+                        </div>
+                        <div className="teamPlayer_btn">
+                            {passbutton}
+                        </div>
+                    </div>
+                    <div className="allChat">
 
-            //         </div>
-            //     </div>
+                    </div>
+                </div>
         );
     }
-}
 
 export default PlayQuiz;
