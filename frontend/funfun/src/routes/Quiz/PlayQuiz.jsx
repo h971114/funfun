@@ -391,25 +391,22 @@ function PlayQuiz(props) {
                     expires,
                 })
             }
-            if (message.id === ID) {
-                teammember = []
-                console.log(team)
-                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/getteammember`, { params: { no: code, team: team } }).then(res => {
-                    // console.log(res);
-                    if (res.data) {
-                        res.data.map(obj => {
-                            // addmember(obj.title);
-                            teammember.push(obj.title);
-                        })
-                        memberview = teammember.map((obj) =>
-                            <li>{obj}</li>
-                        )
-                    } else {
-                    }
-                }).catch(err => {
-                })
-
-            }
+            teammember = []
+            console.log(team)
+            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/getteammember`, { params: { no: code, team: team } }).then(res => {
+                // console.log(res);
+                if (res.data) {
+                    res.data.map(obj => {
+                        // addmember(obj.title);
+                        teammember.push(obj.title);
+                    })
+                    memberview = teammember.map((obj) =>
+                        <li>{obj}</li>
+                    )
+                } else {
+                }
+            }).catch(err => {
+        })
             message.content = message.sender + ' joined!';
         } else if (message.type === 'LEAVE') {
             messageElement.classList.add('event-message');
@@ -476,6 +473,8 @@ function PlayQuiz(props) {
 
         }
         else if (message.type === 'TEAMCHAT') {
+            console.log(message.team)
+            console.log(team)
             if (message.team === team) {
                 messageElement.classList.add('chat-message');
                 var usernameElement = document.createElement('span');
@@ -502,7 +501,7 @@ function PlayQuiz(props) {
                         else if (answer === "") {
                             answer = "die"
                         }
-                        else if (stompClient && stompClient.connected) {
+                        if (stompClient && stompClient.connected) {
                             const msg = { type: 'ANSWER', content: answer, roomnumber: code, sender: nickname, team: team, id: ID };
                             stompClient.send("/app/chat", JSON.stringify(msg), {});
                         }
