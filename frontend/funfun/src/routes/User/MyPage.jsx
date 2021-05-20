@@ -75,7 +75,7 @@ class MyPage extends Component {
                 checkCPW: true
             })
             document.getElementById("avalidCPW").setAttribute('style', 'color:#73a1ff');
-            document.getElementById("avalidCPW").innerText = "사용가능한 비밀번호입니다.";
+            document.getElementById("avalidCPW").innerText = "일치하는 비밀번호가 입력되었습니다.";
         }
     }
 
@@ -180,17 +180,6 @@ class MyPage extends Component {
                     <div className="mainContent">
                         <div className="input">
                             <h3>Profile</h3>
-
-                            <div className="profileImg">
-                                {this.state.photo ? (
-                                    <img src={this.state.photo} alt="프로필사진"></img>
-                                ) : (<img src="./img/profileSample.png" alt="프로필사진"></img>)}
-
-                            </div>
-                            <div className="profileImgLabel">
-                                <label className="forProfile" htmlFor="ex_filename">프로필 사진 변경</label>
-                                <input type="file" accept="image/*" id="ex_filename" className="upload-hidden" />
-                            </div>
 
                             <label>USERID : {sessionStorage.getItem('id')}</label>
 
