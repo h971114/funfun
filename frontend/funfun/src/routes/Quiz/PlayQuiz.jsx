@@ -154,6 +154,7 @@ function PlayQuiz(props) {
         index = 0;
         answer = ""
         memberview = ""
+        alive = "alive"
         stompClient.connect(
             {},
             frame => {
