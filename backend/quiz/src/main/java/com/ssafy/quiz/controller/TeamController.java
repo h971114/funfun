@@ -142,6 +142,7 @@ public class TeamController {
 		 returninfo.setToteam(Integer.toString(quizinfomap.getQuizmap().get(room_no).getPerteam()));
 		 returninfo.setTitle(Integer.toString(quizinfomap.getQuizmap().get(room_no).getIndex()));
 		 returninfo.setContent(Integer.toString(quizinfomap.getQuizmap().get(room_no).getIsresult()));
+		 returninfo.setFromteam(quizinfomap.getQuizmap().get(room_no).getStart());
 		return new ResponseEntity<ChatMessage>(returninfo, HttpStatus.ACCEPTED);
 		 
 	 }
@@ -156,5 +157,4 @@ public class TeamController {
 		 }
 		 return new ResponseEntity<String>(returninfo, HttpStatus.ACCEPTED);
 	 }
-
 }

@@ -28,8 +28,8 @@ var isresult = 1;
 var yourstate = ''
 var leftstate = ''
 var currentcheck = ''
-var perteam = 1;
-var sendanswer = false;
+var perteam ;
+var sendanswer;
 var teammember = [];
 var memberview;
 var nextteamchat = ''
@@ -70,6 +70,7 @@ function PlayQuiz(props) {
     const sendAnswer = (props, msg) => {
         console.log(quiz);
         console.log(msg);
+        console.log(sendanswer)
         if (quiz !== '' && (quiz.type === 3 || quiz.type === 4) && sendanswer === false) {
             if (msg === quiz.answer) {
                 if (stompClient && stompClient.connected) {
@@ -109,16 +110,6 @@ function PlayQuiz(props) {
             const msg = { type: 'TEAMCHAT', content: send_message, roomnumber: props.location.state.code, sender: props.location.state.nickname, team: team };
             stompClient.send("/app/chat", JSON.stringify(msg), {});
         }
-        if (quiz !== '' && (quiz.type === 3 || quiz.type === 4) && sendanswer === false) {
-            console.log("in")
-            if (msg === quiz.answer) {
-                if (stompClient && stompClient.connected) {
-                    const msg = { type: 'CHAT', content: "alive", roomnumber: code, sender: nickname, id: ID, team: team };
-                    stompClient.send("/app/chat", JSON.stringify(msg), {});
-                }
-                sendanswer = true;
-            }
-        }
         for (let i = 0; i < chatsendArr.length; i++) {
             chatsendArr[i].value = '';
         }
@@ -156,6 +147,10 @@ function PlayQuiz(props) {
         memberview = ""
         alive = "alive"
         team = '0'
+        quiz = ""
+        isresult = 1;
+        sendanswer = false;
+        perteam = 1;
         stompClient.connect(
             {},
             frame => {
@@ -194,8 +189,11 @@ function PlayQuiz(props) {
                                 if (perteam === 0) {
                                     perteam = 1;
                                 }
-                                if (index === isresult) {
-                                    isresult += perteam
+                                
+                                if (res.data.fromteam == "yes") {
+                                    axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
+                                        quiz = res.data;
+                                    });
                                 }
                                 teammember = []
                                 console.log(team)
@@ -390,6 +388,22 @@ function PlayQuiz(props) {
                     path: '/',
                     expires,
                 })
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/rejoin`, { params: { no: code, id: ID } }).then(res => {
+                    index = parseInt(res.data.title)
+                    team = res.data.team
+                    nickname = res.data.sender
+                    isresult = parseInt(res.data.content)
+                    perteam = parseInt(res.data.toteam)
+                    if (perteam === 0) {
+                        perteam = 1;
+                    }
+                    if (res.data.fromteam == "yes") {
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
+                            quiz = res.data;
+                        });
+                    }
+                });
+                
             }
             teammember = []
             console.log(team)
@@ -408,6 +422,7 @@ function PlayQuiz(props) {
             }).catch(err => {
         })
             message.content = message.sender + ' joined!';
+            
         } else if (message.type === 'LEAVE') {
             messageElement.classList.add('event-message');
             message.content = message.sender + ' left!';
@@ -492,6 +507,13 @@ function PlayQuiz(props) {
             }
         }
         else if (message.type === 'NEXT') {
+            console.log(index)
+            console.log(isresult)
+            if (quiz == '') {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
+                    quiz = res.data;
+                });
+            }
             if (index === isresult) {
                 switch (quiz.type) {
                     case 0:
@@ -590,7 +612,7 @@ function PlayQuiz(props) {
                 sendanswer = false;
                 turn = '당신의 팀 차례입니다.'
             }
-            else {
+            else if(quiz.type === 2  || quiz.type === 4) {
                 turn = '다른 팀의 차례입니다.'
                 sendanswer = true;
             }
@@ -701,7 +723,7 @@ function PlayQuiz(props) {
     }
     else if (quiz.type === 3) {
         answerbutton1 = <input type="text" className="answerSend" placeholder="정답을 입력해주세요." id="answerMsg1" onChange={event => setInputAnswer(event.target.value)} />
-        answerbutton2 = <button type="button" className="answersendBtn" value="전송" onClick={() => sendAnswer(props, answer)} />
+        answerbutton2 = <button type="button" className="answersendBtn" value="전송" onClick={() => sendAnswer(props, inputanswer)} />
         answerbutton3 = ""
         answerbutton4 = ""
         answerbutton5 = ""

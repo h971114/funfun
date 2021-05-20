@@ -381,6 +381,10 @@ function AdminPlayQuiz(props) {
             console.log(isresult)
             console.log(index)
             if (index === isresult) {
+                // if (stompClient && stompClient.connected) {
+                //     const msg = { type: 'OVER', content: send_message, roomnumber: code, sender: nickname };
+                //     stompClient.send("/app/chat", JSON.stringify(msg), {});
+                // }
                 nextteamchat = ''
                 switch (quiz.type) {
                     case 0:
@@ -436,13 +440,16 @@ function AdminPlayQuiz(props) {
                         }); // 팀전 상위 5팀 점수
                         break;
                 }
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult +perteam } }).then(res => {
+                    isresult += perteam
+                });
                 currentcheck = ''
                 isstart = 2;
-                isresult += perteam;
-
+                
             }
 
             else {
+                console.log(isresult)
                 sendanswer = false;
                 axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
                     console.log(res.data);
@@ -566,36 +573,36 @@ function AdminPlayQuiz(props) {
         setModalOpen(false);
     }
     if (quiz.type === 0) {
-        answerbutton1 = <input type="button" className="O" ></input>
-        answerbutton2 = <input type="button" className="X" ></input>
+        answerbutton1 = <input type="button" className={"O" + (currentcheck == "O" ? ' on' : '')} ></input>
+        answerbutton2 = <input type="button" className={"X" + (currentcheck == "X" ? ' on' : '')} ></input>
         answerbutton3 = ""
         answerbutton4 = ""
         answerbutton5 = ""
     }
     else if (quiz.type === 1) {
-        answerbutton1 = <button >{"1. " + quiz.exam1}</button>
-        answerbutton2 = <button >{"2. " + quiz.exam2}</button>
-        answerbutton3 = <button >{"3. " + quiz.exam3}</button>
-        answerbutton4 = <button >{"4. " + quiz.exam4}</button>
-        answerbutton5 = <button >{"5. " + quiz.exam5}</button>
+        answerbutton1 = <button className="choice" >{"1. " + quiz.exam1}</button>
+        answerbutton2 = <button className="choice" >{"2. " + quiz.exam2}</button>
+        answerbutton3 = <button className="choice" >{"3. " + quiz.exam3}</button>
+        answerbutton4 = <button className="choice" >{"4. " + quiz.exam4}</button>
+        answerbutton5 = <button className="choice" >{"5. " + quiz.exam5}</button>
     }
     else if (quiz.type === 2) {
-        answerbutton1 = <button >{"1. " + quiz.exam1}</button>
-        answerbutton2 = <button >{"2. " + quiz.exam2}</button>
-        answerbutton3 = <button >{"3. " + quiz.exam3}</button>
-        answerbutton4 = <button >{"4. " + quiz.exam4}</button>
-        answerbutton5 = <button >{"5. " + quiz.exam5}</button>
+        answerbutton1 = <button className="choice" >{"1. " + quiz.exam1}</button>
+        answerbutton2 = <button className="choice" >{"2. " + quiz.exam2}</button>
+        answerbutton3 = <button className="choice" >{"3. " + quiz.exam3}</button>
+        answerbutton4 = <button className="choice" >{"4. " + quiz.exam4}</button>
+        answerbutton5 = <button className="choice" >{"5. " + quiz.exam5}</button>
     }
     else if (quiz.type === 3) {
-        answerbutton1 = ""
-        answerbutton2 = ""
+        answerbutton1 = <input type="text" className="answerSend" placeholder="정답을 입력해주세요." id="answerMsg1"  />
+        answerbutton2 = <button type="button" className="answersendBtn" value="전송"  />
         answerbutton3 = ""
         answerbutton4 = ""
         answerbutton5 = ""
     }
     else if (quiz.type === 4) {
-        answerbutton1 = ""
-        answerbutton2 = ""
+        answerbutton1 = <input type="text" className="answerSend" placeholder="정답을 입력해주세요." id="answerMsg1"  />
+        answerbutton2 = <button type="button" className="answersendBtn" >전송</button>
         answerbutton3 = ""
         answerbutton4 = ""
         answerbutton5 = ""

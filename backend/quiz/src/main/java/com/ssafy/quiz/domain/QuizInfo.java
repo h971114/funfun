@@ -45,4 +45,5 @@ public class QuizInfo {
 	private int alivemember = 0;
 	private int perteam = 0;
 	private int isresult = 0;
+	private String start = "not";
 }

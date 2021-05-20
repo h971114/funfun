@@ -249,7 +249,8 @@ public class ChatController {
     		//do nothing
     	}
     	if(MessageType.START.equals(chatMessage.getType())) {
-    		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setIndex(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex()+1);;
+    		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setIndex(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getIndex()+1);
+    		quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setStart("yes");
     		if(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getType() == 0) {
     			quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).setAlivemember(quizinfomap.getQuizmap().get(chatMessage.getRoomnumber()).getAlivemember()-1);
     		}
