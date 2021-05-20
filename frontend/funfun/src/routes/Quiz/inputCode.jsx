@@ -3,11 +3,15 @@ import { Link } from "react-router-dom"
 var code = '';
 class InputCode extends Component {
 
-    goGame = (e) => {
-        this.props.history.push({
-            pathname: '/game/setNick',
-            state: { code: code }
-        });
+    goGame = (e) => {;
+        if(code) {
+            this.props.history.push({
+                pathname: '/game/setNick',
+                state: { code: code }
+            });
+        } else {
+            alert("게임 코드를 입력하세요.")
+        }
 
     }
     changecode = (e) => {
