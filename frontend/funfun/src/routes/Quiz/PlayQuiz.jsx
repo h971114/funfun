@@ -356,6 +356,23 @@ function PlayQuiz(props) {
             isstart = 1;
             setSeconds(15);
             isresult = perteam;
+
+            // 채팅 변환 알림 출력
+            messageElement.classList.add('chat-message');
+            var usernameElement = document.createElement('span');
+            var usernameText = document.createTextNode('알림');
+            usernameElement.appendChild(usernameText);
+            messageElement.appendChild(usernameElement);
+            var textElement = document.createElement('p');
+            var messageText = document.createTextNode('퀴즈가 시작되어 팀원 간의 채팅만 가능합니다.');
+            textElement.appendChild(messageText);
+
+            messageElement.appendChild(textElement);
+
+            messageArea.appendChild(messageElement);
+            messageArea.scrollTop = messageArea.scrollHeight;
+            // 채팅 변환 알림 출력 끝
+
             axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
                 console.log(res.data);
                 quiz = res.data;
@@ -640,14 +657,14 @@ function PlayQuiz(props) {
                     </div>
                 </div>
                 <div className="communication">
-                    <h3>팀 원 목 록 😎</h3>
+                    <h3>대 기 자 목 록 😎</h3>
                     <div className="members">
 
                         <ul id="memberArea">
                             {memberview}
                         </ul>
                     </div>
-                    <h3>팀 원 채 팅 🤩</h3>
+                    <h3>대 기 자 채 팅 🤩</h3>
                     <div className="chat waitingChat">
                         <ul id="messageArea">
 

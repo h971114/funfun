@@ -619,7 +619,7 @@ function AdminPlayQuiz(props) {
                         </ul>
                     </div>
                     <input className="tcBtn" type="button" value="팀 재분배" onClick={openModal} />
-                    <h3>팀 원 채 팅 🤩</h3>
+                    <h3>대 기 자 채 팅 🤩</h3>
                     <div className="chat_admin">
                         <ul id="messageArea">
 
