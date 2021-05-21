@@ -30,7 +30,7 @@ var yourTstate = ''
 var teamnum = 1;
 var leftstate = ''
 var currentcheck = ''
-var perteam ;
+var perteam;
 var sendanswer;
 var teammember = [];
 var memberview;
@@ -174,7 +174,7 @@ function PlayQuiz(props) {
                     //   }
                 );
                 if (cookie.load('beforeid') !== '') {
-                    const msg = { type: 'RETIRE', content: "", roomnumber: code, id: cookie.load('beforeid')  };
+                    const msg = { type: 'RETIRE', content: "", roomnumber: code, id: cookie.load('beforeid') };
                     stompClient.send("/app/chat", JSON.stringify(msg), {});
                     cookie.save('beforeid', "", {
                         path: '/',
@@ -202,7 +202,7 @@ function PlayQuiz(props) {
                                 if (perteam === 0) {
                                     perteam = 1;
                                 }
-                                
+
                                 if (res.data.fromteam == "yes") {
                                     axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quizsize`, { params: { no: code } }).then(res => {
                                         quizsize = parseInt(res.data);
@@ -213,7 +213,7 @@ function PlayQuiz(props) {
                                             });
                                         }
                                         else if (index == quizsize) {
-                                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index-1, isresult: isresult } }).then(res => {
+                                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index - 1, isresult: isresult } }).then(res => {
                                                 quiz = res.data;
                                             });
                                         }
@@ -425,7 +425,7 @@ function PlayQuiz(props) {
                         });
                     }
                 });
-                
+
             }
             teammember = []
             console.log(team)
@@ -442,9 +442,9 @@ function PlayQuiz(props) {
                 } else {
                 }
             }).catch(err => {
-        })
+            })
             message.content = message.sender + ' joined!';
-            
+
         } else if (message.type === 'LEAVE') {
             messageElement.classList.add('event-message');
             message.content = message.sender + ' left!';
@@ -539,7 +539,7 @@ function PlayQuiz(props) {
                     });
                 }
             });
-            
+
             if (index === isresult) {
                 switch (quiz.type) {
                     case 0:
@@ -567,7 +567,11 @@ function PlayQuiz(props) {
                         }); // 개인전 자기 자신 점수
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
                             leftstate = res.data.map((obj, key) =>
-                                <li><img src={"/img/medal" + (key + 1) + ".png"} /> {JSON.stringify(obj)}</li>
+                                <li>
+                                    <img src={"/img/medal" + (key + 1) + ".png"} className={"medalImg" + (key + 1)} />
+                                    <img src={"/img/team" + (key + 1) + ".png"} className={"profileImg" + (key + 1)} />
+                                    <p>{(JSON.stringify(obj).split(":"))[0].substring(1, (JSON.stringify(obj).split(":"))[0].length)}<span>{(JSON.stringify(obj).split(":"))[1].substring(0, (JSON.stringify(obj).split(":"))[1].length - 1)}점</span></p>
+                                </li>
                             );
                         }); // 개인전 상위 5명 점수
                         break;
@@ -593,7 +597,11 @@ function PlayQuiz(props) {
                         }); // 개인전 자기 자신 점수
                         axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
                             leftstate = res.data.map((obj, key) =>
-                                <li><img src={"/img/medal" + (key + 1) + ".png"} /> {JSON.stringify(obj)}</li>
+                                <li>
+                                    <img src={"/img/medal" + (key + 1) + ".png"} className={"medalImg" + (key + 1)} />
+                                    <img src={"/img/team" + (key + 1) + ".png"} className={"profileImg" + (key + 1)} />
+                                    <p>{(JSON.stringify(obj).split(":"))[0].substring(1, (JSON.stringify(obj).split(":"))[0].length)}<span>{(JSON.stringify(obj).split(":"))[1].substring(0, (JSON.stringify(obj).split(":"))[1].length - 1)}점</span></p>
+                                </li>
                             );
                         }); // 개인전 상위 5명 점수
                         break;
@@ -650,7 +658,7 @@ function PlayQuiz(props) {
                 sendanswer = false;
                 turn = '당신의 팀 차례입니다.'
             }
-            else if(quiz.type === 2  || quiz.type === 4) {
+            else if (quiz.type === 2 || quiz.type === 4) {
                 turn = '다른 팀의 차례입니다.'
                 sendanswer = true;
             }
@@ -839,10 +847,10 @@ function PlayQuiz(props) {
                 );
             })
         }
-        if ((quiz.type === 2 || quiz.type === 4) && teamnum.slice(0,1) !== 'T') {
+        if ((quiz.type === 2 || quiz.type === 4) && teamnum.slice(0, 1) !== 'T') {
             teamnum = "Team " + teamnum;
         }
-        else if ((quiz.type !== 2 && quiz.type !== 4)){
+        else if ((quiz.type !== 2 && quiz.type !== 4)) {
             teamnum = "";
             team = 1;
         }
@@ -857,7 +865,7 @@ function PlayQuiz(props) {
                         </div>
                     </div>
                     <div className="quiz_wrap">
-                    <div className="quiz_tit myScore">
+                        <div className="quiz_tit myScore">
                             {/* {yourstate} */}
                             <div className={(quiz.type != 0 ? 'myteamScore' : 'hidden')}>
                                 <p>{yourTstate}</p>
@@ -912,7 +920,7 @@ function PlayQuiz(props) {
     }
     return (
         <div className="quiz_contents">
-             <div className="quiz_parts gameplaying">
+            <div className="quiz_parts gameplaying">
                 <div id="cloudArea">
 
                     <div className="cloud_wrap">
