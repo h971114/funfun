@@ -347,8 +347,8 @@ function AdminPlayQuiz(props) {
         }
         else if (message.type === 'START') {
             isstart = 1;
-            setSeconds(15);
-            setProgress(15 * 1000);
+            setSeconds(50000);
+            setProgress(50000 * 1000);
             isresult = perteam;
             console.log(isresult)
             console.log(perteam)
@@ -390,60 +390,68 @@ function AdminPlayQuiz(props) {
                 nextteamchat = ''
                 switch (quiz.type) {
                     case 0:
-                        
+
                         break;
-                        case 1:
-                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
-                                yourstate = res.data;
-                                yourTstate = "내 점수";
-                            }); // 개인전 자기 자신 점수
-                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
-                                leftstate = res.data.map((obj, key) =>
-                                    <li><img src={"/img/medal" + (key + 1) + ".png"} /> {JSON.stringify(obj)}</li>
-                                );
-                            }); // 개인전 상위 5명 점수
-                            break;
-                        case 2:
-                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
-                                yourstate = res.data;
-                                yourTstate = "우리 팀 점수";
-                                teamnum = team;
-                            }); // 팀전 자기 팀 점수
-                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
-                                leftstate = res.data.map((obj, key) =>
-                                    <li><img src={"/img/medal" + (key + 1) + ".png"} className={"medalImg" + (key + 1)} />
-                                        <img src={"/img/team" + (key + 1) + ".png"} className={"profileImg" + (key + 1)} />
-                                        <p>Team {JSON.stringify(obj).substr(6, 1)}<span>{(JSON.stringify(obj).split(":"))[1].substr(0, (JSON.stringify(obj).split(":"))[1].length - 1)}점</span></p>
-                                    </li>
-                                );
-                            }); // 팀전 상위 5팀 점수
-                            break;
-                        case 3:
-                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
-                                yourstate = res.data;
-                                yourTstate = "내 점수";
-                            }); // 개인전 자기 자신 점수
-                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
-                                leftstate = res.data.map((obj, key) =>
-                                    <li><img src={"/img/medal" + (key + 1) + ".png"} /> {JSON.stringify(obj)}</li>
-                                );
-                            }); // 개인전 상위 5명 점수
-                            break;
-                        case 4:
-                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
-                                yourstate = res.data;
-                                yourTstate = "우리 팀 점수";
-                                teamnum = team;
-                            }); // 팀전 자기 팀 점수
-                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
-                                leftstate = res.data.map((obj, key) =>
-                                    <li><img src={"/img/medal" + (key + 1) + ".png"} className={"medalImg" + (key + 1)} />
-                                        <img src={"/img/team" + (key + 1) + ".png"} className={"profileImg" + (key + 1)} />
-                                        <p>Team {JSON.stringify(obj).substr(6, 1)}<span>{(JSON.stringify(obj).split(":"))[1].substr(0, (JSON.stringify(obj).split(":"))[1].length - 1)}점</span></p>
-                                    </li>
-                                );
-                            }); // 팀전 상위 5팀 점수
-                            break;
+                    case 1:
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
+                            yourstate = res.data;
+                            yourTstate = "내 점수";
+                        }); // 개인전 자기 자신 점수
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
+                            leftstate = res.data.map((obj, key) =>
+                                <li>
+                                    <img src={"/img/medal" + (key + 1) + ".png"} className={"medalImg" + (key + 1)} />
+                                    <img src={"/img/team" + (key + 1) + ".png"} className={"profileImg" + (key + 1)} />
+                                    <p>{(JSON.stringify(obj).split(":"))[0].substring(1, (JSON.stringify(obj).split(":"))[0].length)}<span>{(JSON.stringify(obj).split(":"))[1].substring(0, (JSON.stringify(obj).split(":"))[1].length - 1)}점</span></p>
+                                </li>
+                            );
+                        }); // 개인전 상위 5명 점수
+                        break;
+                    case 2:
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
+                            yourstate = res.data;
+                            yourTstate = "우리 팀 점수";
+                            teamnum = team;
+                        }); // 팀전 자기 팀 점수
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
+                            leftstate = res.data.map((obj, key) =>
+                                <li><img src={"/img/medal" + (key + 1) + ".png"} className={"medalImg" + (key + 1)} />
+                                    <img src={"/img/team" + (key + 1) + ".png"} className={"profileImg" + (key + 1)} />
+                                    <p>Team {JSON.stringify(obj).substr(6, 1)}<span>{(JSON.stringify(obj).split(":"))[1].substr(0, (JSON.stringify(obj).split(":"))[1].length - 1)}점</span></p>
+                                </li>
+                            );
+                        }); // 팀전 상위 5팀 점수
+                        break;
+                    case 3:
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal`, { params: { no: code, ID: ID } }).then(res => {
+                            yourstate = res.data;
+                            yourTstate = "내 점수";
+                        }); // 개인전 자기 자신 점수
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/personal5`, { params: { no: code } }).then(res => {
+                            leftstate = res.data.map((obj, key) =>
+                                <li>
+                                    <img src={"/img/medal" + (key + 1) + ".png"} className={"medalImg" + (key + 1)} />
+                                    <img src={"/img/team" + (key + 1) + ".png"} className={"profileImg" + (key + 1)} />
+                                    <p>{(JSON.stringify(obj).split(":"))[0].substring(1, (JSON.stringify(obj).split(":"))[0].length)}<span>{(JSON.stringify(obj).split(":"))[1].substring(0, (JSON.stringify(obj).split(":"))[1].length - 1)}점</span></p>
+                                </li>
+                            );
+                        }); // 개인전 상위 5명 점수
+                        break;
+                    case 4:
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team`, { params: { no: code, team: team } }).then(res => {
+                            yourstate = res.data;
+                            yourTstate = "우리 팀 점수";
+                            teamnum = team;
+                        }); // 팀전 자기 팀 점수
+                        axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/team5`, { params: { no: code } }).then(res => {
+                            leftstate = res.data.map((obj, key) =>
+                                <li><img src={"/img/medal" + (key + 1) + ".png"} className={"medalImg" + (key + 1)} />
+                                    <img src={"/img/team" + (key + 1) + ".png"} className={"profileImg" + (key + 1)} />
+                                    <p>Team {JSON.stringify(obj).substr(6, 1)}<span>{(JSON.stringify(obj).split(":"))[1].substr(0, (JSON.stringify(obj).split(":"))[1].length - 1)}점</span></p>
+                                </li>
+                            );
+                        }); // 팀전 상위 5팀 점수
+                        break;
                 }
                 axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult + perteam } }).then(res => {
                     isresult += perteam
@@ -451,7 +459,7 @@ function AdminPlayQuiz(props) {
                 })
                 currentcheck = ''
                 isstart = 2;
-                
+
             }
 
             else {
@@ -591,14 +599,14 @@ function AdminPlayQuiz(props) {
         answerbutton5 = <button className="choice" >{"5. " + quiz.exam5}</button>
     }
     else if (quiz.type === 3) {
-        answerbutton1 = <input type="text" className="answerSend" placeholder="정답을 입력해주세요." id="answerMsg1"  />
-        answerbutton2 = <button type="button" className="answersendBtn" value="전송"  />
+        answerbutton1 = <input type="text" className="answerSend" placeholder="정답을 입력해주세요." id="answerMsg1" />
+        answerbutton2 = <button type="button" className="answersendBtn" value="전송"  >전송</button>
         answerbutton3 = ""
         answerbutton4 = ""
         answerbutton5 = ""
     }
     else if (quiz.type === 4) {
-        answerbutton1 = <input type="text" className="answerSend" placeholder="정답을 입력해주세요." id="answerMsg1"  />
+        answerbutton1 = <input type="text" className="answerSend" placeholder="정답을 입력해주세요." id="answerMsg1" />
         answerbutton2 = <button type="button" className="answersendBtn" >전송</button>
         answerbutton3 = ""
         answerbutton4 = ""
@@ -688,10 +696,10 @@ function AdminPlayQuiz(props) {
                 );
             })
         }
-        if ((quiz.type === 2 || quiz.type === 4) && teamnum.slice(0,1) !== 'T') {
+        if ((quiz.type === 2 || quiz.type === 4) && teamnum.slice(0, 1) !== 'T') {
             teamnum = "Team " + teamnum;
         }
-        else if ((quiz.type !== 2 && quiz.type !== 4)){
+        else if ((quiz.type !== 2 && quiz.type !== 4)) {
             teamnum = "";
             team = 1;
         }
@@ -706,14 +714,14 @@ function AdminPlayQuiz(props) {
                         </div>
                     </div>
                     <div className="quiz_wrap">
-                    <div className="quiz_tit myScore">
+                        <div className="quiz_tit myScore">
                             {/* {yourstate} */}
                             <div className={('hidden')}>
                                 {/* <p>{yourTstate}</p> */}
                                 <div className="preMyScore">
-                                    <div className="preMyImgWrap">
+                                    {/* <div className="preMyImgWrap">
                                         <img src={"/img/team" + team + ".png"} />
-                                    </div>
+                                    </div> */}
                                     <div className="preMyDataWrap">
                                         {teamnum}<br />
                                     </div>
