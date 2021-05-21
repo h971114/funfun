@@ -38,6 +38,7 @@ var nextteamchat = ''
 var turn = ''
 var left_member = ''
 var quizsize;
+var teamimg;
 function PlayQuiz(props) {
 
     const [seconds, setSeconds] = useState(10);
@@ -71,9 +72,6 @@ function PlayQuiz(props) {
     //     console.log("send");
     // }
     const sendAnswer = (props, msg) => {
-        console.log(quiz);
-        console.log(msg);
-        console.log(sendanswer)
         if (quiz !== '' && (quiz.type === 3 || quiz.type === 4) && sendanswer === false) {
             if (msg === quiz.answer) {
                 if (stompClient && stompClient.connected) {
@@ -162,7 +160,6 @@ function PlayQuiz(props) {
                 ID = cookie.load('ID')
                 code = cookie.load('code')
                 nickname = cookie.load('nickname')
-                console.log(cookie.load('code'))
                 if (code === undefined) {
                     code = props.location.state.code
                 }
@@ -182,7 +179,6 @@ function PlayQuiz(props) {
                     });
                 }
                 if (ID === undefined) {
-                    console.log(props.location.state.code)
                     const msg = { type: 'JOIN', content: "", roomnumber: props.location.state.code, sender: props.location.state.nickname };
                     stompClient.send("/app/chat", JSON.stringify(msg), {});
                     nickname = props.location.state.nickname;
@@ -220,7 +216,6 @@ function PlayQuiz(props) {
                                     });
                                 }
                                 teammember = []
-                                console.log(team)
                                 axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/getteammember`, { params: { no: code, team: team } }).then(res => {
                                     if (res.data) {
                                         res.data.map(obj => {
@@ -428,7 +423,6 @@ function PlayQuiz(props) {
 
             }
             teammember = []
-            console.log(team)
             axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/getteammember`, { params: { no: code, team: team } }).then(res => {
                 // console.log(res);
                 if (res.data) {
@@ -510,8 +504,6 @@ function PlayQuiz(props) {
 
         }
         else if (message.type === 'TEAMCHAT') {
-            console.log(message.team)
-            console.log(team)
             if (message.team === team) {
                 messageElement.classList.add('chat-message');
                 var usernameElement = document.createElement('span');
@@ -532,7 +524,6 @@ function PlayQuiz(props) {
 
             axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quizsize`, { params: { no: code } }).then(res => {
                 quizsize = parseInt(res.data);
-                console.log(quizsize)
                 if (quiz == '' && index < quizsize) {
                     axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
                         quiz = res.data;
@@ -672,7 +663,6 @@ function PlayQuiz(props) {
             if (message.id === ID) {
                 team = message.toteam
                 teammember = []
-                console.log(team)
                 axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/getteammember`, { params: { no: code, team: message.toteam } }).then(res => {
                     // console.log(res);
                     if (res.data) {
@@ -779,7 +769,7 @@ function PlayQuiz(props) {
     }
     else if (quiz.type === 3) {
         answerbutton1 = <input type="text" className="answerSend" placeholder="정답을 입력해주세요." id="answerMsg1" onChange={event => setInputAnswer(event.target.value)} />
-        answerbutton2 = <button type="button" className="answersendBtn" value="전송" onClick={() => sendAnswer(props, inputanswer)} />
+        answerbutton2 = <button type="button" className="answersendBtn" value="전송" onClick={() => sendAnswer(props, inputanswer)} >전송</button>
         answerbutton3 = ""
         answerbutton4 = ""
         answerbutton5 = ""
@@ -849,10 +839,14 @@ function PlayQuiz(props) {
         }
         if ((quiz.type === 2 || quiz.type === 4) && teamnum.slice(0, 1) !== 'T') {
             teamnum = "Team " + teamnum;
+            teamimg = team;
         }
         else if ((quiz.type !== 2 && quiz.type !== 4)) {
             teamnum = "";
-            team = 1;
+            teamimg = 1;
+        }
+        else {
+            teamimg = team;
         }
         return (
             <div className="quiz_contents">
@@ -871,7 +865,7 @@ function PlayQuiz(props) {
                                 <p>{yourTstate}</p>
                                 <div className="preMyScore">
                                     <div className="preMyImgWrap">
-                                        <img src={"/img/team" + team + ".png"} />
+                                        <img src={"/img/team" + teamimg + ".png"} />
                                     </div>
                                     <div className="preMyDataWrap">
                                         {teamnum}<br />
