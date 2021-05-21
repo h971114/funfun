@@ -49,6 +49,11 @@
 
   cursor: pointer;
 }
+.nickbg .availd {
+  position: absolute;
+  top: calc(50% + 50px);
+  left: 32%;
+}
 
 .quiz_contents {
   width: 100%;
