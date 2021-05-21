@@ -13,7 +13,7 @@ class SetNick extends Component {
         if (checkNick) {
             if (cookie.load('ID') !== undefined) {
                 beforeid = cookie.load('ID');
-                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/isbefore`, { params: { no: cookie.load('code'),  id : cookie.load('ID') } }).then(res => {
+                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/isbefore`, { params: { no: cookie.load('code'), id: cookie.load('ID') } }).then(res => {
                     console.log(res);
                 });
             }
@@ -32,7 +32,7 @@ class SetNick extends Component {
                     path: '/',
                     expires: new Date(Date.now()),
                 });
-                cookie.save('beforeid', beforeid,{
+                cookie.save('beforeid', beforeid, {
                     path: '/',
                     expires: new Date(Date.now())
                 })
@@ -59,16 +59,16 @@ class SetNick extends Component {
     checkNick = () => {
         var nick = document.getElementById('inputNick').value;
         if (!nick) {
-            this.setState({ checkNick: false })
+            checkNick = false;
             document.getElementById("avalidNN").setAttribute('style', 'color:#f91c37');
             document.getElementById("avalidNN").innerText = "닉네임을 입력해주세요.";
         }
         else if (nick.length > 10) {
-                this.setState({ checkNick: false })
-                document.getElementById("avalidNN").setAttribute('style', 'color:#f91c37');
-                document.getElementById("avalidNN").innerText = "닉네임은 최대 10글자까지 가능합니다.";
-            } else {
-            this.setState({ checkNick: true })
+            checkNick = false;
+            document.getElementById("avalidNN").setAttribute('style', 'color:#f91c37');
+            document.getElementById("avalidNN").innerText = "닉네임은 최대 10글자까지 가능합니다.";
+        } else {
+            checkNick = true;
             document.getElementById("avalidNN").style.display = 'none';
         }
     }
