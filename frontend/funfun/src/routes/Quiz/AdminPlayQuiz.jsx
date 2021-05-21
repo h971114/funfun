@@ -347,8 +347,8 @@ function AdminPlayQuiz(props) {
         }
         else if (message.type === 'START') {
             isstart = 1;
-            setSeconds(50000);
-            setProgress(50000 * 1000);
+            setSeconds(15);
+            setProgress(15 * 1000);
             isresult = perteam;
             console.log(isresult)
             console.log(perteam)
