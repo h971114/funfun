@@ -1,10 +1,16 @@
 import React, { useState, useEffect, Component } from 'react';
 import { Link } from "react-router-dom"
+import cookie from 'react-cookies';
 var code = '';
 class InputCode extends Component {
 
     goGame = (e) => {;
-        if(code) {
+        if (code) {
+            console.log(code)
+             cookie.save('code', code, {
+                path: '/',
+                expires: new Date(Date.now() + 14000000),
+            });
             this.props.history.push({
                 pathname: '/game/setNick',
                 state: { code: code }

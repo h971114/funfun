@@ -688,10 +688,10 @@ function AdminPlayQuiz(props) {
                 );
             })
         }
-        if (quiz.type === 2 || quiz.type === 4) {
+        if ((quiz.type === 2 || quiz.type === 4) && teamnum.slice(0,1) !== 'T') {
             teamnum = "Team " + teamnum;
         }
-        else {
+        else if ((quiz.type !== 2 && quiz.type !== 4)){
             teamnum = "";
             team = 1;
         }

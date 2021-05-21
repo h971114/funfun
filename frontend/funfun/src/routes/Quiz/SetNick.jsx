@@ -3,7 +3,8 @@ import { Link } from "react-router-dom"
 import cookie from 'react-cookies';
 import axios from 'axios';
 var nickname = ''
-var beforeid =''
+var beforeid = ''
+var code = ''
 class SetNick extends Component {
 
     goGame = (e) => {
@@ -13,6 +14,8 @@ class SetNick extends Component {
                 console.log(res);
             });
         }
+        code = cookie.load('code');
+        console.log(code);
         if (nickname) {
             cookie.save('ID', "", {
                 path: '/',
@@ -26,28 +29,21 @@ class SetNick extends Component {
                 path: '/',
                 expires: new Date(Date.now()),
             });
+            cookie.save('beforeid', beforeid,{
+                path: '/',
+                expires: new Date(Date.now())
+            })
             this.props.history.push({
                 pathname: '/game/PlayQuiz',
                 state: {
                     nickname: nickname,
-                    code: this.props.location.state.code,
-                    beforeid : beforeid
+                    code: code,
                 }
             });
             console.log(this.props.history);
         } else {
             alert("닉네임을 입력하세요.")
         }
-    }
-    goAdmin = (e) => {
-        this.props.history.push({
-            pathname: '/admin/game/PlayQuiz',
-            state: {
-                nickname: nickname,
-                code: this.props.location.state.code
-            }
-        });
-        console.log(this.props.history);
     }
     changenick = (e) => {
         nickname = e;

@@ -37,6 +37,7 @@ var memberview;
 var nextteamchat = ''
 var turn = ''
 var left_member = ''
+var quizsize;
 function PlayQuiz(props) {
 
     const [seconds, setSeconds] = useState(10);
@@ -150,6 +151,7 @@ function PlayQuiz(props) {
         alive = "alive"
         team = '0'
         quiz = ""
+        quizsize = 0
         isresult = 1;
         sendanswer = false;
         perteam = 1;
@@ -160,7 +162,7 @@ function PlayQuiz(props) {
                 ID = cookie.load('ID')
                 code = cookie.load('code')
                 nickname = cookie.load('nickname')
-                console.log(cookie.load('ID'))
+                console.log(cookie.load('code'))
                 if (code === undefined) {
                     code = props.location.state.code
                 }
@@ -171,11 +173,16 @@ function PlayQuiz(props) {
                     //   tick => {
                     //   }
                 );
-                if (props.location.state.beforeid !== '') {
-                    const msg = { type: 'RETIRE', content: "", roomnumber: code, id: props.location.state.beforeid };
+                if (cookie.load('beforeid') !== '') {
+                    const msg = { type: 'RETIRE', content: "", roomnumber: code, id: cookie.load('beforeid')  };
                     stompClient.send("/app/chat", JSON.stringify(msg), {});
+                    cookie.save('beforeid', "", {
+                        path: '/',
+                        expires: new Date(Date.now()),
+                    });
                 }
                 if (ID === undefined) {
+                    console.log(props.location.state.code)
                     const msg = { type: 'JOIN', content: "", roomnumber: props.location.state.code, sender: props.location.state.nickname };
                     stompClient.send("/app/chat", JSON.stringify(msg), {});
                     nickname = props.location.state.nickname;
@@ -197,8 +204,19 @@ function PlayQuiz(props) {
                                 }
                                 
                                 if (res.data.fromteam == "yes") {
-                                    axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
-                                        quiz = res.data;
+                                    axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quizsize`, { params: { no: code } }).then(res => {
+                                        quizsize = parseInt(res.data);
+                                        console.log(quizsize)
+                                        if (quiz == '' && index < quizsize) {
+                                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
+                                                quiz = res.data;
+                                            });
+                                        }
+                                        else if (index == quizsize) {
+                                            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index-1, isresult: isresult } }).then(res => {
+                                                quiz = res.data;
+                                            });
+                                        }
                                     });
                                 }
                                 teammember = []
@@ -511,13 +529,17 @@ function PlayQuiz(props) {
             }
         }
         else if (message.type === 'NEXT') {
-            console.log(index)
-            console.log(isresult)
-            if (quiz == '') {
-                axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
-                    quiz = res.data;
-                });
-            }
+
+            axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quizsize`, { params: { no: code } }).then(res => {
+                quizsize = parseInt(res.data);
+                console.log(quizsize)
+                if (quiz == '' && index < quizsize) {
+                    axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/team/quiz`, { params: { no: code, index: index, isresult: isresult } }).then(res => {
+                        quiz = res.data;
+                    });
+                }
+            });
+            
             if (index === isresult) {
                 switch (quiz.type) {
                     case 0:
@@ -817,10 +839,10 @@ function PlayQuiz(props) {
                 );
             })
         }
-        if (quiz.type === 2 || quiz.type === 4) {
+        if ((quiz.type === 2 || quiz.type === 4) && teamnum.slice(0,1) !== 'T') {
             teamnum = "Team " + teamnum;
         }
-        else {
+        else if ((quiz.type !== 2 && quiz.type !== 4)){
             teamnum = "";
             team = 1;
         }
